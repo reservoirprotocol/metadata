@@ -70,7 +70,7 @@ const api = async (req, res) => {
         "name": `Genesis Mana #${id}`,
         "description": "This item is Genesis Mana used in Loot (for Adventurers)",
         "image": tokenURI.image,
-        "community": "loot",
+        "community": "none",
         "collection": {
           "id":"genesis-mana",
           "name":"Genesis Mana",
@@ -78,7 +78,7 @@ const api = async (req, res) => {
           "image":"https://lh3.googleusercontent.com/PBMCkL2BsftmHR3CnOO5DRHdBYpKcOjFZpymCDu-l2fVzffixhHU8S0qWrONuXWDMOdZn0QgsepGFjKwEqJO5aAk4LzlhTdM3Hdc=s130",
           "royalty_amount": "250",
           "royalty_recipient": "0x96f47d56f25d2ba629db1f55db0517dee67640e1",
-          "community": "loot",
+          "community": "none",
         },
         "attributes":[]
       }
