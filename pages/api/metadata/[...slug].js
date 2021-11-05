@@ -4,7 +4,7 @@ export default function handler(req, res) {
     const { slug } = req.query
     const contract = slug[0]
     const tokenId = slug[1]
-    const community = slug[2]
+    const community = slug[2] ? slug[2] : 'loot'
     const base = process.env.NEXT_PUBLIC_CHAIN_ID == 4
     ? 'https://rinkeby-api.opensea.io/api/v1/asset'
     : 'https://api.opensea.io/api/v1/asset';

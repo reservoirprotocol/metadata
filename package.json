@@ -9,6 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ethersproject/bignumber": "^5.5.0",
+    "@ethersproject/hash": "^5.5.0",
+    "axios": "^0.24.0",
+    "graphql": "^16.0.1",
+    "graphql-request": "^3.6.1",
+    "loot-rarity": "^5.0.1",
     "next": "12.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2"
