@@ -2,7 +2,7 @@ const axios = require('axios')
 
 export default function handler(req, res) {
     const { slug } = req.query
-    const contract = slug[0]
+    let contract = slug[0]
     const tokenId = slug[1]
     let community = 'none'
     switch(contract.toLowerCase()) {
@@ -23,6 +23,7 @@ export default function handler(req, res) {
         case '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb':
         case '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6':
             community = 'cryptopunks'
+            contract = '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb' // always return unwrapped metadata
             break;
     }
     const base = process.env.NEXT_PUBLIC_CHAIN_ID == 4
