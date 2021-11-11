@@ -290,6 +290,11 @@ const getMetadata = (id) => {
     let output = sourceArray[rand.mod(sourceArray.length).toNumber()];
     const greatness = rand.mod(21);
     scores.greatness += greatness.toNumber();
+    meta.attributes.push({
+      "key": `Item`,
+      "category": "Items",
+      "value": output
+    })
     if (greatness.gt(14)) {
       scores.orders++
       let order = suffixes[rand.mod(suffixes.length).toNumber()]
@@ -313,11 +318,6 @@ const getMetadata = (id) => {
         output = '"' + name[0] + " " + name[1] + '" ' + output + " +1";
       }
     }
-    meta.attributes.push({
-      "key": `${capitalize(keyPrefix)}`,
-      "category": "Items",
-      "value": output
-    })
     bagItems.push(output)
     if(output.toLowerCase().search("dragon")>=0) {
       scores.dragons++
