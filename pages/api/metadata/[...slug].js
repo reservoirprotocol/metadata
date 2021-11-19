@@ -25,6 +25,9 @@ export default function handler(req, res) {
             community = 'cryptopunks'
             contract = '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb' // always return unwrapped metadata
             break;
+        case '0x79986aF15539de2db9A5086382daEdA917A9CF0C':
+            community = 'cryptovoxels'
+            break;
     }
     const base = process.env.NEXT_PUBLIC_CHAIN_ID == 4
     ? 'https://rinkeby-api.opensea.io/api/v1/asset'
