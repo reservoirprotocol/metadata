@@ -25,7 +25,7 @@ export default function handler(req, res) {
             community = 'cryptopunks'
             contract = '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb' // always return unwrapped metadata
             break;
-        case '0x79986aF15539de2db9A5086382daEdA917A9CF0C':
+        case '0x79986af15539de2db9a5086382daeda917a9cf0c':
             community = 'cryptovoxels'
             break;
     }
