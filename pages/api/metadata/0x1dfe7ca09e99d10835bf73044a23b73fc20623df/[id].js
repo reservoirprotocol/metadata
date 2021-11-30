@@ -276,6 +276,8 @@ const getMetadata = (id) => {
       "image":"https://www.lootproject.com/mlootheader.svg",
       "royalty_amount": "500",
       "royalty_recipient": "0x74E568a889123bAecf6708242Da34d8A99e7fCD0",
+      "royaltyBps": "500",
+      "royaltyRecipient": "0x74E568a889123bAecf6708242Da34d8A99e7fCD0",
       "community": "loot"
     },
     "attributes":[]

@@ -61,6 +61,8 @@ const api = async (req, res) => {
           "image":"https://lh3.googleusercontent.com/46LiRFAvwemkfLlRZIp4WbK21gWUWzFKIhes-FRfjAKdQeXbEue2cICtiQjZ_hT8GXgf28TfxyVYu5098vcpW9-KHsB9cZSuwVci=s130",
           "royalty_amount": "250",
           "royalty_recipient": "0x96f47d56f25d2ba629db1f55db0517dee67640e1",
+          "royaltyBps": "250",
+          "royaltyRecipient": "0x96f47d56f25d2ba629db1f55db0517dee67640e1",
           "community": "loot",
         },
         "attributes":[]

@@ -48,6 +48,8 @@ export default function handler(req, res) {
                     "image": response.data.collection.image_url,
                     "royalty_amount": response.data.collection.dev_seller_fee_basis_points,
                     "royalty_recipient": response.data.collection.payout_address,
+                    "royaltyBps": response.data.collection.dev_seller_fee_basis_points,
+                    "royaltyRecipient": response.data.collection.payout_address,
                     "community": community,
                 },
                 "attributes":response.data.traits.map(trait => {
