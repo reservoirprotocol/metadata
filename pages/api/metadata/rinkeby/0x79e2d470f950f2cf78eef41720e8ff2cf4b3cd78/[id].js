@@ -346,7 +346,6 @@ const getMetadata = (id) => {
     "key": "Rarity",
     "category": "Properties",
     "value": rarityDescription(lootRarity(bagItems.map(i => i))),
-    "kind": "number"
   })
   return meta
 }

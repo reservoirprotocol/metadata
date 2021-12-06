@@ -369,8 +369,7 @@ const getMetadata = (id) => {
   meta.attributes.push({
     "key": "Rarity",
     "category": "Properties",
-    "value": rarityDescription(lootRarity(bagItems.map(i => i))),
-    "kind": "number"
+    "value": rarityDescription(lootRarity(bagItems.map(i => i)))
   })
   meta.attributes.push({
     "category": "Properties",
