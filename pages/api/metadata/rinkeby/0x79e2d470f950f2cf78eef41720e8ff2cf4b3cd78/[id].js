@@ -351,7 +351,8 @@ const getMetadata = (id) => {
   meta.attributes.push({
     "key": "Plus Ones",
     "category": "Properties",
-    "value": scores.plusones
+    "value": scores.plusones,
+    "kind": "number"
   })
   meta.attributes.push({
     "key": "Rarity",
