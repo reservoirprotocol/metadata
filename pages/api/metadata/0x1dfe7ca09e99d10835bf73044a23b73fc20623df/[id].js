@@ -339,6 +339,13 @@ const getMetadata = (id) => {
     "category": "Properties",
     "value": scores.plusones
   })
+  for (const attr of meta.attributes) {
+    if (isNaN(attr.value)) {
+      attr.kind = "string";
+    } else {
+      attr.kind = "number";
+    }
+  }
   return meta
 }
 

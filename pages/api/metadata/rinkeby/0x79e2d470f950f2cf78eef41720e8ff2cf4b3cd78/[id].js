@@ -334,31 +334,36 @@ const getMetadata = (id) => {
     "key": "Greatness",
     "category": "Properties",
     "value": scores.greatness,
-    "kind": "number"
   })
   meta.attributes.push({
     "key": "Orders",
     "category": "Properties",
     "value": scores.orders,
-    "kind": "number"
   })
   meta.attributes.push({
     "key": "Names",
     "category": "Properties",
     "value": scores.names,
-    "kind": "number"
   })
   meta.attributes.push({
     "key": "Plus Ones",
     "category": "Properties",
     "value": scores.plusones,
-    "kind": "number"
   })
   meta.attributes.push({
     "key": "Rarity",
     "category": "Properties",
     "value": rarityDescription(lootRarity(bagItems.map(i => i))),
   })
+
+  for (const attr of meta.attributes) {
+    if (isNaN(attr.value)) {
+      attr.kind = "string";
+    } else {
+      attr.kind = "number";
+    }
+  }
+  
   return meta
 }
 

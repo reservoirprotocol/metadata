@@ -148,6 +148,13 @@ const api = async (req, res) => {
         "key": `Divines`,
         "value": scores.divines
       })
+      for (const attr of meta.attributes) {
+        if (isNaN(attr.value)) {
+          attr.kind = "string";
+        } else {
+          attr.kind = "number";
+        }
+      }
       console.log(meta)
       // const rand = random(itemType.split(" ")[0].toUpperCase() + data.manas[0].lootTokenId.id);
       // const greatness = rand.mod(21);
