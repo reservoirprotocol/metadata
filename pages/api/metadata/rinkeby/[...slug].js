@@ -31,6 +31,7 @@ export default function handler(req, res) {
     }
     const base = 'https://rinkeby-api.opensea.io/api/v1/asset'
     let url = `${base}/${contract}/${tokenId}`
+    console.log(url)
     axios.get(url).then((response) => {
         if(response.data) {
             //console.log(response.data)

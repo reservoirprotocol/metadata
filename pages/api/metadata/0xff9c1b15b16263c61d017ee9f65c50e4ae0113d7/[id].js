@@ -282,6 +282,17 @@ const getMetadata = (id) => {
       "royaltyBps": "500",
       "royaltyRecipient": "0x8cFDF9E9f7EA8c0871025318407A6f1Fbc5d5a18",
       "community": "loot",
+      "filters": [
+        "Item",
+        "Greatness"
+      ],
+      "sort":[
+        {
+          "key":"Greatness",
+          "direction": "DESC",
+          "label": "Greatness"
+        }
+      ]
     },
     "attributes":[]
   }
