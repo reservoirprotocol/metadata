@@ -351,37 +351,44 @@ const getMetadata = (id) => {
   meta.attributes.push({
     "key": "Orders",
     "category": "Properties",
-    "value": scores.orders
+    "value": scores.orders,
+    "kind": "number"
   })
   meta.attributes.push({
     "key": "Names",
     "category": "Properties",
-    "value": scores.names
+    "value": scores.names,
+    "kind": "number"
   })
   meta.attributes.push({
     "key": "Plus Ones",
     "category": "Properties",
-    "value": scores.plusones
+    "value": scores.plusones,
+    "kind": "number"
   })
   meta.attributes.push({
     "key": "Rarity",
     "category": "Properties",
-    "value": rarityDescription(lootRarity(bagItems.map(i => i)))
+    "value": rarityDescription(lootRarity(bagItems.map(i => i))),
+    "kind": "number"
   })
   meta.attributes.push({
     "category": "Properties",
     "key": `Dragons`,
-    "value": scores.dragons
+    "value": scores.dragons,
+    "kind": "number"
   })
   meta.attributes.push({
     "category": "Properties",
     "key": `Demons`,
-    "value": scores.demons
+    "value": scores.demons,
+    "kind": "number"
   })
   meta.attributes.push({
     "category": "Properties",
     "key": `Divines`,
-    "value": scores.divines
+    "value": scores.divines,
+    "kind": "number"
   })
   return meta
 }
