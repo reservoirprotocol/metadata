@@ -322,17 +322,20 @@ const getMetadata = (id) => {
   meta.attributes.push({
     "key": "Greatness",
     "category": "Properties",
-    "value": scores.greatness
+    "value": scores.greatness,
+    "kind": "number"
   })
   meta.attributes.push({
     "key": "Orders",
     "category": "Properties",
-    "value": scores.orders
+    "value": scores.orders,
+    "kind": "number"
   })
   meta.attributes.push({
     "key": "Names",
     "category": "Properties",
-    "value": scores.names
+    "value": scores.names,
+    "kind": "number"
   })
   meta.attributes.push({
     "key": "Plus Ones",
@@ -342,7 +345,8 @@ const getMetadata = (id) => {
   meta.attributes.push({
     "key": "Rarity",
     "category": "Properties",
-    "value": rarityDescription(lootRarity(bagItems.map(i => i)))
+    "value": rarityDescription(lootRarity(bagItems.map(i => i))),
+    "kind": "number"
   })
   return meta
 }
