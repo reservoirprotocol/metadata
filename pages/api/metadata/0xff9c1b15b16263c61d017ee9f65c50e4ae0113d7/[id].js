@@ -360,7 +360,7 @@ const getMetadata = (id) => {
   meta.attributes.push({
     "key": "Plus Ones",
     "category": "Properties",
-    "value": scores.plusones
+    "value": scores.plusones,
   })
   meta.attributes.push({
     "key": "Rarity",
@@ -370,18 +370,27 @@ const getMetadata = (id) => {
   meta.attributes.push({
     "category": "Properties",
     "key": `Dragons`,
-    "value": scores.dragons
+    "value": scores.dragons,
   })
   meta.attributes.push({
     "category": "Properties",
     "key": `Demons`,
-    "value": scores.demons
+    "value": scores.demons,
   })
   meta.attributes.push({
     "category": "Properties",
     "key": `Divines`,
-    "value": scores.divines
+    "value": scores.divines,
   })
+
+  for (const attr of meta.attributes) {
+    if (isNaN(attr.value)) {
+      attr.kind = "string";
+    } else {
+      attr.kind = "number";
+    }
+  }
+
   return meta
 }
 

@@ -279,6 +279,17 @@ const getMetadata = (id) => {
       "royaltyBps": "0",
       "royaltyRecipient": null,
       "community": "loot",
+      "filters": [
+        "Item",
+        "Greatness"
+      ],
+      "sort":[
+        {
+          "key":"Greatness",
+          "direction": "DESC",
+          "label": "Greatness"
+        }
+      ]
     },
     "attributes":[]
   }
@@ -322,28 +333,37 @@ const getMetadata = (id) => {
   meta.attributes.push({
     "key": "Greatness",
     "category": "Properties",
-    "value": scores.greatness
+    "value": scores.greatness,
   })
   meta.attributes.push({
     "key": "Orders",
     "category": "Properties",
-    "value": scores.orders
+    "value": scores.orders,
   })
   meta.attributes.push({
     "key": "Names",
     "category": "Properties",
-    "value": scores.names
+    "value": scores.names,
   })
   meta.attributes.push({
     "key": "Plus Ones",
     "category": "Properties",
-    "value": scores.plusones
+    "value": scores.plusones,
   })
   meta.attributes.push({
     "key": "Rarity",
     "category": "Properties",
-    "value": rarityDescription(lootRarity(bagItems.map(i => i)))
+    "value": rarityDescription(lootRarity(bagItems.map(i => i))),
   })
+
+  for (const attr of meta.attributes) {
+    if (isNaN(attr.value)) {
+      attr.kind = "string";
+    } else {
+      attr.kind = "number";
+    }
+  }
+  
   return meta
 }
 

@@ -137,6 +137,13 @@ const api = async (req, res) => {
       //   "value": scores.names
       // })
       console.log(meta)
+      for (const attr of meta.attributes) {
+        if (isNaN(attr.value)) {
+          attr.kind = "string";
+        } else {
+          attr.kind = "number";
+        }
+      }
       res.status(200).json(meta);
     } else {
       res.status(200).json({error: "Not found"});

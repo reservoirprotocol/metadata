@@ -55,7 +55,8 @@ export default function handler(req, res) {
                     return {
                         "category":"Properties",
                         "key": trait.trait_type,
-                        "value": trait.value
+                        "value": trait.value,
+                        "kind": isNaN(trait.value) ? "string" : "number"
                     }
                 })
               }
