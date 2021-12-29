@@ -280,7 +280,6 @@ const getMetadata = (id) => {
       "royaltyRecipient": null,
       "community": "loot",
       "contract": "0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78",
-      "tokenRange": ["1", "8000"],
       "filters": [
         "Item",
         "Greatness"
