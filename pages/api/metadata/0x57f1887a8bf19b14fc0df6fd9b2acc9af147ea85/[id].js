@@ -16,7 +16,7 @@ const api = async (req, res) => {
         "community": "ENS",
         "collection": {
             "id": contract,
-            "setId":`contract:${contract}`,
+            "setId":null,
             "name": "ENS: Ethereum Name Service",
             "description": "Ethereum Name Service (ENS) domains are secure domain names for the decentralized world. ENS domains provide a way for users to map human readable names to blockchain and non-blockchain resources, like Ethereum addresses, IPFS hashes, or website URLs. ENS domains can be bought and sold on secondary markets.",
             "image": "https://app.ens.domains/static/media/ensIconLogo.19559e18.svg",
@@ -24,14 +24,18 @@ const api = async (req, res) => {
             "royaltyRecipient": null,
             "community": "ENS",
         },
-        "attributes":response.data.attributes.map(trait => {
-            return {
+        "attributes":response.data.attributes.reduce((result,trait) => {
+          if(trait.trait_type!="Created Date") {
+            result.push({
                 "key": trait.trait_type,
                 "value": trait.value,
                 "kind": "number"
-            }
-        })
+            })
+          }
+          return result
+        },[])
       }
+      
       res.status(200).json(meta);
     } else {
       res.status(200).json({error: "Not found"});
