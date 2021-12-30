@@ -6,7 +6,7 @@ const axios = require('axios')
 const api = async (req, res) => {
   const { id } = req.query
   let contract = '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85'
-  let url = `https://metadata.ens.domains/mainnet/${contract}/${id}`
+  let url = `https://metadata.ens.domains/rinkeby/${contract}/${id}`
   axios.get(url).then((response) => {
     if(response.data) {
       let meta = {
