@@ -13,16 +13,16 @@ const api = async (req, res) => {
         "name": response.data.name,
         "description": response.data.description, 
         "image": response.data.image_url,
-        "community": "ENS",
+        "community": "ens",
         "collection": {
-            "id": contract,
+            "id": "ens",
             "setId":null,
             "name": "ENS: Ethereum Name Service",
             "description": "Ethereum Name Service (ENS) domains are secure domain names for the decentralized world. ENS domains provide a way for users to map human readable names to blockchain and non-blockchain resources, like Ethereum addresses, IPFS hashes, or website URLs. ENS domains can be bought and sold on secondary markets.",
             "image": "https://app.ens.domains/static/media/ensIconLogo.19559e18.svg",
             "royaltyBps": 0,
             "royaltyRecipient": null,
-            "community": "ENS",
+            "community": "ens",
         },
         "attributes":response.data.attributes.reduce((result,trait) => {
           if(trait.trait_type!="Created Date") {
