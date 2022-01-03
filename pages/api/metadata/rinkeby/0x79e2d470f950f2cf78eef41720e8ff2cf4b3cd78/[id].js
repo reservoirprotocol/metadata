@@ -276,8 +276,8 @@ const getMetadata = (id) => {
       "image":"https://lh3.googleusercontent.com/g-NFUWjS4IGgym8PHBxyhg5-G_B4x-IHgPKRkxo00JQFE3LOd-95yU2uhrokITVmV7KHEav6OMfAhfJ4roC5hwP-0tI9dMRd9wQLdw=s130",
       "royalty_amount": "0",
       "royalty_recipient": null,
-      "royaltyBps": "0",
-      "royaltyRecipient": null,
+      "royaltyBps": "500",
+      "royaltyRecipient": "0x8cFDF9E9f7EA8c0871025318407A6f1Fbc5d5a18",
       "community": "loot",
       "contract": "0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78",
       "filters": [
