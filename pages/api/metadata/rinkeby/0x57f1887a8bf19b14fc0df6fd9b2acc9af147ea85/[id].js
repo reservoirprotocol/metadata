@@ -9,6 +9,22 @@ const api = async (req, res) => {
   let url = `https://metadata.ens.domains/rinkeby/${contract}/${id}`
   axios.get(url).then((response) => {
     if(response.data) {
+      let attributes = response.data.attributes.reduce((result,trait) => {
+        if(trait.trait_type!="Created Date") {
+          result.push({
+            "key": trait.trait_type,
+            "value": trait.value,
+            "kind": trait.trait_type=="Length" ? "range" : "date"
+          })
+        }
+        return result
+      },[])
+      let domainType = {
+        "key": "Type",
+        "kind": "string"
+      }
+      domainType["value"] = response.data.name.split(".").length>2 ? 'Subdomain' : 'Domain'
+      attributes.push(domainType)
       let meta = {
         "name": response.data.name,
         "description": response.data.description, 
@@ -24,18 +40,8 @@ const api = async (req, res) => {
             "royaltyRecipient": null,
             "community": "ens",
         },
-        "attributes":response.data.attributes.reduce((result,trait) => {
-          if(trait.trait_type!="Created Date") {
-            result.push({
-                "key": trait.trait_type,
-                "value": trait.value,
-                "kind": "number"
-            })
-          }
-          return result
-        },[])
+        "attributes":attributes
       }
-      
       res.status(200).json(meta);
     } else {
       res.status(200).json({error: "Not found"});
