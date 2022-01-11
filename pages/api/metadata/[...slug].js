@@ -55,8 +55,8 @@ export default function handler(req, res) {
                 "attributes":response.data.traits.map(trait => {
                     return {
                         "category":"Properties",
-                        "key": trait.trait_type.trim(),
-                        "value": isNaN(trait.value) ? trait.value.trim() : trait.value,
+                        "key": trait.trait_type,
+                        "value": trait.value,
                         "kind": isNaN(trait.value) ? "string" : "number"
                     }
                 })
