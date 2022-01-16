@@ -33,7 +33,7 @@ export default function handler(req, res) {
     ? 'https://rinkeby-api.opensea.io/api/v1/asset'
     : 'https://api.opensea.io/api/v1/asset';
     let url = `${base}/${contract}/${tokenId}`
-    axios.get(url).then((response) => {
+    axios.get(url,{ headers: { "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEA_APIKEY }, }).then((response) => {
         if(response.data) {
             //console.log(response.data)
             let meta = {
@@ -46,15 +46,12 @@ export default function handler(req, res) {
                     "name": response.data.collection.name,
                     "description": response.data.collection.description,
                     "image": response.data.collection.image_url,
-                    "royalty_amount": response.data.collection.dev_seller_fee_basis_points,
-                    "royalty_recipient": response.data.collection.payout_address,
                     "royaltyBps": response.data.collection.dev_seller_fee_basis_points,
                     "royaltyRecipient": response.data.collection.payout_address,
                     "community": community,
                 },
                 "attributes":response.data.traits.map(trait => {
                     return {
-                        "category":"Properties",
                         "key": trait.trait_type,
                         "value": trait.value,
                         "kind": isNaN(trait.value) ? "string" : "number"
@@ -67,6 +64,6 @@ export default function handler(req, res) {
         }
     }).catch((error)=>{
         console.log(error)
-        res.status(200).json({error: "Unknown error"});
+        res.status(200).json({error: "Unknown error. Missing NEXT_PUBLIC_OPENSEA_APIKEY?"});
     })
   }
