@@ -35,7 +35,6 @@ export default function handler(req, res) {
     let url = `${base}/${contract}/${tokenId}`
     axios.get(url,{ headers: { "X-API-KEY": process.env.OPENSEA_APIKEY }, }).then((response) => {
         if(response.data) {
-            //console.log(response.data)
             let meta = {
                 "name": response.data.name,
                 "description": response.data.description, 
