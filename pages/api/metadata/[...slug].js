@@ -63,6 +63,6 @@ export default function handler(req, res) {
         }
     }).catch((error)=>{
         console.log(error)
-        res.status(200).json({error: "Unknown error. Missing NEXT_PUBLIC_OPENSEA_APIKEY?"});
+        res.status(200).json({error: "Unknown error. Missing OPENSEA_APIKEY?"});
     })
   }
