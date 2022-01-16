@@ -9,6 +9,10 @@ const api = async (req, res) => {
   let url = `https://metadata.ens.domains/mainnet/${contract}/${id}`
   axios.get(url).then((response) => {
     if(response.data) {
+      if(!response.data.is_normalized) {
+        res.status(200).json({});
+        return
+      }
       let attributes = response.data.attributes.reduce((result,trait) => {
         if(trait.trait_type!="Created Date") {
           result.push({
@@ -19,12 +23,10 @@ const api = async (req, res) => {
         }
         return result
       },[])
-      let domainType = {
-        "key": "Type",
-        "kind": "string"
+      if(response.data.name.split(".").length>2) {
+        res.status(200).json({});
+        return
       }
-      domainType["value"] = response.data.name.split(".").length>2 ? 'Subdomain' : 'Domain'
-      attributes.push(domainType)
       let meta = {
         "name": response.data.name,
         "description": response.data.description, 
