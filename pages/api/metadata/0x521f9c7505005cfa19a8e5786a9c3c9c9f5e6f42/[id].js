@@ -49,7 +49,7 @@ const api = async (req, res) => {
             "id": "forgottenruneswizardscult",
             "name": "Forgotten Runes Wizards Cult",
             "description": "The Forgotten Runes Wizard's Cult is a collaborative legendarium. 10,000 unique Wizard NFTs, fully encoded on-chain.",
-            "image": "https://lh3.googleusercontent.com/rfEd3YcRfS8Hk8YcZjD20Vrqu8XTazvnzklVN9pUcROrwhoLO8RbP0yiBQuemgGPpWMgEDGU7qO164x42GRn60Xv6aeFbdZkttzBjx8=s120",
+            "image": "https://lh3.googleusercontent.com/rfEd3YcRfS8Hk8YcZjD20Vrqu8XTazvnzklVN9pUcROrwhoLO8RbP0yiBQuemgGPpWMgEDGU7qO164x42GRn60Xv6aeFbdZkttzBjx8",
             "royaltyBps": "250",
             "royaltyRecipient": "0xd584fe736e5aad97c437c579e884d15b17a54a51",
             "community": "forgottenrunes",
