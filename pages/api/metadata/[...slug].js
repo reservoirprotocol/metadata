@@ -66,6 +66,7 @@ export default function handler(req, res) {
             res.status(200).json({error: "Not found"});
         }
     }).catch((error)=>{
+        console.log(error)
         res.status(200).json({error: "Unknown error"});
     })
   }
