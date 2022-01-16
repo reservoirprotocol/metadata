@@ -33,7 +33,7 @@ export default function handler(req, res) {
     ? 'https://rinkeby-api.opensea.io/api/v1/asset'
     : 'https://api.opensea.io/api/v1/asset';
     let url = `${base}/${contract}/${tokenId}`
-    axios.get(url,{ headers: { "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEA_APIKEY }, }).then((response) => {
+    axios.get(url,{ headers: { "X-API-KEY": process.env.OPENSEA_APIKEY }, }).then((response) => {
         if(response.data) {
             //console.log(response.data)
             let meta = {
