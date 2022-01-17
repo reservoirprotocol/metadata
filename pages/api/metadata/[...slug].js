@@ -9,7 +9,7 @@ async function getTokens(url) {
             return response.data
         }
     }).catch((error)=>{
-        return {error: "Unknown error. Missing OPENSEA_APIKEY?"}
+        return {error: "Unknown error. Missing OPENSEA_APIKEY? " + JSON.stringify(error)}
     })
 }
 
