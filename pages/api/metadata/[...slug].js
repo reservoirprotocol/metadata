@@ -1,6 +1,19 @@
 const axios = require('axios')
 
-export default function handler(req, res) {
+
+async function getTokens(url) {
+    return axios.get(url,{ headers: { "X-API-KEY": process.env.OPENSEA_APIKEY }, }).then((response) => {
+        if(!response.data) {
+            return {error: "Not found"}
+        } else {
+            return response.data
+        }
+    }).catch((error)=>{
+        return {error: "Unknown error. Missing OPENSEA_APIKEY?"}
+    })
+}
+
+export default async function handler(req, res) {
     const { slug } = req.query
     let contract = slug[0]
     const tokenId = slug[1]
@@ -30,39 +43,56 @@ export default function handler(req, res) {
             break;
     }
     const base = process.env.NEXT_PUBLIC_CHAIN_ID == 4
-    ? 'https://rinkeby-api.opensea.io/api/v1/asset'
-    : 'https://api.opensea.io/api/v1/asset';
-    let url = `${base}/${contract}/${tokenId}`
-    axios.get(url,{ headers: { "X-API-KEY": process.env.OPENSEA_APIKEY }, }).then((response) => {
-        if(response.data) {
-            let meta = {
-                "name": response.data.name,
-                "description": response.data.description, 
-                "image": response.data.image_url,
-                "community": community,
-                "collection": {
-                    "id":response.data.collection.slug,
-                    "name": response.data.collection.name,
-                    "description": response.data.collection.description,
-                    "image": response.data.collection.image_url,
-                    "royaltyBps": response.data.collection.dev_seller_fee_basis_points,
-                    "royaltyRecipient": response.data.collection.payout_address,
-                    "community": community,
-                },
-                "attributes":response.data.traits.map(trait => {
-                    return {
-                        "key": trait.trait_type,
-                        "value": trait.value,
-                        "kind": isNaN(trait.value) ? "string" : "number"
-                    }
-                })
-              }
-            res.status(200).json(meta);
-        } else {
-            res.status(200).json({error: "Not found"});
+    ? 'https://rinkeby-api.opensea.io/api/v1/assets'
+    : 'https://api.opensea.io/api/v1/assets'
+    let url = `${base}?asset_contract_address=${contract}`
+    // Batch
+    if(req.query.token_ids) {
+        for(let token of req.query.token_ids) {
+            url += `&token_ids=${token}`
         }
-    }).catch((error)=>{
-        console.log(error)
-        res.status(200).json({error: "Unknown error. Missing OPENSEA_APIKEY?"});
-    })
-  }
+    } 
+    // Single
+    else {
+        url += `&token_ids=${tokenId}`
+    }
+    let data = await getTokens(url)
+    if(data.error) {
+        res.status(200).json(data);
+    }
+    let tokens = []
+    for(let asset of data.assets) {
+        //console.log(asset)
+        tokens.push({
+            "token_id": asset.token_id,
+            "name": asset.name,
+            "description": asset.description, 
+            "image": asset.image_url,
+            "community": community,
+            "collection": {
+                "id":asset.collection.slug,
+                "name": asset.collection.name,
+                "description": asset.collection.description,
+                "image": asset.collection.image_url,
+                "royaltyBps": asset.collection.dev_seller_fee_basis_points,
+                "royaltyRecipient": asset.collection.payout_address,
+                "community": community,
+            },
+            "attributes":asset.traits.map(trait => {
+                return {
+                    "key": trait.trait_type,
+                    "value": trait.value,
+                    "kind": isNaN(trait.value) ? "string" : "number"
+                }
+            })
+        })
+    }
+    // Batch
+    if(req.query.token_ids) {
+        res.status(200).json(tokens);
+    } 
+    // Single
+    else {
+        res.status(200).json(tokens[0]);
+    }
+}
