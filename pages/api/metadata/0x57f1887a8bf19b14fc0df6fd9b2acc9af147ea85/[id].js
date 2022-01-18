@@ -31,6 +31,7 @@ async function getToken(id) {
   console.log('getting',url)
   return axios.get(url).then((response) => {
      console.log('got',url)
+     console.log(JSON.stringify(response))
       if(response.data) {
           if(!response.data.is_normalized) {
             return {"skip":true}
