@@ -1,3 +1,7 @@
+////////////////////
+// Genesis Mana
+////////////////////
+
 const { BigNumber } = require("@ethersproject/bignumber");
 const { id } = require("@ethersproject/hash");
 import { request, gql } from 'graphql-request'
@@ -43,12 +47,28 @@ function capitalize(string) {
 const random = input => BigNumber.from(id(input));
 
 const api = async (req, res) => {
-  const { id } = req.query
+  if(req.query.token_ids) {
+    let token_ids = Array.isArray(req.query.token_ids) ? req.query.token_ids : [req.query.token_ids];
+    let data = await getBatch(token_ids) 
+    res.status(200).json(data);
+  } else {
+    res.status(200).json({"error": "Missing token_ids param"});
+  }
+};
+
+async function getBatch(token_ids) {
+  let promises = token_ids.map(token_id => getToken(token_id));
+  return Promise.all(promises).then((data) => {
+      return data
+  });
+}
+
+async function getToken(id) {
   // let meta = await getMetadata(id)
   // console.log(meta)
   //https://api.thegraph.com/subgraphs/id/QmUFhiZjMsWK4tznnHFNn5utZpfQdCS9rWbqSFfgzTXFt2
   //request('https://api.thegraph.com/subgraphs/id/QmUFhiZjMsWK4tznnHFNn5utZpfQdCS9rWbqSFfgzTXFt2', gql`{
-  request('https://api.thegraph.com/subgraphs/name/treppers/genesisproject', gql`{
+  return request('https://api.thegraph.com/subgraphs/name/treppers/genesisproject', gql`{
     manas(where: {id: ${id}}) {
       id,
       OGMinterAddress,
@@ -67,6 +87,7 @@ const api = async (req, res) => {
     if(data.manas && data.manas.length>0) {
       let tokenURI = JSON.parse(Buffer.from(data.manas[0].tokenURI.split('data:application/json;base64,')[1], 'base64').toString())
       let meta = {
+        "token_id": id,
         "name": `Genesis Mana #${id}`,
         "description": "This item is Genesis Mana used in Loot (for Adventurers)",
         "image": tokenURI.image,
@@ -74,6 +95,7 @@ const api = async (req, res) => {
         "collection": {
           "id":"genesis-mana",
           "name":"Genesis Mana",
+          "setId":`contract:0xf4b6040a4b1b30f1d1691699a8f3bf957b03e463`,
           "description":"Genesis Mana is a Mint Pass for a Genesis Adventurer (for Loot). Upon collecting a perfect set of 8 Genesis Mana from a single Order, corresponding to all 8 item types (i.e. weapon, head armor, chest armor, etc), players can resurrect a Genesis Adventurer using the 2nd smart contract. Thus returned to defend its original Order, each Genesis Adventurer will entitle the owner to benefits and rewards, including unique access to claiim derivative projects, airdropped ERC20 tokens similar to $AGLD and more.",
           "image":"https://lh3.googleusercontent.com/PBMCkL2BsftmHR3CnOO5DRHdBYpKcOjFZpymCDu-l2fVzffixhHU8S0qWrONuXWDMOdZn0QgsepGFjKwEqJO5aAk4LzlhTdM3Hdc=s130",
           "royalty_amount": "250",
@@ -144,13 +166,13 @@ const api = async (req, res) => {
           attr.kind = "number";
         }
       }
-      res.status(200).json(meta);
+      return meta
     } else {
-      res.status(200).json({error: "Not found"});
+      return {"token_id":id,"skip":false}
     }
-  }).catch((e)=>{
-    console.log(e);
-    res.status(200).json({error: "Unknown error"});
+  }).catch((error)=>{
+    console.log(error)
+    return {"token_id":id,"skip":false}
   })
 };
 

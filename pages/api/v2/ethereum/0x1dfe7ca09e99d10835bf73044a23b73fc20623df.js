@@ -1,3 +1,7 @@
+////////////////////
+// More Loot
+////////////////////
+
 const { BigNumber } = require("@ethersproject/bignumber");
 const { id } = require("@ethersproject/hash");
 import {
@@ -271,11 +275,10 @@ const getMetadata = (id) => {
     "community": "loot",
     "collection": {
       "id":"more-loot",
+      "setId":null,
       "name":"More Loot",
       "description": "More Loot is additional randomized adventurer gear generated and stored on chain. Maximum supply is dynamic, increasing at 1/10th of Ethereum's block rate. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use More Loot in any way you want.",
       "image":"https://www.lootproject.com/mlootheader.svg",
-      "royalty_amount": "500",
-      "royalty_recipient": "0x74E568a889123bAecf6708242Da34d8A99e7fCD0",
       "royaltyBps": "500",
       "royaltyRecipient": "0x74E568a889123bAecf6708242Da34d8A99e7fCD0",
       "community": "loot"

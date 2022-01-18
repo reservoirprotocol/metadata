@@ -1,13 +1,29 @@
 ////////////////////
 // Forgotten Runes Ponies
 ////////////////////
+
 const axios = require('axios')
 
 const api = async (req, res) => {
-  const { id } = req.query
-  let contract = '0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42'
+  if(req.query.token_ids) {
+    let token_ids = Array.isArray(req.query.token_ids) ? req.query.token_ids : [req.query.token_ids];
+    let data = await getBatch(token_ids) 
+    res.status(200).json(data);
+  } else {
+    res.status(200).json({"error": "Missing token_ids param"});
+  }
+};
+
+async function getBatch(token_ids) {
+  let promises = token_ids.map(token_id => getToken(token_id));
+  return Promise.all(promises).then((data) => {
+      return data
+  });
+}
+
+async function getToken(id) {
   let url = `https://portal.forgottenrunes.com/api/shadowfax/data/${id}`
-  axios.get(url).then((response) => {
+  return axios.get(url).then((response) => {
     if(response.data) {
       let attributes = response.data.attributes.reduce((result,trait) => {
             let trait_type = trait.trait_type.charAt(0).toUpperCase() + trait.trait_type.slice(1)
@@ -19,12 +35,14 @@ const api = async (req, res) => {
             return result
       },[])
       let meta = {
+        "token_id": id,
         "name": response.data.name,
         "description": null, 
         "image": response.data.image,
         "community": "forgottenrunes",
         "collection": {
             "id": "forgottenrunesponies",
+            "setId":`contract:0xf55b615b479482440135ebf1b907fd4c37ed9420`,
             "name": "Forgotten Runes Ponies",
             "description": "On a crisp December 24th, 2021 snow fell on the secret tower, a rumble in the distance. Then a whinny. From the Elysian Fields, a herd of 567 ponies appeared in the Forgotten Runiverse. The minting was free (+gas) for anyone who received a merch box or held a Wizard (or Soul) that had Lore (details below).",
             "image": "https://lh3.googleusercontent.com/3TPhA6JRPww4xSe6EwDTS8rj1VyQVLOOFH__C_ckJSd63zBx4WJx3U1deEtCVgaWJBmC5aTdDGneFAa4y7SpM86pJFBHOD4rdNG8",
@@ -34,13 +52,13 @@ const api = async (req, res) => {
         },
         "attributes":attributes
       }
-      res.status(200).json(meta);
+      return meta
     } else {
-      res.status(200).json({error: "Not found"});
+      return {"token_id":id,"skip":false}
     }
   }).catch((error)=>{
     console.log(error)
-    res.status(200).json({error: "Unknown error"});
+    return {"token_id":id,"skip":false}
   })
 };
 

@@ -1,3 +1,9 @@
+////////////////////
+// Genesis Adventurer
+////////////////////
+
+// TODO: should make a single query to the graph instead of multiple
+
 const { BigNumber } = require("@ethersproject/bignumber");
 const { id } = require("@ethersproject/hash");
 import { request, gql } from 'graphql-request'
@@ -18,10 +24,24 @@ function capitalize(string) {
 const random = input => BigNumber.from(id(input));
 
 const api = async (req, res) => {
-  const { id } = req.query
-  // let meta = await getMetadata(id)
-  // console.log(meta)
-  request('https://api.thegraph.com/subgraphs/name/treppers/genesisproject', gql`{
+  if(req.query.token_ids) {
+    let token_ids = Array.isArray(req.query.token_ids) ? req.query.token_ids : [req.query.token_ids];
+    let data = await getBatch(token_ids) 
+    res.status(200).json(data);
+  } else {
+      res.status(200).json({"error": "Missing token_ids param"});
+  }
+};
+
+async function getBatch(token_ids) {
+  let promises = token_ids.map(token_id => getToken(token_id));
+  return Promise.all(promises).then((data) => {
+      return data
+  });
+}
+
+async function getToken(id) {
+  return request('https://api.thegraph.com/subgraphs/name/treppers/genesisproject', gql`{
     adventurers(where: {id: "${id}"}) {
       id,
       chest,
@@ -45,17 +65,19 @@ const api = async (req, res) => {
       tokenURI
     }
   }`).then((data) => {
-    console.log(data.adventurers)
+    console.log(data)
     //res.status(200).json(data);
     if(data.adventurers && data.adventurers.length>0) {
       let tokenURI = JSON.parse(Buffer.from(data.adventurers[0].tokenURI.split('data:application/json;base64,')[1], 'base64').toString())
       let meta = {
+        "token_id":id,
         "name": `Genesis Adventurer #${id}`,
         "description": "This item is a Genesis Adventurer used in Loot (for Adventurers)",
         "image": tokenURI.image,
         "community": "loot",
         "collection": {
           "id":"genesisadventurer",
+          "setId":`contract:0x8db687aceb92c66f013e1d614137238cc698fedb`,
           "name":"Genesis Adventurers",
           "description":"You’ve collected a complete set of Genesis Loot (\"Genesis Mana\"), one for each item type, all of the same Order. You carry this precious Genesis Loot on your back, and climb to the top of the mountain to attempt to resurrect a Genesis Adventurer. You throw the bag in the fire — a Genesis Adventurer emerges from the flames. Thus returned to defend its original Order, each Genesis Adventurer will entitle the owner to benefits and rewards, including unique access to claim derivative projects, airdropped ERC20 tokens similar to $AGLD and more.",
           "image":"https://lh3.googleusercontent.com/46LiRFAvwemkfLlRZIp4WbK21gWUWzFKIhes-FRfjAKdQeXbEue2cICtiQjZ_hT8GXgf28TfxyVYu5098vcpW9-KHsB9cZSuwVci=s130",
@@ -155,17 +177,15 @@ const api = async (req, res) => {
           attr.kind = "number";
         }
       }
-      console.log(meta)
-      // const rand = random(itemType.split(" ")[0].toUpperCase() + data.manas[0].lootTokenId.id);
-      // const greatness = rand.mod(21);
-      res.status(200).json(meta);
+      //console.log(meta)
+      return meta
     } else {
-      res.status(200).json({error: "Not found"});
+      return {"token_id":id,"skip":false}
     }
   }).catch((e)=>{
     console.log(e)
-    res.status(200).json({error: "Unknown error"});
+    return {"token_id":id,"skip":false}
   })
-};
+}
 
 export default api;

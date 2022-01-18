@@ -27,7 +27,7 @@ async function getBatch(ids) {
 
 async function getToken(id) {
   let contract = '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85'
-  let url = `https://metadata.ens.domains/mainnet/${contract}/${id}` //?t=${Date.now()}`
+  let url = `https://metadata.ens.domains/rinkeby/${contract}/${id}` //?t=${Date.now()}`
   console.log('getting',url)
   return axios.get(url).then((response) => {
      console.log('got',url)
