@@ -2,7 +2,7 @@ const axios = require('axios')
 
 
 async function getTokens(url) {
-    return axios.get(url,{ headers: { "X-API-KEY": process.env.OPENSEA_APIKEY }, }).then((response) => {
+    return axios.get(url,{ headers: { "X-API-KEY": String(process.env.OPENSEA_APIKEY).trim() }, }).then((response) => {
         if(!response.data) {
             return {error: "Not found"}
         } else {

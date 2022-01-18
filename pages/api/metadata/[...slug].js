@@ -2,14 +2,14 @@ const axios = require('axios')
 
 
 async function getTokens(url) {
-    return axios.get(url,{ headers: { "X-API-KEY": process.env.OPENSEA_APIKEY }, }).then((response) => {
+    return axios.get(url,{ headers: { "X-API-KEY": String(process.env.OPENSEA_APIKEY).trim() }, }).then((response) => {
         if(!response.data) {
             return {error: "Not found"}
         } else {
             return response.data
         }
     }).catch((error)=>{
-        return {error: "Unknown error. Missing OPENSEA_APIKEY?"}
+        return {error: "Unknown error. Missing OPENSEA_APIKEY? " + String(process.env.OPENSEA_APIKEY) + " " + url + " " + String(error.message) + " " + String(error.stack) + " " + JSON.stringify(error, Object.getOwnPropertyNames(error))}
     })
 }
 
@@ -61,6 +61,7 @@ export default async function handler(req, res) {
     if(data.error) {
         res.status(200).json(data);
     }
+    console.log(`data: ${JSON.stringify(data)}`)
     let tokens = []
     for(let asset of data.assets) {
         //console.log(asset)
