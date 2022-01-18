@@ -33,7 +33,7 @@ async function getToken(id) {
      console.log('got',url)
       if(response.data) {
           if(!response.data.is_normalized) {
-            return {"skip":true}
+            return {"token_id":id,"skip":true}
           }
           let attributes = response.data.attributes.reduce((result,trait) => {
             if(trait.trait_type!="Created Date") {
@@ -46,7 +46,7 @@ async function getToken(id) {
             return result
           },[])
           if(response.data.name.split(".").length>2) {
-            return {"skip":true}
+            return {"token_id":id,"skip":true}
           }
           let meta = {
             "token_id": id,
@@ -68,11 +68,11 @@ async function getToken(id) {
           }
           return meta
       } else {
-        return {"skip":false}
+        return {"token_id":id,"skip":false}
       }
   }).catch((error)=>{
     console.log(error.message)
-    return {"skip":false}
+    return {"token_id":id,"skip":false}
   })
 }
 
