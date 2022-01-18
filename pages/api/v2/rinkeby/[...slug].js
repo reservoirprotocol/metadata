@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     }
     let data = await getTokens(url)
     if(data.error) {
-        res.status(200).json(data);
+        return res.status(200).json(data);
     }
     let tokens = []
     for(let asset of data.assets) {
@@ -88,10 +88,10 @@ export default async function handler(req, res) {
     }
     // Batch
     if(req.query.token_ids) {
-        res.status(200).json(tokens);
+        return res.status(200).json(tokens);
     } 
     // Single
     else {
-        res.status(200).json(tokens[0]);
+        return res.status(200).json(tokens[0]);
     }
 }
