@@ -72,6 +72,7 @@ export default async function handler(req, res) {
             "community": community,
             "collection": {
                 "id":asset.collection.slug,
+                "setId":`contract:${contract}`,
                 "name": asset.collection.name,
                 "description": asset.collection.description,
                 "image": asset.collection.image_url,
