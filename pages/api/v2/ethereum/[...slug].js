@@ -9,7 +9,7 @@ async function getTokens(url) {
             return response.data
         }
     }).catch((error)=>{
-        return {error}
+        return {error,url}
     })
 }
 
