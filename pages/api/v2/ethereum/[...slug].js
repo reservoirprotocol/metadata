@@ -3,9 +3,10 @@ const axios = require('axios')
 export default async function handler(req, res) {
     const { slug } = req.query
     let contract = slug[0]
+    const tokenId = slug[1]
     let community = getCommunity(contract)
     if(req.query.token_ids) {
-        res.status(200).json(await getTokens(req.query.token_ids, contract, community))
+        res.status(200).json(await getTokens(req.query.token_ids, contract, community, false))
     } else if(req.query.all) {
         // Get tokens from Rarible
         let tokens = await getCollectionTokens(contract, community)
@@ -17,6 +18,8 @@ export default async function handler(req, res) {
 
         // Combine
         res.status(200).json({collection,tokens})
+    } if(tokenId) {
+        res.status(200).json(await getTokens(tokenId, contract, community, true))
     } else {
         res.status(200).json({"error": "Unrecognized request"});
     }
@@ -72,7 +75,7 @@ async function getCollectionTokens(contract, community) {
     return items
 }
 
-async function getTokens(token_ids, contract, community) {
+async function getTokens(token_ids, contract, community, isSingle) {
     const base = 'https://api.opensea.io/api/v1/assets'
     let url = `${base}?asset_contract_address=${contract}`
     let ids = Array.isArray(token_ids) ? token_ids : [token_ids];
@@ -109,7 +112,11 @@ async function getTokens(token_ids, contract, community) {
             })
         })
     }
-    return tokens;
+    if(isSingle) {
+        return tokens[0]
+    } else {
+        return tokens;
+    }
 }
 
 async function getOpenSea(url) {
