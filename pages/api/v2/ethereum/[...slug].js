@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
         // Combine
         res.status(200).json({collection,tokens})
-    } if(tokenId) {
+    } else if(tokenId) {
         res.status(200).json(await getTokens(tokenId, contract, community, true))
     } else {
         res.status(200).json({"error": "Unrecognized request"});
