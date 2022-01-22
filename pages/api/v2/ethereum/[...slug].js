@@ -125,7 +125,7 @@ async function getOpenSea(url) {
             return response.data
         }
     }).catch((error)=>{
-        return {error,url}
+        return {error,url,"key":process.env.OPENSEA_APIKEY}
     }) 
 }
 
