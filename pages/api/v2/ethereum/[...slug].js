@@ -2,7 +2,7 @@ const axios = require('axios')
 
 export default async function handler(req, res) {
     const { slug } = req.query
-    let contract = slug[0].toLowerCase()
+    let contract = slug[0]
     let community = getCommunity(contract)
     if(req.query.token_ids) {
         res.status(200).json(await getTokens(req.query.token_ids, contract, community))
