@@ -114,18 +114,17 @@ async function getTokens(token_ids, contract, community) {
 }
 
 async function getOpenSea(url) {
-    return axios.get(url,{ 
-        headers: { 
-            "X-API-KEY": process.env.OPENSEA_APIKEY,
-        }, 
-    }).then((response) => {
+    let headers = { 
+        "X-API-KEY": process.env.OPENSEA_APIKEY,
+    }
+    return axios.get(url,{  headers }).then((response) => {
         if(!response.data) {
             return {error: "Not found"}
         } else {
             return response.data
         }
     }).catch((error)=>{
-        return {error,url,"key":process.env.OPENSEA_APIKEY}
+        return {error,url,headers}
     }) 
 }
 
