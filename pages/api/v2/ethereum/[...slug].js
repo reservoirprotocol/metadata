@@ -114,7 +114,7 @@ async function getTokens(token_ids, contract, community) {
 }
 
 async function getOpenSea(url) {
-    let headers = { "X-API-KEY": process.env.OPENSEA_APIKEY }
+    let headers = { "X-API-KEY": process.env.OPENSEA_APIKEY.trim() }
     return axios.get(url,{  headers }).then((response) => {
         if(!response.data) {
             return {error: "Not found"}
