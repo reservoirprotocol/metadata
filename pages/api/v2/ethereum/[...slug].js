@@ -49,7 +49,6 @@ async function getCollectionTokens(contract, community) {
         if(!data.continuation || data.total<pageSize) { done=true }
         if(data.items && data.items.length>0) {
             for(let item of data.items) {
-                console.log(item.tokenId)
                 let imageKey = Object.keys(item.meta.image.meta)[0]
                 let imageURL = item.meta.image.url[imageKey]
                 items.push({
@@ -82,6 +81,7 @@ async function getTokens(token_ids, contract, community) {
     }
     let data = await getOpenSea(url)
     if(data.error) { return data;  }
+    console.log(data)
     let tokens = []
     for(let asset of data.assets) {
         //console.log(asset)
