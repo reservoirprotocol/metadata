@@ -81,7 +81,6 @@ async function getTokens(token_ids, contract, community) {
     }
     let data = await getOpenSea(url)
     if(data.error) { return data;  }
-    console.log(data)
     let tokens = []
     for(let asset of data.assets) {
         //console.log(asset)
@@ -114,16 +113,20 @@ async function getTokens(token_ids, contract, community) {
 }
 
 async function getOpenSea(url) {
-    let headers = { "X-API-KEY": process.env.OPENSEA_APIKEY.trim() }
-    return axios.get(url,{  headers }).then((response) => {
+    return axios.get(url,{ 
+        headers: { 
+            "X-API-KEY": process.env.OPENSEA_APIKEY.trim(),
+            "User-Agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Mobile/15E148 Safari/604.1" 
+        }, 
+    }).then((response) => {
         if(!response.data) {
             return {error: "Not found"}
         } else {
             return response.data
         }
     }).catch((error)=>{
-        return {error,url,headers}
-    }) 
+        return {error,url}
+    })
 }
 
 async function getRarible(url) {
