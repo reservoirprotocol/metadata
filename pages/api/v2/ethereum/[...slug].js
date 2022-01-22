@@ -6,22 +6,22 @@ export default async function handler(req, res) {
     const tokenId = slug[1]
     let community = getCommunity(contract)
     if(req.query.token_ids) {
-        res.status(200).json(await getTokens(req.query.token_ids, contract, community, false))
+        return res.status(200).json(await getTokens(req.query.token_ids, contract, community, false))
     } else if(req.query.all) {
         // Get tokens from Rarible
         let tokens = await getCollectionTokens(contract, community)
-        if(!Array.isArray(tokens)) { res.status(200).json(tokens) }
+        if(!Array.isArray(tokens)) { return res.status(200).json(tokens) }
 
         // Get collection metadata from Open Sea
         let collection = await getCollection(contract, community)
-        if(collection.error) {  res.status(200).json(collection) }
+        if(collection.error) {  return res.status(200).json(collection) }
 
         // Combine
-        res.status(200).json({collection,tokens})
+        return res.status(200).json({collection,tokens})
     } else if(tokenId) {
-        res.status(200).json(await getTokens(tokenId, contract, community, true))
+        return res.status(200).json(await getTokens(tokenId, contract, community, true))
     } else {
-        res.status(200).json({"error": "Unrecognized request"});
+        return res.status(200).json({"error": "Unrecognized request"});
     }
 }
 
@@ -46,7 +46,7 @@ async function getCollectionTokens(contract, community) {
     let pageSize = 1000, done = false, continuation = '', items = []
     while(!done) {
         let url = `https://ethereum-api.rarible.org/v0.1/nft/items/byCollection?collection=${contract}&size=${pageSize}&continuation=${continuation}`
-        //console.log(url)
+        console.log(url)
         let data = await getRarible(url)
         if(data.error) { return data }
         if(!data.continuation || data.total<pageSize) { done=true }
