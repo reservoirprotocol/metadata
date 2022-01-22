@@ -127,7 +127,7 @@ async function getOpenSea(url) {
         }
     }).catch((error)=>{
         return {error,url}
-    })
+    }) 
 }
 
 async function getRarible(url) {
