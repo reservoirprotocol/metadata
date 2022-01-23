@@ -46,14 +46,15 @@ async function getCollectionTokens(contract, community) {
     let pageSize = 1000, done = false, continuation = '', items = []
     while(!done) {
         let url = `https://ethereum-api.rarible.org/v0.1/nft/items/byCollection?collection=${contract}&size=${pageSize}&continuation=${continuation}`
-        console.log(url)
         let data = await getRarible(url)
         if(data.error) { return data }
         if(!data.continuation || data.total<pageSize) { done=true }
         if(data.items && data.items.length>0) {
             for(let item of data.items) {
-                let imageKey = Object.keys(item.meta.image.meta)[0]
-                let imageURL = item.meta.image.url[imageKey]
+                let imageURL = null
+                try {
+                    imageURL = item.meta.image.url[Object.keys(item.meta.image.meta)[0]]
+                } catch(e) {}
                 items.push({
                     "token_id": item.tokenId,
                     "name": item.meta.name,
