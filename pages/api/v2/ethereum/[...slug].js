@@ -51,30 +51,35 @@ async function getCollectionTokens(contract, community) {
         if(!data.continuation || data.total<pageSize) { done=true }
         if(data.items && data.items.length>0) {
             for(let item of data.items) {
+                console.log(item.meta.attributes)
+                // Parse Image
                 let imageURL = null
                 try {
                     imageURL = item.meta.image.url[Object.keys(item.meta.image.meta)[0]]
                 } catch(e) {}
+                // Parse Attributes
+                let attributes = item.meta.attributes.reduce((result,trait) => {
+                    if(trait.value) {
+                        result.push({
+                            "key": trait.key,
+                            "value": trait.value,
+                            "kind": isNaN(trait.value) ? "string" : "number"
+                        })
+                    }
+                    return result
+                },[])
                 items.push({
                     "token_id": item.tokenId,
                     "name": item.meta.name,
                     "description": "", //token descriptions are waste of space for most collections we deal with...
                     "image": imageURL,
                     "community": community,
-                    "attributes":item.meta.attributes.map(trait => {
-                        if(trait.value) {
-                            return {
-                                "key": trait.key,
-                                "value": trait.value,
-                                "kind": isNaN(trait.value) ? "string" : "number"
-                            }
-                        }
-                    })
+                    attributes
                 })
             }
         }
         continuation = data.continuation
-        //done=true
+        //done=true // for testing
     }
     return items
 }
