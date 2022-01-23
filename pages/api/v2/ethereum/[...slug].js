@@ -62,16 +62,19 @@ async function getCollectionTokens(contract, community) {
                     "image": imageURL,
                     "community": community,
                     "attributes":item.meta.attributes.map(trait => {
-                        return {
-                            "key": trait.key,
-                            "value": trait.value,
-                            "kind": isNaN(trait.value) ? "string" : "number"
+                        if(trait.value) {
+                            return {
+                                "key": trait.key,
+                                "value": trait.value,
+                                "kind": isNaN(trait.value) ? "string" : "number"
+                            }
                         }
                     })
                 })
             }
         }
         continuation = data.continuation
+        //done=true
     }
     return items
 }
