@@ -3,16 +3,16 @@
 ////////////////////
 const axios = require('axios')
 let rank = {
-    "Head":1,
-    "Body":2,
-    "Familiar":3,
-    "Prop":4,
-    "Rune":5,
+    "Head":11,
+    "Body":10,
+    "Familiar":9,
+    "Prop":8,
+    "Rune":7,
     "Background":6,
-    "Affinity":7,
-    "% Traits in Affinity":8,
-    "# Traits in Affinity":9,
-    "# Traits":10
+    "Affinity":5,
+    "% Traits in Affinity":4,
+    "# Traits in Affinity":3,
+    "# Traits":2
 }
  
 const api = async (req, res) => {

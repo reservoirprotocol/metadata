@@ -4,14 +4,14 @@
 
 const axios = require('axios')
 let rank = {
-    "Head":1,
-    "Body":2,
-    "Familiar":3,
-    "Prop":4,
+    "Head":9,
+    "Body":8,
+    "Familiar":7,
+    "Prop":6,
     "Rune":5,
-    "Background":6,
-    "Affinity":7,
-    "Undesirable":8
+    "Background":4,
+    "Affinity":3,
+    "Undesirable":2
 }
  
 const api = async (req, res) => {
