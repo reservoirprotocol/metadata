@@ -1,20 +1,9 @@
 ////////////////////
-// Forgotten Runes Wizards Cult
+// Forgotten Runes Ponies
 ////////////////////
+
 const axios = require('axios')
-let rank = {
-    "Head":11,
-    "Body":10,
-    "Familiar":9,
-    "Prop":8,
-    "Rune":7,
-    "Background":6,
-    "Affinity":5,
-    "% Traits in Affinity":4,
-    "# Traits in Affinity":3,
-    "# Traits":2
-}
- 
+
 const api = async (req, res) => {
   if(req.query.token_ids) {
     let token_ids = Array.isArray(req.query.token_ids) ? req.query.token_ids : [req.query.token_ids];
@@ -33,41 +22,31 @@ async function getBatch(token_ids) {
 }
 
 async function getToken(id) {
-  let url = `https://bafybeifd5ctqsiszoveqqtran7tvyg4xpjxu67nthf5n6ugdazeox5n5fa.ipfs.infura-ipfs.io/${id}`
+  let url = `https://portal.forgottenrunes.com/api/shadowfax/data/${id}`
   return axios.get(url).then((response) => {
     if(response.data) {
       let attributes = response.data.attributes.reduce((result,trait) => {
-          if(trait.trait_type!=="Serial") {
             let trait_type = trait.trait_type.charAt(0).toUpperCase() + trait.trait_type.slice(1)
-            let kind = "string"
-            if(trait_type=="% Traits in Affinity") {
-                trait.value = trait.value.slice(0,-1)
-            }
-            if(trait_type.indexOf("Traits")!==-1) {
-                kind = "number"
-            }
             result.push({
               "key": trait_type,
-              "rank": rank[trait_type],
               "value": trait.value,
-              kind
+              "kind": isNaN(trait.value) ? "string" : "number"
             })
-          }
-        return result
+            return result
       },[])
       let meta = {
         "token_id": id,
         "name": response.data.name,
         "description": null, 
-        "image": `https://bafybeigjl2wwcakyvqd4s6odmmyy3lqxiyffv3wk4su5p5bincksxgga2a.ipfs.infura-ipfs.io/${id}.png`,
+        "image": response.data.image,
         "community": "forgottenrunes",
         "collection": {
-            "id": "forgottenruneswizardscult",
-            "setId":`contract:0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42`,
-            "name": "Forgotten Runes Wizards Cult",
-            "description": "The Forgotten Runes Wizard's Cult is a collaborative legendarium. 10,000 unique Wizard NFTs, fully encoded on-chain.",
-            "image": "https://lh3.googleusercontent.com/rfEd3YcRfS8Hk8YcZjD20Vrqu8XTazvnzklVN9pUcROrwhoLO8RbP0yiBQuemgGPpWMgEDGU7qO164x42GRn60Xv6aeFbdZkttzBjx8",
-            "royaltyBps": "250",
+            "id": "forgottenrunesponies",
+            "setId":`contract:0xf55b615b479482440135ebf1b907fd4c37ed9420`,
+            "name": "Forgotten Runes Ponies",
+            "description": "On a crisp December 24th, 2021 snow fell on the secret tower, a rumble in the distance. Then a whinny. From the Elysian Fields, a herd of 567 ponies appeared in the Forgotten Runiverse. The minting was free (+gas) for anyone who received a merch box or held a Wizard (or Soul) that had Lore (details below).",
+            "image": "https://lh3.googleusercontent.com/3TPhA6JRPww4xSe6EwDTS8rj1VyQVLOOFH__C_ckJSd63zBx4WJx3U1deEtCVgaWJBmC5aTdDGneFAa4y7SpM86pJFBHOD4rdNG8",
+            "royaltyBps": "444",
             "royaltyRecipient": "0xd584fe736e5aad97c437c579e884d15b17a54a51",
             "community": "forgottenrunes",
         },
