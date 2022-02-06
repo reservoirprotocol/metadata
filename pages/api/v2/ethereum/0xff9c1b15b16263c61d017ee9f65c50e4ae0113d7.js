@@ -295,7 +295,7 @@ async function getToken(id) {
     "image": `https://www.loot.exchange/api/image/${id}`,
     "community": "loot",
     "collection": {
-      "id":"loot",
+      "id":"lootproject",
       "setId":`contract:0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7`,
       "name":"Loot (for Adventurers)",
       "description": "Loot is randomized adventurer gear generated and stored on chain. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use Loot in any way you want.",

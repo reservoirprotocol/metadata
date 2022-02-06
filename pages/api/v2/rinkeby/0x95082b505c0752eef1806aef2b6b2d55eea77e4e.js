@@ -53,7 +53,7 @@ async function getToken(id) {
         "community": "forgottenrunes",
         "collection": {
             "id": "forgottensouls",
-            "setId":`contract:0x251b5f14a825c537ff788604ea1b58e49b70726f`,
+            "setId":`contract:0x95082b505c0752eef1806aef2b6b2d55eea77e4e`,
             "name": "Forgotten Souls",
             "description": "The Forgotten Souls are the transmuted Souls of the Forgotten Runes Wizard's Cult. Each is created by burning both a Wizard and a Sacred Flame. No more than 1112 Forgotten Souls will ever exist.",
             "image": "https://lh3.googleusercontent.com/YmqENqCWQEmEez-F6bj3b0rLa6nTyUEuB1OXdmxX5bGIg69LLKIucfkTZeOjkMMv0_eSPsCgr_vUqIPpXldSdZm5ZZSVI508ld32YWI",
