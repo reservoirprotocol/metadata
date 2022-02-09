@@ -5,7 +5,7 @@ const getArtBlocksCollection = async (contract, tokenId) => {
   const url = `https://token.artblocks.io/${tokenId}`;
   const { data } = await axios.get(url);
 
-  const startTokenId = Math.floor(tokenId / 1000000);
+  const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
   return {
@@ -50,21 +50,25 @@ const getOpenSeaCollection = async (contract) => {
 
   return {
     id: contract,
-    slug: data.collection.slug,
-    name: data.collection.name,
+    slug: data.collection
+      ? data.collection.slug
+      : slugify(data.name, { lower: true }),
+    name: data.collection ? data.collection.name : data.name,
     community: communities[contract] || null,
-    metadata: {
-      description: data.collection.description,
-      imageUrl: data.collection.image_url,
-      bannerImageUrl: data.collection.banner_image_url,
-      discordUrl: data.collection.discord_url,
-      externalUrl: data.collection.external_url,
-      twitterUsername: data.collection.twitter_username,
-    },
+    metadata: data.collection
+      ? {
+          description: data.collection.description,
+          imageUrl: data.collection.image_url,
+          bannerImageUrl: data.collection.banner_image_url,
+          discordUrl: data.collection.discord_url,
+          externalUrl: data.collection.external_url,
+          twitterUsername: data.collection.twitter_username,
+        }
+      : null,
     royalties: [
       {
-        recipient: data.collection.payout_address,
-        bps: data.collection.dev_seller_fee_basis_points,
+        recipient: data.payout_address,
+        bps: data.dev_seller_fee_basis_points,
       },
     ],
     contract,
