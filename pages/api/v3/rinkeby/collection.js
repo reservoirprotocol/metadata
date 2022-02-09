@@ -25,10 +25,12 @@ const getOpenSeaCollection = async (contract) => {
       externalUrl: data.collection.external_url,
       twitterUsername: data.collection.twitter_username,
     },
-    royalties: {
-      recipient: data.collection.payout_address,
-      bps: data.collection.dev_seller_fee_basis_points,
-    },
+    royalties: [
+      {
+        recipient: data.collection.payout_address,
+        bps: data.collection.dev_seller_fee_basis_points,
+      },
+    ],
     contract,
     tokenIdRange: null,
     tokenSetId: `contract:${contract}`,

@@ -17,10 +17,12 @@ const getArtBlocksCollection = async (contract, tokenId) => {
       description: data.description,
       externalUrl: data.website,
     },
-    royalties: {
-      recipient: "0x6c093fe8bc59e1e0cae2ec10f0b717d3d182056b",
-      bps: 750,
-    },
+    royalties: [
+      {
+        recipient: "0x6c093fe8bc59e1e0cae2ec10f0b717d3d182056b",
+        bps: 750,
+      },
+    ],
     contract,
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${contract}:${startTokenId}:${endTokenId}`,
@@ -59,10 +61,12 @@ const getOpenSeaCollection = async (contract) => {
       externalUrl: data.collection.external_url,
       twitterUsername: data.collection.twitter_username,
     },
-    royalties: {
-      recipient: data.collection.payout_address,
-      bps: data.collection.dev_seller_fee_basis_points,
-    },
+    royalties: [
+      {
+        recipient: data.collection.payout_address,
+        bps: data.collection.dev_seller_fee_basis_points,
+      },
+    ],
     contract,
     tokenIdRange: null,
     tokenSetId: `contract:${contract}`,
