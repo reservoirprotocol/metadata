@@ -30,10 +30,6 @@ const getArtBlocksCollection = async (contract, tokenId) => {
 };
 
 const getOpenSeaCollection = async (contract) => {
-  // Wait for one second to avoid getting rate-limited
-  // (assuming no concurrent requests will happen)
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
   const url = `https://api.opensea.io/api/v1/asset_contract/${contract}`;
   const { data } = await axios.get(url, {
     headers: {
