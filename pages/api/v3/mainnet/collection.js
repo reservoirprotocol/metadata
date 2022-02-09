@@ -12,6 +12,7 @@ const getArtBlocksCollection = async (contract, tokenId) => {
     id: `${contract}:${startTokenId}:${endTokenId}`,
     slug: slugify(data.collection_name, { lower: true }),
     name: data.collection_name,
+    community: "artblocks",
     metadata: {
       description: data.description,
       externalUrl: data.website,
@@ -34,10 +35,22 @@ const getOpenSeaCollection = async (contract) => {
     },
   });
 
+  const communities = {
+    "0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7": "loot",
+    "0x8db687aceb92c66f013e1d614137238cc698fedb": "loot",
+    "0x1dfe7ca09e99d10835bf73044a23b73fc20623df": "loot",
+    "0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42": "forgottenrunes",
+    "0xf55b615b479482440135ebf1b907fd4c37ed9420": "forgottenrunes",
+    "0x31158181b4b91a423bfdc758fc3bf8735711f9c5": "forgottenrunes",
+    "0x251b5f14a825c537ff788604ea1b58e49b70726f": "forgottenrunes",
+    "0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85": "ens",
+  };
+
   return {
     id: contract,
     slug: data.collection.slug,
     name: data.collection.name,
+    community: communities[contract] || null,
     metadata: {
       description: data.collection.description,
       imageUrl: data.collection.image_url,

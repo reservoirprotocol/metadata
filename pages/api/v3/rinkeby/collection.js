@@ -4,10 +4,19 @@ const getOpenSeaCollection = async (contract) => {
   const url = `https://rinkeby-api.opensea.io/api/v1/asset_contract/${contract}`;
   const { data } = await axios.get(url);
 
+  const communities = {
+    "0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78": "loot",
+    "0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42": "forgottenrunes",
+    "0x95082b505c0752eef1806aef2b6b2d55eea77e4e": "forgottenrunes",
+    "0x5020c6460b0b26a69c6c0bb8d99ed314f3c39d9e": "forgottenrunes",
+    "0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85": "ens",
+  };
+
   return {
     id: contract,
     slug: data.collection.slug,
     name: data.collection.name,
+    community: communities[contract] || null,
     metadata: {
       description: data.collection.description,
       imageUrl: data.collection.image_url,
