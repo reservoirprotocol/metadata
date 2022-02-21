@@ -1,4 +1,5 @@
 import axios from "axios";
+import slugify from "slugify";
 
 const getOpenSeaCollection = async (contract) => {
   const url = `https://rinkeby-api.opensea.io/api/v1/asset_contract/${contract}`;
