@@ -41,9 +41,12 @@ function getToken(id) {
     
     for (var trait of Object.keys(wizards[id])) {
       let kind = "string"
+      let value = ""
 
       if(trait == "% Traits in Affinity") {
-        trait = trait.slice(0,-1)
+        value = wizards[id][trait].slice(0,-1)
+      } else {
+        value = wizards[id][trait]
       }
 
       if(trait.indexOf("Traits") !== -1) {
@@ -54,7 +57,7 @@ function getToken(id) {
         attributes.push({
           "key": trait,
           "rank": rank[trait],
-          "value": wizards[id][trait],
+          "value": value,
           kind
         })
       }
@@ -79,7 +82,7 @@ function getToken(id) {
       "attributes":attributes
     }
     return meta
-    
+
   } catch(error) {
     console.log(error)
     return {"token_id":id,"skip":false}
