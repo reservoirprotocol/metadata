@@ -1,18 +1,21 @@
 ////////////////////
 // Forgotten Runes Wizards Cult
 ////////////////////
-const axios = require('axios')
+import wizards from "../../../../data/wizards.json";
 let rank = {
-    "Head":11,
-    "Body":10,
-    "Familiar":9,
-    "Prop":8,
-    "Rune":7,
-    "Background":6,
-    "Affinity":5,
-    "% Traits in Affinity":4,
-    "# Traits in Affinity":3,
-    "# Traits":2
+    "Head":14,
+    "Body":13,
+    "Familiar":12,
+    "Prop":11,
+    "Rune":10,
+    "Background":9,
+    "Affinity":8,
+    "% Traits in Affinity":7,
+    "# Traits in Affinity":6,
+    "# Traits":5,
+    "Title":4,
+    "Name":3,
+    "Origin":2
 }
  
 const api = async (req, res) => {
@@ -32,55 +35,56 @@ async function getBatch(token_ids) {
   });
 }
 
-async function getToken(id) {
-  let url = `https://bafybeifd5ctqsiszoveqqtran7tvyg4xpjxu67nthf5n6ugdazeox5n5fa.ipfs.infura-ipfs.io/${id}`
-  return axios.get(url).then((response) => {
-    if(response.data) {
-      let attributes = response.data.attributes.reduce((result,trait) => {
-          if(trait.trait_type!=="Serial") {
-            let trait_type = trait.trait_type.charAt(0).toUpperCase() + trait.trait_type.slice(1)
-            let kind = "string"
-            if(trait_type=="% Traits in Affinity") {
-                trait.value = trait.value.slice(0,-1)
-            }
-            if(trait_type.indexOf("Traits")!==-1) {
-                kind = "number"
-            }
-            result.push({
-              "key": trait_type,
-              "rank": rank[trait_type],
-              "value": trait.value,
-              kind
-            })
-          }
-        return result
-      },[])
-      let meta = {
-        "token_id": id,
-        "name": response.data.name,
-        "description": null, 
-        "image": `https://bafybeigjl2wwcakyvqd4s6odmmyy3lqxiyffv3wk4su5p5bincksxgga2a.ipfs.infura-ipfs.io/${id}.png`,
-        "community": "forgottenrunes",
-        "collection": {
-            "id": "forgottenruneswizardscult",
-            "setId":`contract:0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42`,
-            "name": "Forgotten Runes Wizards Cult",
-            "description": "The Forgotten Runes Wizard's Cult is a collaborative legendarium. 10,000 unique Wizard NFTs, fully encoded on-chain.",
-            "image": "https://lh3.googleusercontent.com/rfEd3YcRfS8Hk8YcZjD20Vrqu8XTazvnzklVN9pUcROrwhoLO8RbP0yiBQuemgGPpWMgEDGU7qO164x42GRn60Xv6aeFbdZkttzBjx8",
-            "royaltyBps": "250",
-            "royaltyRecipient": "0xd584fe736e5aad97c437c579e884d15b17a54a51",
-            "community": "forgottenrunes",
-        },
-        "attributes":attributes
+function getToken(id) {
+  try {
+    let attributes = [];
+    
+    for (var trait of Object.keys(wizards[id])) {
+      let kind = "string"
+
+      if(trait == "% Traits in Affinity") {
+        trait = trait.slice(0,-1)
       }
-      return meta
-    } else {
-      return {"token_id":id,"skip":false}
+
+      if(trait.indexOf("Traits") !== -1) {
+        kind = "number"
+      }
+
+      if (trait != "FullName") {
+        attributes.push({
+          "key": trait,
+          "rank": rank[trait],
+          "value": wizards[id][trait],
+          kind
+        })
+      }
     }
-  }).catch((error)=>{
+
+    let meta = {
+      "token_id": id,
+      "name": wizards[id]["FullName"],
+      "description": null, 
+      "image": `https://bafybeigjl2wwcakyvqd4s6odmmyy3lqxiyffv3wk4su5p5bincksxgga2a.ipfs.infura-ipfs.io/${id}.png`,
+      "community": "forgottenrunes",
+      "collection": {
+          "id": "forgottenruneswizardscult",
+          "setId":`contract:0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42`,
+          "name": "Forgotten Runes Wizards Cult",
+          "description": "The Forgotten Runes Wizard's Cult is a collaborative legendarium. 10,000 unique Wizard NFTs, fully encoded on-chain.",
+          "image": "https://lh3.googleusercontent.com/rfEd3YcRfS8Hk8YcZjD20Vrqu8XTazvnzklVN9pUcROrwhoLO8RbP0yiBQuemgGPpWMgEDGU7qO164x42GRn60Xv6aeFbdZkttzBjx8",
+          "royaltyBps": "250",
+          "royaltyRecipient": "0xd584fe736e5aad97c437c579e884d15b17a54a51",
+          "community": "forgottenrunes",
+      },
+      "attributes":attributes
+    }
+    return meta
+    
+  } catch(error) {
     console.log(error)
     return {"token_id":id,"skip":false}
-  })
+  }
+
 };
 
 export default api;
