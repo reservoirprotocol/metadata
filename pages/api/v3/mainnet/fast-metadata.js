@@ -71,6 +71,18 @@ const api = async (req, res) => {
       throw new Error("Missing collection");
     }
 
+    // For now, fast metadata is not supported for ArtBlocks
+    // (or any other non-contract collections)
+    const artblocksAddresses = [
+      // Old ArtBlocks contract
+      "0x059edd72cd353df5106d2b9cc5ab83a52287ac3a",
+      // New ArtBlocks contract
+      "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
+    ];
+    if (artblocksAddresses.includes(collection)) {
+      throw new Error("Unsupported collection");
+    }
+
     const metadata = await getAllTokensMetadata(collection);
     return res.status(200).json({ metadata });
   } catch (error) {
