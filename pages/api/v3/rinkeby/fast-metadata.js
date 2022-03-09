@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import * as loot from "./custom/0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78";
+
 const getAllTokensMetadata = async (collection) => {
   let pageSize = 1000;
   let done = false;
@@ -73,7 +75,19 @@ const api = async (req, res) => {
       throw new Error("Missing collection");
     }
 
-    const metadata = await getAllTokensMetadata(collection);
+    let metadata;
+    switch (collection) {
+      case "0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78": {
+        metadata = loot.getAllTokensMetadata();
+        break;
+      }
+
+      default: {
+        metadata = await getAllTokensMetadata(collection);
+        break;
+      }
+    }
+
     return res.status(200).json({ metadata });
   } catch (error) {
     return res.status(500).json({ error: `Internal error: ${error}` });

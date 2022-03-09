@@ -84,7 +84,19 @@ const api = async (req, res) => {
       throw new Error("Unsupported collection");
     }
 
-    const metadata = await getAllTokensMetadata(collection);
+    let metadata;
+    switch (collection) {
+      case "0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7": {
+        metadata = loot.getAllTokensMetadata();
+        break;
+      }
+
+      default: {
+        metadata = await getAllTokensMetadata(collection);
+        break;
+      }
+    }
+
     return res.status(200).json({ metadata });
   } catch (error) {
     return res.status(500).json({ error: `Internal error: ${error}` });
