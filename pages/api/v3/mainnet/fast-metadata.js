@@ -40,6 +40,7 @@ const getAllTokensMetadata = async (collection) => {
                 key: trait.key,
                 value: trait.value,
                 kind: isNaN(trait.value) ? "string" : "number",
+                rank: 1,
               });
             }
             return result;
