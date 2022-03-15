@@ -241,7 +241,7 @@ const random = (input) => BigNumber.from(id(input));
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.toLowerCase().slice(1);
 
-const getTokenMetadata = (tokenId) => {
+export const getTokenMetadata = (tokenId) => {
   let scores = {
     greatness: 0,
     orders: 0,
