@@ -23,7 +23,7 @@ const getOpenSeaTokensMetadata = async (contract, tokenIds) => {
   for (const asset of data.assets) {
     metadata.push({
       contract: asset.asset_contract.address,
-      token_id: asset.token_id,
+      tokenId: asset.token_id,
       name: asset.name,
       description: asset.description,
       image: asset.image_url,
@@ -106,11 +106,11 @@ const api = async (req, res) => {
     }
 
     let tokenIds = req.query.tokenIds;
-    if (!Array.isArray(tokenIds)) {
-      tokenIds = [tokenIds];
-    }
     if (!tokenIds) {
       throw new Error("Missing tokenIds");
+    }
+    if (!Array.isArray(tokenIds)) {
+      tokenIds = [tokenIds];
     }
     if (method === "opensea" && tokenIds.length > 20) {
       throw new Error("Too many tokens");
