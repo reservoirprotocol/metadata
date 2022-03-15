@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import * as loot from "./custom/0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7";
+
 const getAllTokensMetadata = async (collection) => {
   let pageSize = 1000;
   let done = false;
@@ -7,15 +9,13 @@ const getAllTokensMetadata = async (collection) => {
 
   const items = [];
   while (!done) {
-    let url = "https://ethereum-api.rarible.org/v0.1/nft/items/byCollection";
-    url += `?collection=${collection}`;
-    url += `&size=${pageSize}`;
-    url += `&continuation=${continuation}`;
+    const searchParams = new URLSearchParams();
+    searchParams.append("collection", collection);
+    searchParams.append("size", pageSize);
+    searchParams.append("continuation", continuation);
 
+    const url = `https://ethereum-api.rarible.org/v0.1/nft/items/byCollection?${searchParams.toString()}`;
     const data = await axios.get(url).then((response) => response.data);
-    if (data.error) {
-      throw new Error(data.error);
-    }
 
     if (!data.continuation || data.total < pageSize) {
       done = true;
@@ -71,18 +71,6 @@ const api = async (req, res) => {
     const collection = req.query.collection?.toLowerCase();
     if (!collection) {
       throw new Error("Missing collection");
-    }
-
-    // For now, fast metadata is not supported for ArtBlocks
-    // (or any other non-contract collections)
-    const artblocksAddresses = [
-      // Old ArtBlocks contract
-      "0x059edd72cd353df5106d2b9cc5ab83a52287ac3a",
-      // New ArtBlocks contract
-      "0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270",
-    ];
-    if (artblocksAddresses.includes(collection)) {
-      throw new Error("Unsupported collection");
     }
 
     let metadata;

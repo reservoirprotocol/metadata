@@ -9,16 +9,13 @@ const getAllTokensMetadata = async (collection) => {
 
   const items = [];
   while (!done) {
-    let url =
-      "https://ethereum-api-staging.rarible.org/v0.1/nft/items/byCollection";
-    url += `?collection=${collection}`;
-    url += `&size=${pageSize}`;
-    url += `&continuation=${continuation}`;
+    const searchParams = new URLSearchParams();
+    searchParams.append("collection", collection);
+    searchParams.append("size", pageSize);
+    searchParams.append("continuation", continuation);
 
+    const url = `https://ethereum-api-staging.rarible.org/v0.1/nft/items/byCollection?${searchParams.toString()}`;
     const data = await axios.get(url).then((response) => response.data);
-    if (data.error) {
-      throw new Error(data.error);
-    }
 
     if (!data.continuation || data.total < pageSize) {
       done = true;
