@@ -105,7 +105,10 @@ const api = async (req, res) => {
       throw new Error("Missing contract");
     }
 
-    const tokenIds = req.query.tokenIds;
+    let tokenIds = req.query.tokenIds;
+    if (!Array.isArray(tokenIds)) {
+      tokenIds = [tokenIds];
+    }
     if (!tokenIds) {
       throw new Error("Missing tokenIds");
     }
