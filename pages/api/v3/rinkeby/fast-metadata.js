@@ -52,6 +52,7 @@ const getAllTokensMetadata = async (collection) => {
           // Token descriptions are a waste of space for most collections we deal with
           // so by default we ignore them (this behaviour can be overridden if needed).
           items.push({
+            contract: item.contract,
             tokenId: item.tokenId,
             name: item.meta.name,
             imageUrl: imageUrl,

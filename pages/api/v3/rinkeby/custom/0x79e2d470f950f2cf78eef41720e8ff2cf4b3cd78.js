@@ -253,6 +253,7 @@ const getTokenMetadata = (tokenId) => {
   };
 
   const result = {
+    contract: "0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78",
     tokenId,
     name: `Bag #${tokenId}`,
     imageUrl: `https://www.loot.exchange/api/image/${tokenId}`,
