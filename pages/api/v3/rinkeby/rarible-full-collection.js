@@ -29,6 +29,9 @@ const getAllTokensMetadata = async (collection) => {
           try {
             imageUrl =
               item.meta.image.url[Object.keys(item.meta.image.meta)[0]];
+            if (!imageUrl) {
+              imageUrl = item.meta.image.url["ORIGINAL"];
+            }
           } catch (error) {
             // Skip any errors
           }
