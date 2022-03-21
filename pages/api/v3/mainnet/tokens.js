@@ -26,7 +26,7 @@ const getOpenSeaTokensMetadata = async (contract, tokenIds) => {
       tokenId: asset.token_id,
       name: asset.name,
       description: asset.description,
-      image: asset.image_url,
+      imageUrl: asset.image_url,
       attributes: asset.traits.map((trait) => {
         return {
           key: trait.trait_type,
