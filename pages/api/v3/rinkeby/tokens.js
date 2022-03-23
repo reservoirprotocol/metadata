@@ -13,13 +13,7 @@ const getOpenSeaTokensMetadata = async (contract, tokenIds) => {
   }
 
   const url = `https://rinkeby-api.opensea.io/api/v1/assets?${searchParams.toString()}`;
-  const data = await axios
-    .get(url, {
-      headers: {
-        "X-API-KEY": process.env.OPENSEA_APIKEY.trim(),
-      },
-    })
-    .then((response) => response.data);
+  const data = await axios.get(url).then((response) => response.data);
 
   const metadata = [];
   for (const asset of data.assets) {
