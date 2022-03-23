@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import * as opensea from "../../../src/parsers/opensea";
+import * as rarible from "../../../src/parsers/rarible";
 import * as loot from "./custom/0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78";
 
 // OpenSea
@@ -21,21 +23,7 @@ const getOpenSeaTokensMetadata = async (contract, tokenIds) => {
 
   const metadata = [];
   for (const asset of data.assets) {
-    metadata.push({
-      contract: asset.asset_contract.address,
-      tokenId: asset.token_id,
-      name: asset.name,
-      description: asset.description,
-      imageUrl: asset.image_url,
-      attributes: asset.traits.map((trait) => {
-        return {
-          key: trait.trait_type,
-          value: trait.value,
-          kind: isNaN(trait.value) ? "string" : "number",
-          rank: 1,
-        };
-      }),
-    });
+    metadata.push(opensea.parse(asset));
   }
 
   return metadata;
@@ -58,39 +46,7 @@ const getRaribleTokensMetadata = async (contract, tokenIds) => {
 
   const metadata = [];
   for (const item of data) {
-    // Image
-    let imageUrl = null;
-    try {
-      imageUrl = item.meta.image.url[Object.keys(item.meta.image.meta)[0]];
-      if (!imageUrl) {
-        imageUrl = item.meta.image.url["ORIGINAL"];
-      }
-    } catch (error) {
-      // Skip any errors
-    }
-
-    // Attributes
-    const attributes = item.meta.attributes.reduce((result, trait) => {
-      if (trait.value) {
-        result.push({
-          key: trait.key,
-          value: trait.value,
-          kind: isNaN(trait.value) ? "string" : "number",
-          rank: 1,
-        });
-      }
-      return result;
-    }, []);
-
-    // Token descriptions are a waste of space for most collections we deal with
-    // so by default we ignore them (this behaviour can be overridden if needed).
-    metadata.push({
-      contract: item.contract,
-      tokenId: item.tokenId,
-      name: item.meta.name,
-      imageUrl: imageUrl,
-      attributes,
-    });
+    metadata.push(rarible.parse(item));
   }
 
   return metadata;
