@@ -1,7 +1,7 @@
 import axios from "axios";
 
-import * as opensea from "../../../src/parsers/opensea";
-import * as rarible from "../../../src/parsers/rarible";
+import * as opensea from "../../../../src/parsers/opensea";
+import * as rarible from "../../../../src/parsers/rarible";
 import * as loot from "./custom/0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7";
 
 // OpenSea

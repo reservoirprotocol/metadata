@@ -2,9 +2,9 @@ import {
   customHandleContractTokens,
   customHandleToken,
   hasCustomHandler,
-} from "../../../src/custom";
-import * as opensea from "../../../src/fetchers/opensea";
-import * as rarible from "../../../src/fetchers/rarible";
+} from "../../../../../src/custom";
+import * as opensea from "../../../../../src/fetchers/opensea";
+import * as rarible from "../../../../../src/fetchers/rarible";
 
 const api = async (req, res) => {
   try {
