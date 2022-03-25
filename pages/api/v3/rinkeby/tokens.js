@@ -25,12 +25,6 @@ const getOpenSeaTokensMetadata = async (contract, tokenIds) => {
 
 // Rarible
 const getRaribleTokensMetadata = async (contract, tokenIds) => {
-  const searchParams = new URLSearchParams();
-  searchParams.append("asset_contract_address", contract);
-  for (const tokenId of tokenIds) {
-    searchParams.append("token_ids", tokenId);
-  }
-
   const url = "https://ethereum-api-staging.rarible.org/v0.1/nft/items/byIds";
   const data = await axios
     .post(url, {
