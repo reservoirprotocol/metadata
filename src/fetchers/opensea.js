@@ -5,7 +5,7 @@ import { parse } from "../parsers/opensea";
 export const fetchTokens = async (chainId, tokens) => {
   const searchParams = new URLSearchParams();
   for (const { contract, tokenId } of tokens) {
-    searchParams.append("asset_contract_address", contract);
+    searchParams.append("asset_contract_addresses", contract);
     searchParams.append("token_ids", tokenId);
   }
 
