@@ -1,9 +1,12 @@
 import axios from "axios";
-import slugify from "slugify";
 
 const getOpenSeaCollection = async (contract) => {
   const url = `https://rinkeby-api.opensea.io/api/v1/asset_contract/${contract}`;
   const { data } = await axios.get(url);
+
+  if (!data.collection) {
+    throw new Error("Failed to get collection data");
+  }
 
   const communities = {
     "0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78": "loot",
@@ -15,9 +18,7 @@ const getOpenSeaCollection = async (contract) => {
 
   return {
     id: contract,
-    slug: data.collection
-      ? data.collection.slug
-      : slugify(data.name, { lower: true }),
+    slug: data.collection.slug,
     name: data.collection ? data.collection.name : data.name,
     community: communities[contract] || null,
     metadata: data.collection
