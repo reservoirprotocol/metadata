@@ -37,6 +37,10 @@ const getOpenSeaCollection = async (contract) => {
     },
   });
 
+  if (!data.collection) {
+    throw new Error("Failed to get collection data");
+  }
+
   const communities = {
     "0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7": "loot",
     "0x8db687aceb92c66f013e1d614137238cc698fedb": "loot",
@@ -50,9 +54,7 @@ const getOpenSeaCollection = async (contract) => {
 
   return {
     id: contract,
-    slug: data.collection
-      ? data.collection.slug
-      : slugify(data.name, { lower: true }),
+    slug: data.collection.slug,
     name: data.collection ? data.collection.name : data.name,
     community: communities[contract] || null,
     metadata: data.collection
