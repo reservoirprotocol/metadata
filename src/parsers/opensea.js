@@ -11,7 +11,7 @@ export const parse = (asset) => {
     attributes: asset.traits.map((trait) => ({
       key: trait.trait_type,
       value: trait.value,
-      kind: isNaN(trait.value) ? "string" : "number",
+      kind: typeof(trait.value) == "number" ? "number" : "string",
       rank: 1,
     })),
   };
