@@ -21,7 +21,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
         result.push({
           key: traitType,
           value: trait.value,
-          kind: isNaN(trait.value) ? "string" : "number",
+          kind: "string",
           rank: 1,
         });
         return result;
