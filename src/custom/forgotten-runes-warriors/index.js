@@ -15,6 +15,8 @@ const rank = {
 };
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
+  var rankCopy = JSON.parse(JSON.stringify(rank));
+  
   return axios
     .get(`https://portal.forgottenrunes.com/api/warriors/data/${tokenId}`)
     .then((response) => {
@@ -27,8 +29,19 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
           value: trait.value,
           kind: "string",
         });
+
+        delete rankCopy[traitType];
         return result;
       }, []);
+
+      for (var attribute of Object.keys(rankCopy)) {
+        attributes.push({
+          key: attribute,
+          rank: rankCopy[attribute] ? rankCopy[attribute] : null,
+          value: 'None',
+          kind: "string",
+        })
+      }
 
       return {
         contract,
