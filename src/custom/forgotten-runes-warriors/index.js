@@ -34,11 +34,12 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
         return result;
       }, []);
 
+      // Add 'None' value for missing attributes
       for (var attribute of Object.keys(rankCopy)) {
         attributes.push({
           key: attribute,
           rank: rankCopy[attribute] ? rankCopy[attribute] : null,
-          value: 'None',
+          value: "None",
           kind: "string",
         })
       }
