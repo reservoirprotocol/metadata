@@ -3,6 +3,7 @@ import {
   customHandleToken,
   hasCustomHandler,
 } from "../../../../../src/custom";
+import { extendMetadata } from "../../../../../src/extend";
 import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
 
@@ -34,12 +35,16 @@ const api = async (req, res) => {
       } else {
         const result =
           method === "opensea"
-            ? await opensea.fetchContractTokens(chainId, contract, continuation)
-            : await rarible.fetchContractTokens(
-                chainId,
-                contract,
-                continuation
-              );
+            ? await opensea
+                .fetchContractTokens(chainId, contract, continuation)
+                .then((l) =>
+                  l.map((metadata) => extendMetadata(chainId, metadata))
+                )
+            : await rarible
+                .fetchContractTokens(chainId, contract, continuation)
+                .then((l) =>
+                  l.map((metadata) => extendMetadata(chainId, metadata))
+                );
         return res.status(200).json(result);
       }
     }
@@ -80,8 +85,14 @@ const api = async (req, res) => {
 
     const metadata = [
       ...(method === "opensea"
-        ? await opensea.fetchTokens(chainId, tokens)
-        : await rarible.fetchTokens(chainId, tokens)),
+        ? await opensea
+            .fetchTokens(chainId, tokens)
+            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+        : await rarible
+            .fetchTokens(chainId, tokens)
+            .then((l) =>
+              l.map((metadata) => extendMetadata(chainId, metadata))
+            )),
       ...(await Promise.all(
         customTokens.map((token) => customHandleToken(chainId, token))
       )),
