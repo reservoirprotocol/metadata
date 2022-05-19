@@ -33,7 +33,7 @@ const getOpenSeaCollection = async (contract) => {
   const url = `https://api.opensea.io/api/v1/asset_contract/${contract}`;
   const { data } = await axios.get(url, {
     headers: {
-      "x-api-key": process.env.OPENSEA_API_KEY.trim(),
+      "x-api-key": process.env.OPENSEA_COLLECTION_API_KEY.trim(),
     },
   });
 
