@@ -1,3 +1,4 @@
+import _ from "lodash";
 import axios from "axios";
 import slugify from "slugify";
 
@@ -38,7 +39,7 @@ const getOpenSeaCollection = async (contract) => {
   });
 
   if (!data.collection) {
-    throw new Error("Failed to get collection data");
+    return {};
   }
 
   const communities = {
@@ -103,6 +104,12 @@ const api = async (req, res) => {
     } else {
       // Default to OpenSea
       const collection = await getOpenSeaCollection(contract);
+
+      // If collection not found
+      if (_.isEmpty(collection)) {
+        return res.status(404).json({ error: `No collection metadata found for ${contract} - ${tokenId}` });
+      }
+
       return res.status(200).json({ collection });
     }
   } catch (error) {
