@@ -1,6 +1,7 @@
 import * as forgottenPonies from "./forgotten-ponies";
 import * as forgottenRunes from "./forgotten-runes";
 import * as forgottenSouls from "./forgotten-souls";
+import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 import * as loot from "./loot";
 
 export const hasCustomHandler = (chainId, contract) =>
@@ -40,3 +41,6 @@ custom["1,0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42"] = forgottenRunes;
 
 // Forgotten Souls
 custom["1,0x251b5f14a825c537ff788604ea1b58e49b70726f"] = forgottenSouls;
+
+// Forgotten Runes Warriors
+custom["1,0x9690b63eb85467be5267a3603f770589ab12dc95"] = forgottenRunesWarriors;

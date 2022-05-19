@@ -1,31 +1,48 @@
 import axios from "axios";
 
 const rank = {
-  Head: 9,
-  Body: 8,
-  Familiar: 7,
-  Prop: 6,
-  Rune: 5,
-  Background: 4,
-  Affinity: 3,
-  Undesirable: 2,
+  Head: 11,
+  Body: 10,
+  Companion: 9,
+  Weapon: 8,
+  Shield: 7,
+  Rune: 6,
+  Background: 5,
+  Affinity: 4,
+  "% Traits in Affinity": 3,
+  "# Traits in Affinity": 2,
+  "# Traits": 1,
 };
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
+  var rankCopy = JSON.parse(JSON.stringify(rank));
+  
   return axios
-    .get(`https://portal.forgottenrunes.com/api/shadowfax/data/${tokenId}`)
+    .get(`https://portal.forgottenrunes.com/api/warriors/data/${tokenId}`)
     .then((response) => {
       const attributes = response.data.attributes.reduce((result, trait) => {
         const traitType =
           trait.trait_type.charAt(0).toUpperCase() + trait.trait_type.slice(1);
         result.push({
           key: traitType,
+          rank: rank[traitType] ? rank[traitType] : null,
           value: trait.value,
           kind: "string",
-          rank: 1,
         });
+
+        delete rankCopy[traitType];
         return result;
       }, []);
+
+      // Add 'None' value for missing attributes
+      for (var attribute of Object.keys(rankCopy)) {
+        attributes.push({
+          key: attribute,
+          rank: rankCopy[attribute] ? rankCopy[attribute] : null,
+          value: "None",
+          kind: "string",
+        })
+      }
 
       return {
         contract,
@@ -39,7 +56,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
 
 export const fetchContractTokens = (_chainId, contract, continuation) => {
   const pageSize = 1000;
-  const tokenIdRange = [0, 9999];
+  const tokenIdRange = [0, 15999];
 
   const minTokenId = continuation
     ? Math.max(continuation, tokenIdRange[0])

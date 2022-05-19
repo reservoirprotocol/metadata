@@ -33,17 +33,12 @@ export const fetchToken = (_chainId, { contract, tokenId }) => {
       value = wizards[tokenId][trait];
     }
 
-    let kind = "string";
-    if (trait.indexOf("Traits") !== -1) {
-      kind = "number";
-    }
-
     if (trait != "FullName") {
       result.attributes.push({
         key: trait,
         rank: rank[trait],
         value: value,
-        kind,
+        kind: "string",
       });
     }
   }

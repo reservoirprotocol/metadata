@@ -22,7 +22,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
           key: traitType,
           rank: rank[traitType] ? rank[traitType] : null,
           value: trait.value,
-          kind: isNaN(trait.value) ? "string" : "number",
+          kind: "string",
         });
         return result;
       }, []);
