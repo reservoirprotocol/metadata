@@ -4,7 +4,7 @@ export const extend = (_chainId, metadata) => {
 
   // M3 apes have no other attributes besides `Name`
   if (metadata.attributes.length === 1) {
-    serumType = "M3";
+    serumType = "Mega";
     name = metadata.attributes[0].value;
   } else {
     serumType = metadata.attributes[0].value.slice(0, 2);
@@ -20,7 +20,7 @@ export const extend = (_chainId, metadata) => {
         key: "Serum Type",
         value: serumType,
         kind: "string",
-        rank: 1,
+        rank: 2,
       },
     ],
   };
