@@ -57,6 +57,10 @@ const api = async (req, res) => {
     if (!Array.isArray(tokens)) {
       tokens = [tokens];
     }
+    if (!tokens.length) {
+      throw new Error("Missing token(s)");
+    }
+
     tokens = tokens.map((token) => {
       const [contract, tokenId] = token.split(":");
       return {
@@ -79,24 +83,34 @@ const api = async (req, res) => {
         customTokens.push(token);
         return false;
       }
-
       return true;
     });
 
-    const metadata = [
-      ...(method === "opensea"
-        ? await opensea
-            .fetchTokens(chainId, tokens)
-            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
-        : await rarible
-            .fetchTokens(chainId, tokens)
-            .then((l) =>
-              l.map((metadata) => extendMetadata(chainId, metadata))
-            )),
-      ...(await Promise.all(
-        customTokens.map((token) => customHandleToken(chainId, token))
-      )),
-    ];
+    let metadata = [];
+    if (tokens.length) {
+      metadata = [
+        ...metadata,
+        ...(method === "opensea"
+          ? await opensea
+              .fetchTokens(chainId, tokens)
+              .then((l) =>
+                l.map((metadata) => extendMetadata(chainId, metadata))
+              )
+          : await rarible
+              .fetchTokens(chainId, tokens)
+              .then((l) =>
+                l.map((metadata) => extendMetadata(chainId, metadata))
+              )),
+      ];
+    }
+    if (customTokens.length) {
+      metadata = [
+        ...metadata,
+        ...(await Promise.all(
+          customTokens.map((token) => customHandleToken(chainId, token))
+        )),
+      ];
+    }
 
     return res.status(200).json({ metadata });
   } catch (error) {
