@@ -47,5 +47,5 @@ custom["1,0x251b5f14a825c537ff788604ea1b58e49b70726f"] = forgottenSouls;
 custom["1,0x9690b63eb85467be5267a3603f770589ab12dc95"] = forgottenRunesWarriors;
 
 // Admit One
-custom["1,0xd2a077ec359d94e0a0b7e84435eacb40a67a817c"] = admitOne;
+// custom["1,0xd2a077ec359d94e0a0b7e84435eacb40a67a817c"] = admitOne;
 custom["4,0xa7d49d78ab0295ad5a857dc4d0ab16445663ab85"] = admitOne;
