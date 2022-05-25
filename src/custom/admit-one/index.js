@@ -2,7 +2,11 @@ import axios from "axios";
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
   return axios
-    .get(`https://testnet.metadata.g.money/metadata/${tokenId}`)
+    .get(
+      _chainId === 1
+        ? `https://assets.g.money/metadata/${tokenId}`
+        : `https://testnet.metadata.g.money/metadata/${tokenId}`
+    )
     .then((response) => {
       return {
         contract,
