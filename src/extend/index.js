@@ -1,5 +1,19 @@
 import * as adidasOriginals from "./adidas-originals";
+import * as admitOne from "./admit-one";
 import * as mutantApeYachtClub from "./mutant-ape-yacht-club";
+
+export const extendCollectionMetadata = (chainId, metadata) => {
+  if (metadata) {
+    if (Boolean(extendCollection[`${chainId},${metadata.id}`])) {
+      return extendCollection[`${chainId},${metadata.id}`].extendCollection(
+        chainId,
+        metadata
+      );
+    } else {
+      return metadata;
+    }
+  }
+};
 
 export const extendMetadata = (chainId, metadata) => {
   if (metadata) {
@@ -13,6 +27,12 @@ export const extendMetadata = (chainId, metadata) => {
     }
   }
 };
+
+const extendCollection = {};
+
+// Admit One
+extendCollection["1,0xd2a077ec359d94e0a0b7e84435eacb40a67a817c"] = admitOne;
+extendCollection["4,0xa7d49d78ab0295ad5a857dc4d0ab16445663ab85"] = admitOne;
 
 const extend = {};
 

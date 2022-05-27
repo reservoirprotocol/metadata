@@ -2,6 +2,8 @@ import _ from "lodash";
 import axios from "axios";
 import slugify from "slugify";
 
+import { extendCollectionMetadata } from "../../../../src/extend";
+
 const getArtBlocksCollection = async (contract, tokenId) => {
   const url = `https://token.artblocks.io/${tokenId}`;
   const { data } = await axios.get(url);
@@ -107,10 +109,14 @@ const api = async (req, res) => {
 
       // If collection not found
       if (_.isEmpty(collection)) {
-        return res.status(404).json({ error: `No collection metadata found for ${contract} - ${tokenId}` });
+        return res.status(404).json({
+          error: `No collection metadata found for ${contract} - ${tokenId}`,
+        });
       }
 
-      return res.status(200).json({ collection });
+      return res
+        .status(200)
+        .json({ collection: extendCollectionMetadata(1, collection) });
     }
   } catch (error) {
     return res.status(500).json({ error: `Internal error: ${error}` });

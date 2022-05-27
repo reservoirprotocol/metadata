@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { extendCollectionMetadata } from "../../../../src/extend";
+
 const getOpenSeaCollection = async (contract) => {
   const url = `https://rinkeby-api.opensea.io/api/v1/asset_contract/${contract}`;
   const { data } = await axios.get(url);
@@ -52,7 +54,9 @@ const api = async (req, res) => {
     }
 
     const collection = await getOpenSeaCollection(contract);
-    return res.status(200).json({ collection });
+    return res
+      .status(200)
+      .json({ collection: extendCollectionMetadata(4, collection) });
   } catch (error) {
     return res.status(500).json({ error: `Internal error: ${error}` });
   }
