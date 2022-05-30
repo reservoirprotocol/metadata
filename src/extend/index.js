@@ -3,7 +3,7 @@ import * as admitOne from "./admit-one";
 import * as mutantApeYachtClub from "./mutant-ape-yacht-club";
 import * as nouns from "./nouns";
 
-export const extendCollectionMetadata = (chainId, metadata) => {
+export const extendCollectionMetadata = async (chainId, metadata) => {
   if (metadata) {
     if (Boolean(extendCollection[`${chainId},${metadata.id}`])) {
       return extendCollection[`${chainId},${metadata.id}`].extendCollection(
@@ -16,7 +16,7 @@ export const extendCollectionMetadata = (chainId, metadata) => {
   }
 };
 
-export const extendMetadata = (chainId, metadata) => {
+export const extendMetadata = async (chainId, metadata) => {
   if (metadata) {
     if (Boolean(extend[`${chainId},${metadata.contract}`])) {
       return extend[`${chainId},${metadata.contract}`].extend(
@@ -44,4 +44,4 @@ extend["1,0x28472a58a490c5e09a238847f66a68a47cc76f0f"] = adidasOriginals;
 extend["1,0x60e4d786628fea6478f785a6d7e704777c86a7c6"] = mutantApeYachtClub;
 
 // Nouns
-//extend["1,0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03"] = nouns;
+extend["1,0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03"] = nouns;

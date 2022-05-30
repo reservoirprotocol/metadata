@@ -1,4 +1,4 @@
-export const extendCollection = (_chainId, metadata) => {
+export const extendCollection = async (_chainId, metadata) => {
   return {
     ...metadata,
     metadata: {

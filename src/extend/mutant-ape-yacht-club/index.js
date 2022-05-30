@@ -1,4 +1,4 @@
-export const extend = (_chainId, metadata) => {
+export const extend = async (_chainId, metadata) => {
   let serumType;
   let name;
 

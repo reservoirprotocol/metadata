@@ -35,16 +35,20 @@ const api = async (req, res) => {
       } else {
         const result =
           method === "opensea"
-            ? await opensea
-                .fetchContractTokens(chainId, contract, continuation)
-                .then((l) =>
-                  l.map((metadata) => extendMetadata(chainId, metadata))
-                )
-            : await rarible
-                .fetchContractTokens(chainId, contract, continuation)
-                .then((l) =>
-                  l.map((metadata) => extendMetadata(chainId, metadata))
-                );
+            ? await Promise.all(
+                await opensea
+                  .fetchContractTokens(chainId, contract, continuation)
+                  .then((l) =>
+                    l.map((metadata) => extendMetadata(chainId, metadata))
+                  )
+              )
+            : await Promise.all(
+                await rarible
+                  .fetchContractTokens(chainId, contract, continuation)
+                  .then((l) =>
+                    l.map((metadata) => extendMetadata(chainId, metadata))
+                  )
+              );
         return res.status(200).json(result);
       }
     }
@@ -91,16 +95,20 @@ const api = async (req, res) => {
       metadata = [
         ...metadata,
         ...(method === "opensea"
-          ? await opensea
-              .fetchTokens(chainId, tokens)
-              .then((l) =>
-                l.map((metadata) => extendMetadata(chainId, metadata))
-              )
-          : await rarible
-              .fetchTokens(chainId, tokens)
-              .then((l) =>
-                l.map((metadata) => extendMetadata(chainId, metadata))
-              )),
+          ? await Promise.all(
+              await opensea
+                .fetchTokens(chainId, tokens)
+                .then((l) =>
+                  l.map((metadata) => extendMetadata(chainId, metadata))
+                )
+            )
+          : await Promise.all(
+              await rarible
+                .fetchTokens(chainId, tokens)
+                .then((l) =>
+                  l.map((metadata) => extendMetadata(chainId, metadata))
+                )
+            )),
       ];
     }
     if (customTokens.length) {
