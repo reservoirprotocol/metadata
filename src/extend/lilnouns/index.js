@@ -33,6 +33,8 @@ export const extend = async (_chainId, metadata) => {
 
   return {
     ...metadata,
+    name: metadata.name.replaceAll('Noun','Lil Noun'),
+    description: metadata.description.replaceAll('Noun','Lil Noun'),
     attributes: traits,
   };
 };
