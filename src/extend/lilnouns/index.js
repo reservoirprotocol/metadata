@@ -1,4 +1,5 @@
 import { request, gql } from "graphql-request";
+import { utils } from 'ethers'
 
 import nouns from "./lilnouns.json";
 
@@ -9,7 +10,10 @@ export const extend = async (_chainId, metadata) => {
   const data = await request(
     "https://api.thegraph.com/subgraphs/name/lilnounsdao/lil-nouns-subgraph",
     gql`{
-      nouns(where: {id: "${metadata.tokenId}"}) {
+      auctions(where:{id: "${metadata.tokenId}"}) {
+        amount
+      }
+      nouns(where:{id: "${metadata.tokenId}"}) {
         seed {
           background
           body
@@ -22,12 +26,20 @@ export const extend = async (_chainId, metadata) => {
   );
 
   const traits = [];
+  if(data.auctions[0]) {
+    traits.push({
+      key: 'Auction Price',
+      value: utils.formatEther(data.auctions[0].amount),
+      kind: "string",
+      rank: 1,
+    });
+  }
   for (let i in traitMap) {
     traits.push({
       key: capitalizeFirstLetter(traitMap[i]),
       value: nouns[i][data.nouns[0].seed[traitMap[i]]],
       kind: "string",
-      rank: 5 - i,
+      rank: 6 - i,
     });
   }
 
