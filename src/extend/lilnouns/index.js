@@ -12,6 +12,7 @@ export const extend = async (_chainId, metadata) => {
     gql`{
       auctions(where:{id: "${metadata.tokenId}"}) {
         amount
+        startTime
       }
       nouns(where:{id: "${metadata.tokenId}"}) {
         seed {
@@ -33,13 +34,24 @@ export const extend = async (_chainId, metadata) => {
       kind: "string",
       rank: 1,
     });
+    let date = new Date(data.auctions[0].startTime*1000);
+    let year = date.getUTCFullYear();
+    let month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+    let day = date.getUTCDate().toString().padStart(2, '0');
+    let dateString = year + "-" + month + "-" + day;
+    traits.push({
+      key: 'Birthdate',
+      value: dateString,
+      kind: "string",
+      rank: 2,
+    });
   }
   for (let i in traitMap) {
     traits.push({
       key: capitalizeFirstLetter(traitMap[i]),
       value: nouns[i][data.nouns[0].seed[traitMap[i]]],
       kind: "string",
-      rank: 6 - i,
+      rank: 7 - i,
     });
   }
 
