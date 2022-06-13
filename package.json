@@ -4,20 +4,23 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next build && next start",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider next build",
+    "start": "yarn build && next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@ethersproject/bignumber": "^5.5.0",
     "@ethersproject/hash": "^5.5.0",
     "axios": "^0.24.0",
+    "ethers": "^5.6.8",
     "graphql": "^16.0.1",
     "graphql-request": "^3.6.1",
+    "lodash": "^4.17.21",
     "loot-rarity": "^5.0.1",
     "next": "12.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "slugify": "^1.6.5",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
