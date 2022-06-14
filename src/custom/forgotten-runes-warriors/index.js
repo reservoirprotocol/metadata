@@ -38,22 +38,24 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
         return result;
       }, []);
 
-      // Add 'None' value for missing attributes
-      for (var attribute of Object.keys(rankCopy)) {
-        attributes.push({
-          key: attribute,
-          rank: rankCopy[attribute] ? rankCopy[attribute] : null,
-          value: "None",
-          kind: "string",
-        })
-      }
-
       // Add Name attributes
       for (var attribute of ['Name', 'Title', 'Affiliation']) {
         attributes.push({
           key: attribute,
           rank: rankCopy[attribute] ? rankCopy[attribute] : null,
           value: warriors[tokenId][attribute],
+          kind: "string",
+        })
+
+        delete rankCopy[attribute];
+      }
+
+      // Add 'None' value for missing attributes
+      for (var attribute of Object.keys(rankCopy)) {
+        attributes.push({
+          key: attribute,
+          rank: rankCopy[attribute] ? rankCopy[attribute] : null,
+          value: "None",
           kind: "string",
         })
       }
