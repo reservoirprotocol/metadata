@@ -1,17 +1,21 @@
 import axios from "axios";
+import warriors from "./warriors.json";
 
 const rank = {
-  Head: 11,
-  Body: 10,
-  Companion: 9,
-  Weapon: 8,
-  Shield: 7,
-  Rune: 6,
-  Background: 5,
-  Affinity: 4,
-  "% Traits in Affinity": 3,
-  "# Traits in Affinity": 2,
-  "# Traits": 1,
+  Head: 14,
+  Body: 13,
+  Companion: 12,
+  Weapon: 11,
+  Shield: 10,
+  Rune: 9,
+  Background: 8,
+  Affinity: 7,
+  "% Traits in Affinity": 6,
+  "# Traits in Affinity": 5,
+  "# Traits": 4,
+  Name: 3,
+  Title: 2,
+  Affiliation: 1
 };
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
@@ -40,6 +44,16 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
           key: attribute,
           rank: rankCopy[attribute] ? rankCopy[attribute] : null,
           value: "None",
+          kind: "string",
+        })
+      }
+
+      // Add Name attributes
+      for (var attribute of ['Name', 'Title', 'Affiliation']) {
+        attributes.push({
+          key: attribute,
+          rank: rankCopy[attribute] ? rankCopy[attribute] : null,
+          value: warriors[tokenId][attribute],
           kind: "string",
         })
       }
