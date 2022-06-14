@@ -17,6 +17,7 @@ const getArtBlocksCollection = async (contract, tokenId) => {
     name: data.collection_name,
     community: "artblocks",
     metadata: {
+      imageUrl: `https://media.artblocks.io/${startTokenId}.png`,
       description: data.description,
       externalUrl: data.website,
     },
