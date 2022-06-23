@@ -6,18 +6,28 @@ import {
 import { extendMetadata } from "../../../../../src/extend";
 import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
+import * as simplehash from "../../../../../src/fetchers/simplehash";
 
 const api = async (req, res) => {
   try {
     const network = req.query.network;
-    if (!["mainnet", "rinkeby"].includes(network)) {
+    if (!["mainnet", "rinkeby", "optimism"].includes(network)) {
       throw new Error("Unknown network");
     }
 
-    const chainId = network === "mainnet" ? 1 : 4;
+    let chainId = 1;
+
+    switch (network) {
+      case "optimism":
+        chainId = 10;
+        break;
+      case "rinkeby":
+        chainId = 4;
+        break;
+    }
 
     const method = req.query.method;
-    if (!["opensea", "rarible"].includes(method)) {
+    if (!["opensea", "rarible", "simplehash"].includes(method)) {
       throw new Error("Unknown method");
     }
 
@@ -33,22 +43,42 @@ const api = async (req, res) => {
         );
         return res.status(200).json(result);
       } else {
-        const result =
-          method === "opensea"
-            ? await Promise.all(
-                await opensea
-                  .fetchContractTokens(chainId, contract, continuation)
-                  .then((l) =>
-                    l.map((metadata) => extendMetadata(chainId, metadata))
-                  )
+        let result = null;
+
+        console.log("No custom handler for contract", contract);
+        console.log("Fetching from", method);
+
+        if (method === "opensea") {
+          console.log("Using opensea");
+          result = await Promise.all(
+            await opensea
+              .fetchContractTokens(chainId, contract, continuation)
+              .then((l) =>
+                l.map((metadata) => extendMetadata(chainId, metadata))
               )
-            : await Promise.all(
-                await rarible
-                  .fetchContractTokens(chainId, contract, continuation)
-                  .then((l) =>
-                    l.map((metadata) => extendMetadata(chainId, metadata))
-                  )
-              );
+          );
+        } else if (method === "rarible") {
+          console.log("Using rarible");
+          result = await Promise.all(
+            await rarible
+              .fetchContractTokens(chainId, contract, continuation)
+              .then((l) => {
+                l.map((metadata) => extendMetadata(chainId, metadata));
+              })
+          );
+        } else if (method === "simplehash") {
+          console.log("Using simplehash");
+          result = await Promise.all(
+            await simplehash
+              .fetchContractTokens(chainId, contract, continuation)
+              .then((l) => {
+                l.metadata.map((metadata) => extendMetadata(chainId, metadata));
+                return l.metadata;
+              })
+          );
+          console.log("Done fetching", result);
+        }
+        console.log("Done");
         return res.status(200).json(result);
       }
     }
@@ -92,25 +122,28 @@ const api = async (req, res) => {
 
     let metadata = [];
     if (tokens.length) {
-      metadata = [
-        ...metadata,
-        ...(method === "opensea"
-          ? await Promise.all(
-              await opensea
-                .fetchTokens(chainId, tokens)
-                .then((l) =>
-                  l.map((metadata) => extendMetadata(chainId, metadata))
-                )
-            )
-          : await Promise.all(
-              await rarible
-                .fetchTokens(chainId, tokens)
-                .then((l) =>
-                  l.map((metadata) => extendMetadata(chainId, metadata))
-                )
-            )),
-      ];
+      let newMetadata = null;
+
+      if (method === "opensea") {
+        newMetadata = await opensea
+          .fetchTokens(chainId, tokens)
+          .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)));
+      } else if (method === "rarible") {
+        newMetadata = await rarible
+          .fetchTokens(chainId, tokens)
+          .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)));
+      } else if (method === "simplehash") {
+        newMetadata = await simplehash
+          .fetchTokens(chainId, tokens)
+          .then((l) => {
+            l.map((metadata) => extendMetadata(chainId, metadata));
+            return l;
+          });
+      }
+
+      metadata = [...metadata, ...newMetadata];
     }
+
     if (customTokens.length) {
       metadata = [
         ...metadata,
@@ -122,6 +155,7 @@ const api = async (req, res) => {
 
     return res.status(200).json({ metadata });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: error.message });
   }
 };
