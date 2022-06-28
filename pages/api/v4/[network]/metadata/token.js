@@ -4,19 +4,20 @@ import {
   hasCustomHandler,
 } from "../../../../../src/custom";
 import { extendMetadata } from "../../../../../src/extend";
+
 import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
 
 const api = async (req, res) => {
   try {
+    // Validate network and detect chain id
     const network = req.query.network;
     if (!["mainnet", "rinkeby", "optimism"].includes(network)) {
       throw new Error("Unknown network");
     }
 
     let chainId = 1;
-
     switch (network) {
       case "optimism":
         chainId = 10;
@@ -26,12 +27,20 @@ const api = async (req, res) => {
         break;
     }
 
+    // Validate indexing method and set up provider
     const method = req.query.method;
     if (!["opensea", "rarible", "simplehash"].includes(method)) {
       throw new Error("Unknown method");
     }
 
-    // Paginate through all tokens within the given contract.
+    let provider = opensea;
+    if (method === "rarible") {
+      provider = rarible;
+    } else if (method === "simplehash") {
+      provider = simplehash;
+    }
+
+    // Case 1: fetch all tokens within the given contract via pagination
     const contract = req.query.contract?.toLowerCase();
     if (contract) {
       const continuation = req.query.continuation;
@@ -43,47 +52,17 @@ const api = async (req, res) => {
         );
         return res.status(200).json(result);
       } else {
-        let result = null;
+        const result = await Promise.all(
+          await provider
+            .fetchContractTokens(chainId, contract, continuation)
+            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+        );
 
-        console.log("No custom handler for contract", contract);
-        console.log("Fetching from", method);
-
-        if (method === "opensea") {
-          console.log("Using opensea");
-          result = await Promise.all(
-            await opensea
-              .fetchContractTokens(chainId, contract, continuation)
-              .then((l) =>
-                l.map((metadata) => extendMetadata(chainId, metadata))
-              )
-          );
-        } else if (method === "rarible") {
-          console.log("Using rarible");
-          result = await Promise.all(
-            await rarible
-              .fetchContractTokens(chainId, contract, continuation)
-              .then((l) => {
-                l.map((metadata) => extendMetadata(chainId, metadata));
-              })
-          );
-        } else if (method === "simplehash") {
-          console.log("Using simplehash");
-          result = await Promise.all(
-            await simplehash
-              .fetchContractTokens(chainId, contract, continuation)
-              .then((l) => {
-                l.metadata.map((metadata) => extendMetadata(chainId, metadata));
-                return l.metadata;
-              })
-          );
-          console.log("Done fetching", result);
-        }
-        console.log("Done");
         return res.status(200).json(result);
       }
     }
 
-    // Only fetch metadata of specific tokens.
+    // Case 2: fetch specific tokens only
     let tokens = req.query.token;
     if (!tokens) {
       throw new Error("Missing token(s)");
@@ -103,6 +82,7 @@ const api = async (req, res) => {
       };
     });
 
+    // Method-specific validations
     if (method === "opensea" && tokens.length > 20) {
       throw new Error("Too many tokens");
     }
@@ -110,7 +90,7 @@ const api = async (req, res) => {
       throw new Error("Too many tokens");
     }
 
-    // Filter out tokens that have custom handlers.
+    // Filter out tokens that have custom handlers
     const customTokens = [];
     tokens = tokens.filter((token) => {
       if (hasCustomHandler(chainId, token.contract)) {
@@ -122,24 +102,11 @@ const api = async (req, res) => {
 
     let metadata = [];
     if (tokens.length) {
-      let newMetadata = null;
-
-      if (method === "opensea") {
-        newMetadata = await opensea
+      const newMetadata = await Promise.all(
+        await provider
           .fetchTokens(chainId, tokens)
-          .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)));
-      } else if (method === "rarible") {
-        newMetadata = await rarible
-          .fetchTokens(chainId, tokens)
-          .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)));
-      } else if (method === "simplehash") {
-        newMetadata = await simplehash
-          .fetchTokens(chainId, tokens)
-          .then((l) => {
-            l.map((metadata) => extendMetadata(chainId, metadata));
-            return l;
-          });
-      }
+          .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+      );
 
       metadata = [...metadata, ...newMetadata];
     }

@@ -2,6 +2,11 @@ import axios from "axios";
 
 import { parse } from "../parsers/rarible";
 
+export const fetchCollection = async (_chainId, _token) => {
+  // TODO: To implement
+  return null;
+};
+
 export const fetchTokens = async (chainId, tokens) => {
   const url =
     chainId === 1

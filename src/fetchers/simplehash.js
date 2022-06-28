@@ -1,44 +1,84 @@
 import axios from "axios";
+import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
 
-export const fetchTokens = async (chainId, tokens) => {
-  const searchParams = new URLSearchParams();
-  const nft_ids = tokens.map(
-    ({ contract, tokenId }) => `optimism.${contract}.${tokenId}`
-  );
-  searchParams.append("nft_ids", nft_ids.join(","));
+const getNetworkName = (chainId) => {
+  let network;
+  if (chainId === 1) {
+    network = "ethereum";
+  } else if (chainId === 10) {
+    network = "optimism";
+  } else {
+    throw new Error("Unsupported chain id");
+  }
 
-  const url = `https://api.simplehash.com/api/v0/nfts/assets?${searchParams.toString()}`;
+  return network;
+};
 
+export const fetchCollection = async (chainId, { contract, tokenId }) => {
+  const network = getNetworkName(chainId);
+
+  const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}/${tokenId}`;
   const data = await axios
     .get(url, {
-      headers:
-        chainId === 10
-          ? {
-              "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim(),
-            }
-          : {},
+      headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
+    })
+    .then((response) => response.data.collection);
+
+  return {
+    id: contract,
+    slug: slugify(data.name, { lower: true }),
+    name: data.name,
+    community: null,
+    metadata: {
+      description: data.description,
+      imageUrl: data.image_url,
+      bannerImageUrl: data.banner_image_url,
+      discordUrl: data.discord_url,
+      externalUrl: data.external_url,
+      twitterUsername: data.twitter_username,
+    },
+    royalties: [
+      // TODO: Integrate royalties
+    ],
+    contract,
+    tokenIdRange: null,
+    tokenSetId: `contract:${contract}`,
+  };
+};
+
+export const fetchTokens = async (chainId, tokens) => {
+  const network = getNetworkName(chainId);
+
+  const searchParams = new URLSearchParams();
+  const nftIds = tokens.map(
+    ({ contract, tokenId }) => `${network}.${contract}.${tokenId}`
+  );
+  searchParams.append("nft_ids", nftIds.join(","));
+
+  const url = `https://api.simplehash.com/api/v0/nfts/assets?${searchParams.toString()}`;
+  const data = await axios
+    .get(url, {
+      headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
     })
     .then((response) => response.data);
+
   return data.nfts.map(parse).filter(Boolean);
 };
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
+  const network = getNetworkName(chainId);
+
   const searchParams = new URLSearchParams();
   if (continuation) {
     searchParams.append("cursor", continuation);
   }
 
-  const url = `https://api.simplehash.com/api/v0/nfts/optimism/${contract}?${searchParams.toString()}`;
+  const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}?${searchParams.toString()}`;
   const data = await axios
     .get(url, {
-      headers:
-        chainId === 10
-          ? {
-              "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim(),
-            }
-          : {},
+      headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
     })
     .then((response) => response.data);
 

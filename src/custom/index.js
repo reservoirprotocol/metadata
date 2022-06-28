@@ -1,14 +1,24 @@
+import * as artblocks from "./artblocks";
 import * as forgottenPonies from "./forgotten-ponies";
 import * as forgottenRunes from "./forgotten-runes";
 import * as forgottenSouls from "./forgotten-souls";
 import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 import * as loot from "./loot";
 
+export const hasCustomCollectionHandler = (chainId, contract) =>
+  Boolean(customCollection[`${chainId},${contract}`]);
+
 export const hasCustomHandler = (chainId, contract) =>
   Boolean(custom[`${chainId},${contract}`]);
 
-// Both of the below methods assume the caller ensured a custom
-// handler exists (eg. via calling the above `hasCustomHandler`).
+// All of the below methods assume the caller ensured that a custom
+// handler exists (eg. via calling the above check methods)
+
+export const customHandleCollection = async (chainId, token) =>
+  customCollection[`${chainId},${token.contract}`].fetchCollection(
+    chainId,
+    token
+  );
 
 export const customHandleToken = async (chainId, token) =>
   custom[`${chainId},${token.contract}`].fetchToken(chainId, token);
@@ -25,7 +35,11 @@ export const customHandleContractTokens = async (
     continuation
   );
 
-// All custom handlers are to be defined below.
+const customCollection = {};
+
+// ArtBlocks
+customCollection["1,0x059edd72cd353df5106d2b9cc5ab83a52287ac3a"] = artblocks;
+customCollection["1,0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270"] = artblocks;
 
 const custom = {};
 
