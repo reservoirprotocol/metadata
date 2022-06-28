@@ -69,7 +69,7 @@ export const fetchTokens = async (chainId, tokens) => {
       headers:
         chainId === 1
           ? {
-              "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
+              "X-API-KEY": process.env.OPENSEA_TOKENS_API_KEY.trim(),
             }
           : {},
     })
