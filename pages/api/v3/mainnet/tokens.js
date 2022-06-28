@@ -16,7 +16,7 @@ const getOpenSeaTokensMetadata = async (contract, tokenIds) => {
   const data = await axios
     .get(url, {
       headers: {
-        "X-API-KEY": process.env.OPENSEA_APIKEY.trim(),
+        "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
       },
     })
     .then((response) => response.data);
