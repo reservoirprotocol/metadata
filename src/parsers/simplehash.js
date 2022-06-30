@@ -8,7 +8,7 @@ export const parse = (asset) => {
     description: asset.description,
     imageUrl: asset.image_url,
     mediaUrl: asset.video_url,
-    attributes: asset.extra_metadata.attributes.map((trait) => ({
+    attributes: (asset.extra_metadata.attributes || []).map((trait) => ({
       key: trait.trait_type,
       value: trait.value,
       kind: typeof trait.value == "number" ? "number" : "string",

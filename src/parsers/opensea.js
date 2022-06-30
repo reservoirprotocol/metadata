@@ -8,10 +8,10 @@ export const parse = (asset) => {
     description: asset.description,
     imageUrl: asset.image_url,
     mediaUrl: asset.animation_url,
-    attributes: asset.traits.map((trait) => ({
+    attributes: (asset.traits || []).map((trait) => ({
       key: trait.trait_type,
       value: trait.value,
-      kind: typeof(trait.value) == "number" ? "number" : "string",
+      kind: typeof trait.value == "number" ? "number" : "string",
       rank: 1,
     })),
   };
