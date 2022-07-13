@@ -1,7 +1,10 @@
 import axios from "axios";
+import { Contract } from "ethers";
+import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
+import { getProvider } from "../utils";
 
 const getNetworkName = (chainId) => {
   let network;
@@ -17,35 +20,59 @@ const getNetworkName = (chainId) => {
 };
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
-  const network = getNetworkName(chainId);
+  try {
+    const network = getNetworkName(chainId);
 
-  const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}/${tokenId}`;
-  const data = await axios
-    .get(url, {
-      headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
-    })
-    .then((response) => response.data.collection);
+    const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}/${tokenId}`;
+    const data = await axios
+      .get(url, {
+        headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
+      })
+      .then((response) => response.data.collection);
 
-  return {
-    id: contract,
-    slug: slugify(data.name, { lower: true }),
-    name: data.name,
-    community: null,
-    metadata: {
-      description: data.description,
-      imageUrl: data.image_url,
-      bannerImageUrl: data.banner_image_url,
-      discordUrl: data.discord_url,
-      externalUrl: data.external_url,
-      twitterUsername: data.twitter_username,
-    },
-    royalties: [
-      // TODO: Integrate royalties
-    ],
-    contract,
-    tokenIdRange: null,
-    tokenSetId: `contract:${contract}`,
-  };
+    return {
+      id: contract,
+      slug: slugify(data.name, { lower: true }),
+      name: data.name,
+      community: null,
+      metadata: {
+        description: data.description,
+        imageUrl: data.image_url,
+        bannerImageUrl: data.banner_image_url,
+        discordUrl: data.discord_url,
+        externalUrl: data.external_url,
+        twitterUsername: data.twitter_username,
+      },
+      royalties: [
+        // TODO: Integrate royalties
+      ],
+      contract,
+      tokenIdRange: null,
+      tokenSetId: `contract:${contract}`,
+    };
+  } catch {
+    try {
+      const name = await new Contract(
+        contract,
+        new Interface(["function name() view returns (string)"]),
+        getProvider(chainId)
+      ).name();
+
+      return {
+        id: contract,
+        slug: slugify(name, { lower: true }),
+        name: name,
+        community: null,
+        metadata: null,
+        royalties: [],
+        contract,
+        tokenIdRange: null,
+        tokenSetId: `contract:${contract}`,
+      };
+    } catch {
+      return null;
+    }
+  }
 };
 
 export const fetchTokens = async (chainId, tokens) => {
