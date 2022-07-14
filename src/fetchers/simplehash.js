@@ -68,6 +68,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         contract,
         tokenIdRange: null,
         tokenSetId: `contract:${contract}`,
+        isFallback: true,
       };
     } catch {
       return null;
