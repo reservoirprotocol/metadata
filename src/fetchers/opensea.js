@@ -8,7 +8,6 @@ import { getProvider } from "../utils";
 
 export const fetchCollection = async (chainId, { contract }) => {
   try {
-    throw new Error("foo");
     const url = `https://api.opensea.io/api/v1/asset_contract/${contract}`;
     const { data } = await axios.get(url, {
       headers: {
