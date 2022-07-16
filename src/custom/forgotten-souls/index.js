@@ -1,17 +1,33 @@
 import axios from "axios";
+import souls from "./souls.json";
 
 const rank = {
-  Head: 9,
-  Body: 8,
-  Familiar: 7,
-  Prop: 6,
-  Rune: 5,
-  Background: 4,
-  Affinity: 3,
-  Undesirable: 2,
+  Head: 13,
+  Body: 12,
+  Familiar: 11,
+  Prop: 10,
+  Rune: 9,
+  Background: 8,
+  Undesirable: 7,
+  Affinity: 6,
+  "% Traits in Affinity": 5,
+  "# Traits in Affinity": 4,
+  "# Traits": 3,
+  Title: 2,
+  Name: 1,
+  Origin: 0,
 };
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
+  let isUndesirable = false;
+  let coreTraits = {
+    Head: "",
+    Body: "",
+    Familiar: "",
+    Prop: "",
+    Rune: "",
+  }
+
   return axios
     .get(`https://portal.forgottenrunes.com/api/souls/data/${tokenId}`)
     .then((response) => {
@@ -24,8 +40,43 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
           value: trait.value,
           kind: "string",
         });
+
+        if (traitType === "Undesirable") {
+          isUndesirable = true;
+        }
+
+        if (traitType in coreTraits) {
+          coreTraits[traitType] = trait.value;
+        }
+
         return result;
       }, []);
+
+      if (!isUndesirable) {
+        // Add name traits
+        for (var attribute of ['Title', 'Name', 'Origin']) {
+          if (String(tokenId) in souls) {
+            attributes.push({
+              key: attribute,
+              rank: rank[attribute],
+              value: souls[tokenId][attribute.toLowerCase()],
+              kind: "string",
+            });
+          }
+        }
+
+        // Add None value for core traits
+        for (var trait of ['Head', 'Body', 'Familiar', 'Prop', 'Rune']) {
+          if (!coreTraits[trait]) {
+            attributes.push({
+              key: trait,
+              rank: rank[trait],
+              value: "None",
+              kind: "string",
+            });
+          }
+        }
+      }
 
       return {
         contract,
