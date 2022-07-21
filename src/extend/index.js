@@ -3,7 +3,8 @@ import * as admitOne from "./admit-one";
 import * as mutantApeYachtClub from "./mutant-ape-yacht-club";
 import * as nouns from "./nouns";
 import * as lilnouns from "./lilnouns";
-import * as chimpers from './chimpers'
+import * as chimpers from './chimpers';
+import * as moonbirds from './moonbirds';
 
 export const extendCollectionMetadata = async (chainId, metadata) => {
   if (metadata) {
@@ -51,3 +52,6 @@ extend["1,0x4b10701bfd7bfedc47d50562b76b436fbb5bdb3b"] = lilnouns;
 
 // Chimpers
 extend["1,0x80336ad7a747236ef41f47ed2c7641828a480baa"] = chimpers;
+
+// Moonbirds
+extend["1,0x23581767a106ae21c074b2276d25e5c3e136a68b"] = moonbirds;
