@@ -29,3 +29,29 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     tokenSetId: `range:${contract}:${startTokenId}:${endTokenId}`,
   };
 };
+
+export const fetchToken = async (_chainId, { contract, tokenId }) => {
+  const url = `https://token.artblocks.io/${tokenId}`;
+  console.log(url)
+  const { data } = await axios.get(url);
+
+  let attributes = []
+  // Add None value for core traits
+  for (const [key, value] of Object.entries(data.features)) {
+    attributes.push({
+      key,
+      rank: 1,
+      value,
+      kind: "string",
+    });
+  }
+
+  return {
+    contract,
+    tokenId,
+    name: data.name,
+    imageUrl: data.image,
+    attributes
+  };
+      
+};

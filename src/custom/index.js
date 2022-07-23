@@ -44,6 +44,9 @@ customCollection["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
 
 const custom = {};
 
+// ArtBlocks
+custom["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
+
 // Loot
 custom["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
 custom["4,0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78"] = loot;
