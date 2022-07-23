@@ -40,6 +40,7 @@ const customCollection = {};
 // ArtBlocks
 customCollection["1,0x059edd72cd353df5106d2b9cc5ab83a52287ac3a"] = artblocks;
 customCollection["1,0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270"] = artblocks;
+customCollection["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
 
 const custom = {};
 
