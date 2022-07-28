@@ -5,6 +5,7 @@ import slugify from "slugify";
 
 import { parse } from "../parsers/opensea";
 import { getProvider } from "../utils";
+import {RequestWasThrottledError} from "./errors";
 
 export const fetchCollection = async (chainId, { contract }) => {
   try {
@@ -102,7 +103,8 @@ export const fetchTokens = async (chainId, tokens) => {
             }
           : {},
     })
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch((error) => handleError(error));
 
   return data.assets.map(parse).filter(Boolean);
 };
@@ -127,10 +129,31 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
             }
           : {},
     })
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch((error) => handleError(error));
 
   return {
     continuation: data.next,
     metadata: data.assets.map(parse).filter(Boolean),
   };
+};
+
+const handleError = (error) => {
+  if (error.response?.status === 429) {
+    let delay = 1;
+
+    if (
+        error.response.data.detail?.startsWith("Request was throttled. Expected available in")
+    ) {
+      try {
+        delay = error.response.data.detail.split(" ")[6];
+      } catch {
+        // Skip on any errors
+      }
+    }
+
+    throw new RequestWasThrottledError(error.response.statusText, delay);
+  }
+
+  throw(error);
 };
