@@ -9,6 +9,8 @@ import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
 
+import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
+
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
@@ -55,13 +57,20 @@ const api = async (req, res) => {
         );
         return res.status(200).json(result);
       } else {
-        const result = await Promise.all(
-          await provider
-            .fetchContractTokens(chainId, contract, continuation)
-            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
-        );
+        try {
+          const result = await Promise.all(
+              await provider
+                  .fetchContractTokens(chainId, contract, continuation)
+                  .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+          );
 
-        return res.status(200).json(result);
+          return res.status(200).json(result);
+        } catch (error) {
+          if (error instanceof RequestWasThrottledError) {
+            return res.status(429).json({ error: error.message, expires_in: error.delay });
+          }
+          throw(error);
+        }
       }
     }
 
@@ -105,13 +114,20 @@ const api = async (req, res) => {
 
     let metadata = [];
     if (tokens.length) {
-      const newMetadata = await Promise.all(
-        await provider
-          .fetchTokens(chainId, tokens)
-          .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
-      );
+      try {
+        const newMetadata = await Promise.all(
+            await provider
+                .fetchTokens(chainId, tokens)
+                .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+        )
 
-      metadata = [...metadata, ...newMetadata];
+        metadata = [...metadata, ...newMetadata];
+      } catch (error) {
+        if (error instanceof RequestWasThrottledError) {
+          return res.status(429).json({ error: error.message, expires_in: error.delay });
+        }
+        throw(error);
+      }
     }
 
     if (customTokens.length) {
