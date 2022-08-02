@@ -32,7 +32,7 @@ const api = async (req, res) => {
         chainId = 5;
         break;
       case "polygon":
-        chainId = 136;
+        chainId = 137;
         break;
     }
 
