@@ -22,7 +22,7 @@ export const parse = (asset) => {
     tokenId: asset.token_id,
     name: asset.name,
     description: asset.metadata?.description,
-    imageUrl: asset.metadata?.image.replace(/^(ipfs\:\/\/)/,"https://ipfs.io/ipfs/"),
+    imageUrl: asset.metadata?.image,
     mediaUrl: asset.metadata?.animation_url,
     attributes,
   };
