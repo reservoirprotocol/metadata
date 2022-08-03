@@ -66,7 +66,7 @@ const api = async (req, res) => {
         try {
           const result = await Promise.all(
               await provider
-                  . fetchContractTokens(chainId, contract, continuation)
+                  .fetchContractTokens(chainId, contract, continuation)
                   .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
           );
 
