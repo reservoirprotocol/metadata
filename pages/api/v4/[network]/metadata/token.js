@@ -8,6 +8,7 @@ import { extendMetadata } from "../../../../../src/extend";
 import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
+import * as centerdev from "../../../../../src/fetchers/centerdev";
 
 import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 
@@ -15,7 +16,7 @@ const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (!["mainnet", "rinkeby", "goerli", "optimism"].includes(network)) {
+    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)) {
       throw new Error("Unknown network");
     }
 
@@ -30,11 +31,14 @@ const api = async (req, res) => {
       case "goerli":
         chainId = 5;
         break;
+      case "polygon":
+        chainId = 137;
+        break;
     }
 
     // Validate indexing method and set up provider
     const method = req.query.method;
-    if (!["opensea", "rarible", "simplehash"].includes(method)) {
+    if (!["opensea", "rarible", "simplehash", "centerdev"].includes(method)) {
       throw new Error("Unknown method");
     }
 
@@ -43,6 +47,8 @@ const api = async (req, res) => {
       provider = rarible;
     } else if (method === "simplehash") {
       provider = simplehash;
+    } else if (method === "centerdev") {
+      provider = centerdev;
     }
 
     // Case 1: fetch all tokens within the given contract via pagination
@@ -99,6 +105,9 @@ const api = async (req, res) => {
       throw new Error("Too many tokens");
     }
     if (method === "rarible" && tokens.length > 50) {
+      throw new Error("Too many tokens");
+    }
+    if (method === "centerdev" && tokens.length > 100) {
       throw new Error("Too many tokens");
     }
 
