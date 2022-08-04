@@ -4,6 +4,7 @@ import * as forgottenRunes from "./forgotten-runes";
 import * as forgottenSouls from "./forgotten-souls";
 import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 import * as loot from "./loot";
+import * as goldfinch from "./goldfinch";
 
 export const hasCustomCollectionHandler = (chainId, contract) =>
   Boolean(customCollection[`${chainId},${contract}`]);
@@ -31,7 +32,6 @@ export const customHandleContractTokens = async (
   custom[`${chainId},${contract}`].fetchContractTokens(
     null,
     chainId,
-    token,
     continuation
   );
 
@@ -62,3 +62,6 @@ custom["1,0x251b5f14a825c537ff788604ea1b58e49b70726f"] = forgottenSouls;
 
 // Forgotten Runes Warriors
 custom["1,0x9690b63eb85467be5267a3603f770589ab12dc95"] = forgottenRunesWarriors;
+
+// Goldfinch
+custom["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
