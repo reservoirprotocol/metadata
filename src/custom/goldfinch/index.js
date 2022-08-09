@@ -25,12 +25,16 @@ const metadataBaseURI = "https://us-central1-goldfinch-frontends-prod.cloudfunct
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
   const response = await axios.get(`${metadataBaseURI}/${tokenId}`);
+  const attributes = response.data.attributes.map((a) => ({
+    key: a.trait_type,
+    value: a.value
+  }))
   return {
     contract,
     tokenId,
     name: response.data.name,
     imageUrl: response.data.image,
-    attributes: response.data.attributes,
+    attributes
   };
 };
 
