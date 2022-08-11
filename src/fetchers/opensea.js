@@ -106,7 +106,7 @@ export const fetchToken = async (chainId, contract, tokenId) => {
     })
     .then((response) => response.data);
 
-  return data.assets.map(parseAsset).filter(Boolean);
+  return parseAsset(data).filter(Boolean);
 };
 
 export const fetchTokens = async (chainId, tokens) => {
