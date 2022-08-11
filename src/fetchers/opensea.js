@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { parse } from "../parsers/opensea";
+import { parseAsset, parseAssets } from "../parsers/opensea";
 
 export const fetchCollection = async (_chainId, { contract }) => {
   const url = `https://api.opensea.io/api/v1/asset_contract/${contract}`;
@@ -53,6 +53,26 @@ export const fetchCollection = async (_chainId, { contract }) => {
   };
 };
 
+export const fetchToken = async (chainId, contract, tokenId) => {
+  const url =
+    chainId === 1
+      ? `https://api.opensea.io/api/v1/asset/${contract}/${tokenId}/`
+      : `https://rinkeby-api.opensea.io/api/v1/asset/${contract}/${tokenId}/`;
+
+  const data = await axios
+    .get(url, {
+      headers:
+        chainId === 1
+          ? {
+            "X-API-KEY": process.env.OPENSEA_TOKENS_API_KEY.trim(),
+          }
+          : {},
+    })
+    .then((response) => response.data);
+
+  return data.assets.map(parseAsset).filter(Boolean);
+};
+
 export const fetchTokens = async (chainId, tokens) => {
   const searchParams = new URLSearchParams();
   for (const { contract, tokenId } of tokens) {
@@ -75,7 +95,7 @@ export const fetchTokens = async (chainId, tokens) => {
     })
     .then((response) => response.data);
 
-  return data.assets.map(parse).filter(Boolean);
+  return data.assets.map(parseAssets).filter(Boolean);
 };
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
@@ -102,6 +122,6 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
 
   return {
     continuation: data.next,
-    metadata: data.assets.map(parse).filter(Boolean),
+    metadata: data.assets.map(parseAssets).filter(Boolean),
   };
 };
