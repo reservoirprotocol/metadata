@@ -3,11 +3,11 @@ import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
-import { parse } from "../parsers/opensea";
 import { getProvider } from "../utils";
 import { logger } from "../logger";
 
-import {RequestWasThrottledError} from "./errors";
+import { RequestWasThrottledError } from "./errors";
+import { parseAsset, parseAssets } from "../parsers/opensea";
 
 export const fetchCollection = async (chainId, { contract }) => {
   logger.info("opensea-fetch-collection", `chainId: ${chainId}, contract: ${contract}`);
@@ -92,6 +92,26 @@ export const fetchCollection = async (chainId, { contract }) => {
   }
 };
 
+export const fetchToken = async (chainId, contract, tokenId) => {
+  const url =
+    chainId === 1
+      ? `https://api.opensea.io/api/v1/asset/${contract}/${tokenId}/`
+      : `https://rinkeby-api.opensea.io/api/v1/asset/${contract}/${tokenId}/`;
+
+  const data = await axios
+    .get(url, {
+      headers:
+        chainId === 1
+          ? {
+            "X-API-KEY": process.env.OPENSEA_TOKENS_API_KEY.trim(),
+          }
+          : {},
+    })
+    .then((response) => response.data);
+
+  return [parseAsset(data)].filter(Boolean);
+};
+
 export const fetchTokens = async (chainId, tokens) => {
   logger.info("opensea-fetch-tokens", `chainId: ${chainId}`);
 
@@ -124,7 +144,7 @@ export const fetchTokens = async (chainId, tokens) => {
       handleError(error);
     });
 
-  return data.assets.map(parse).filter(Boolean);
+  return data.assets.map(parseAssets).filter(Boolean);
 };
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
@@ -152,7 +172,7 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
 
   return {
     continuation: data.next,
-    metadata: data.assets.map(parse).filter(Boolean),
+    metadata: data.assets.map(parseAssets).filter(Boolean),
   };
 };
 
