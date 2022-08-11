@@ -4,6 +4,7 @@ import * as forgottenRunes from "./forgotten-runes";
 import * as forgottenSouls from "./forgotten-souls";
 import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 import * as loot from "./loot";
+import * as goldfinch from "./goldfinch";
 
 export const hasCustomCollectionHandler = (chainId, contract) =>
   Boolean(customCollection[`${chainId},${contract}`]);
@@ -31,7 +32,6 @@ export const customHandleContractTokens = async (
   custom[`${chainId},${contract}`].fetchContractTokens(
     null,
     chainId,
-    token,
     continuation
   );
 
@@ -40,8 +40,12 @@ const customCollection = {};
 // ArtBlocks
 customCollection["1,0x059edd72cd353df5106d2b9cc5ab83a52287ac3a"] = artblocks;
 customCollection["1,0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270"] = artblocks;
+customCollection["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
 
 const custom = {};
+
+// ArtBlocks
+custom["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
 
 // Loot
 custom["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
@@ -58,3 +62,6 @@ custom["1,0x251b5f14a825c537ff788604ea1b58e49b70726f"] = forgottenSouls;
 
 // Forgotten Runes Warriors
 custom["1,0x9690b63eb85467be5267a3603f770589ab12dc95"] = forgottenRunesWarriors;
+
+// Goldfinch
+custom["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;

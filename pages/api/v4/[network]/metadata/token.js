@@ -8,12 +8,15 @@ import { extendMetadata } from "../../../../../src/extend";
 import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
+import * as centerdev from "../../../../../src/fetchers/centerdev";
+
+import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (!["mainnet", "rinkeby", "optimism"].includes(network)) {
+    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)) {
       throw new Error("Unknown network");
     }
 
@@ -25,11 +28,17 @@ const api = async (req, res) => {
       case "rinkeby":
         chainId = 4;
         break;
+      case "goerli":
+        chainId = 5;
+        break;
+      case "polygon":
+        chainId = 137;
+        break;
     }
 
     // Validate indexing method and set up provider
     const method = req.query.method;
-    if (!["opensea", "rarible", "simplehash"].includes(method)) {
+    if (!["opensea", "rarible", "simplehash", "centerdev"].includes(method)) {
       throw new Error("Unknown method");
     }
 
@@ -38,6 +47,8 @@ const api = async (req, res) => {
       provider = rarible;
     } else if (method === "simplehash") {
       provider = simplehash;
+    } else if (method === "centerdev") {
+      provider = centerdev;
     }
 
     // Case 1: fetch all tokens within the given contract via pagination
@@ -52,13 +63,20 @@ const api = async (req, res) => {
         );
         return res.status(200).json(result);
       } else {
-        const result = await Promise.all(
-          await provider
-            .fetchContractTokens(chainId, contract, continuation)
-            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
-        );
+        try {
+          const result = await Promise.all(
+              await provider
+                  .fetchContractTokens(chainId, contract, continuation)
+                  .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+          );
 
-        return res.status(200).json(result);
+          return res.status(200).json(result);
+        } catch (error) {
+          if (error instanceof RequestWasThrottledError) {
+            return res.status(429).json({ error: error.message, expires_in: error.delay });
+          }
+          throw(error);
+        }
       }
     }
 
@@ -89,6 +107,9 @@ const api = async (req, res) => {
     if (method === "rarible" && tokens.length > 50) {
       throw new Error("Too many tokens");
     }
+    if (method === "centerdev" && tokens.length > 100) {
+      throw new Error("Too many tokens");
+    }
 
     // Filter out tokens that have custom handlers
     const customTokens = [];
@@ -102,23 +123,30 @@ const api = async (req, res) => {
 
     let metadata = [];
     if (tokens.length) {
-      let newMetadata;
+      try {
+        let newMetadata;
 
-      if (tokens.length === 1) {
-        newMetadata = await Promise.all(
-          await provider
-            .fetchToken(chainId, tokens[0].contract, tokens[0].tokenId)
-            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
-        );
-      } else {
-        newMetadata = await Promise.all(
-          await provider
-            .fetchTokens(chainId, tokens)
-            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
-        );
+        if (tokens.length === 1) {
+          newMetadata = await Promise.all(
+            await provider
+              .fetchToken(chainId, tokens[0].contract, tokens[0].tokenId)
+              .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+          );
+        } else {
+          newMetadata = await Promise.all(
+            await provider
+              .fetchTokens(chainId, tokens)
+              .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+          );
+        }
+
+        metadata = [...metadata, ...newMetadata];
+      } catch (error) {
+        if (error instanceof RequestWasThrottledError) {
+          return res.status(429).json({ error: error.message, expires_in: error.delay });
+        }
+        throw(error);
       }
-
-      metadata = [...metadata, ...newMetadata];
     }
 
     if (customTokens.length) {

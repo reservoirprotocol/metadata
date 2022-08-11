@@ -9,12 +9,13 @@ import { extendCollectionMetadata } from "../../../../../src/extend";
 import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
+import * as centerdev from "../../../../../src/fetchers/centerdev";
 
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (!["mainnet", "rinkeby", "optimism"].includes(network)) {
+    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)) {
       throw new Error("Unknown network");
     }
 
@@ -26,11 +27,17 @@ const api = async (req, res) => {
       case "rinkeby":
         chainId = 4;
         break;
+      case "goerli":
+        chainId = 5;
+        break;
+      case "polygon":
+        chainId = 137;
+        break;
     }
 
     // Validate indexing method and set up provider
     const method = req.query.method;
-    if (!["opensea", "rarible", "simplehash"].includes(method)) {
+    if (!["opensea", "rarible", "simplehash", "centerdev"].includes(method)) {
       throw new Error("Unknown method");
     }
 
@@ -39,6 +46,8 @@ const api = async (req, res) => {
       provider = rarible;
     } else if (method === "simplehash") {
       provider = simplehash;
+    } else if (method === "centerdev") {
+      provider = centerdev;
     }
 
     const token = req.query.token?.toLowerCase();

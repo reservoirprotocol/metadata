@@ -21,6 +21,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "slugify": "^1.6.5",
+    "winston": "^3.8.1",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
