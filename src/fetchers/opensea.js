@@ -111,7 +111,7 @@ export const fetchToken = async (chainId, contract, tokenId) => {
 
 export const fetchTokens = async (chainId, tokens) => {
   logger.info(
-      "opensea-fetcher", `fetchTokens. chainId: ${chainId}`
+      "opensea-fetcher", `fetchTokens. chainId: ${chainId} count: ${tokens.length}`
   );
 
   const searchParams = new URLSearchParams();

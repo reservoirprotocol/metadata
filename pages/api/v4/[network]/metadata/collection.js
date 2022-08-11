@@ -56,6 +56,9 @@ const api = async (req, res) => {
     }
 
     const [contract, tokenId] = token.split(":");
+    if (!contract) {
+      throw new Error(`Unknown contract=${contract}`);
+    }
 
     let collection = null;
     if (hasCustomCollectionHandler(chainId, contract)) {
