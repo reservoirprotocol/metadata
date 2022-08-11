@@ -5,9 +5,15 @@ import slugify from "slugify";
 
 import { parse } from "../parsers/opensea";
 import { getProvider } from "../utils";
+import { logger } from "../logger";
+
 import {RequestWasThrottledError} from "./errors";
 
 export const fetchCollection = async (chainId, { contract }) => {
+  logger.info(
+      "opensea-fetcher", `fetchCollection. chainId: ${chainId}, contract: ${contract}`
+  );
+
   try {
     const url = `https://api.opensea.io/api/v1/asset_contract/${contract}`;
     const { data } = await axios.get(url, {
@@ -84,6 +90,10 @@ export const fetchCollection = async (chainId, { contract }) => {
 };
 
 export const fetchTokens = async (chainId, tokens) => {
+  logger.info(
+      "opensea-fetcher", `fetchTokens. chainId: ${chainId}`
+  );
+
   const searchParams = new URLSearchParams();
   for (const { contract, tokenId } of tokens) {
     searchParams.append("asset_contract_addresses", contract);
@@ -139,6 +149,11 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
 };
 
 const handleError = (error) => {
+  logger.error(
+      "opensea-fetcher", `OpenSea error. message: ${error.message},  status: ${error.response?.status
+      }, data:${JSON.stringify(error.response?.data)}`
+  );
+
   if (error.response?.status === 429) {
     let delay = 1;
 
