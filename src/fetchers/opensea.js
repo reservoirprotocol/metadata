@@ -11,7 +11,7 @@ import { parseAsset, parseAssets } from "../parsers/opensea";
 
 export const fetchCollection = async (chainId, { contract }) => {
   logger.info(
-      "opensea-fetcher", `fetchCollection. chainId: ${chainId}, contract: ${contract}`
+      "opensea-fetcher", `fetchCollection. chainId:${chainId}, contract:${contract}`
   );
 
   try {
@@ -64,6 +64,10 @@ export const fetchCollection = async (chainId, { contract }) => {
       tokenSetId: `contract:${contract}`,
     };
   } catch {
+    logger.error(
+        "opensea-fetcher", `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${error.message},  status:${error.response?.status
+        }, data:${JSON.stringify(error.response?.data)}`);
+
     try {
       const name = await new Contract(
         contract,
@@ -104,14 +108,21 @@ export const fetchToken = async (chainId, contract, tokenId) => {
           }
           : {},
     })
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch((error) => {
+        logger.error(
+            "opensea-fetcher", `fetchToken error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${error.message},  status:${error.response?.status
+            }, data:${JSON.stringify(error.response?.data)}`);
+
+        handleError(error);
+      });
 
   return [parseAsset(data)].filter(Boolean);
 };
 
 export const fetchTokens = async (chainId, tokens) => {
   logger.info(
-      "opensea-fetcher", `fetchTokens. chainId: ${chainId} count: ${tokens.length}`
+      "opensea-fetcher", `fetchTokens. chainId:${chainId} count:${tokens.length}`
   );
 
   const searchParams = new URLSearchParams();
@@ -134,7 +145,13 @@ export const fetchTokens = async (chainId, tokens) => {
           : {},
     })
     .then((response) => response.data)
-    .catch((error) => handleError(error));
+    .catch((error) => {
+      logger.error(
+          "opensea-fetcher", `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${error.response?.status
+          }, data:${JSON.stringify(error.response?.data)}`);
+
+      handleError(error);
+    });
 
   return data.assets.map(parseAssets).filter(Boolean);
 };
@@ -169,11 +186,6 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
 };
 
 const handleError = (error) => {
-  logger.error(
-      "opensea-fetcher", `OpenSea error. message: ${error.message},  status: ${error.response?.status
-      }, data:${JSON.stringify(error.response?.data)}`
-  );
-
   if (error.response?.status === 429) {
     let delay = 1;
 
