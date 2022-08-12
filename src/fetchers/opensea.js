@@ -10,7 +10,9 @@ import { RequestWasThrottledError } from "./errors";
 import { parseAsset, parseAssets } from "../parsers/opensea";
 
 export const fetchCollection = async (chainId, { contract }) => {
-  logger.info("opensea-fetch-collection", `chainId: ${chainId}, contract: ${contract}`);
+  logger.info(
+      "opensea-fetcher", `fetchCollection. chainId:${chainId}, contract:${contract}`
+  );
 
   try {
     const url = `https://api.opensea.io/api/v1/asset_contract/${contract}`;
@@ -63,9 +65,8 @@ export const fetchCollection = async (chainId, { contract }) => {
     };
   } catch {
     logger.error(
-        "opensea-fetch-collection", `chainId: ${chainId}, contract: ${contract}, message: ${error.message},  status: ${error.response?.status
-        }, data:${JSON.stringify(error.response?.data)}`
-    );
+        "opensea-fetcher", `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${error.message},  status:${error.response?.status
+        }, data:${JSON.stringify(error.response?.data)}`);
 
     try {
       const name = await new Contract(
@@ -107,13 +108,22 @@ export const fetchToken = async (chainId, contract, tokenId) => {
           }
           : {},
     })
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch((error) => {
+        logger.error(
+            "opensea-fetcher", `fetchToken error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${error.message},  status:${error.response?.status
+            }, data:${JSON.stringify(error.response?.data)}`);
+
+        handleError(error);
+      });
 
   return [parseAsset(data)].filter(Boolean);
 };
 
 export const fetchTokens = async (chainId, tokens) => {
-  logger.info("opensea-fetch-tokens", `chainId: ${chainId}`);
+  logger.info(
+      "opensea-fetcher", `fetchTokens. chainId:${chainId} count:${tokens.length}`
+  );
 
   const searchParams = new URLSearchParams();
   for (const { contract, tokenId } of tokens) {
@@ -137,9 +147,8 @@ export const fetchTokens = async (chainId, tokens) => {
     .then((response) => response.data)
     .catch((error) => {
       logger.error(
-          "opensea-fetch-tokens", `chainId: ${chainId}, message: ${error.message},  status: ${error.response?.status
-          }, data:${JSON.stringify(error.response?.data)}`
-      );
+          "opensea-fetcher", `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${error.response?.status
+          }, data:${JSON.stringify(error.response?.data)}`);
 
       handleError(error);
     });
