@@ -17,7 +17,7 @@ for (const name of Object.keys(nets)) {
 }
 
 const log = (level) => {
-  const service = `metadata-${process.env.RAILWAY_ENVIRONMENT}`;
+  const service = `metadata-${process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV}`;
 
   const logger = createLogger({
     exitOnError: false,

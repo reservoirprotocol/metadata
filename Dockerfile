@@ -1,13 +1,13 @@
-FROM node:18.5-slim
-
-RUN mkdir -p /home/app/ && chown -R node:node /home/app
-WORKDIR /home/app
-COPY --chown=node:node . .
-
-USER node
-
+FROM node:18.5-slim as dependencies
+WORKDIR /metadata
+COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
+
+FROM node:18.5-slim as builder
+WORKDIR /metadata
+COPY . .
+COPY --from=dependencies /metadata/node_modules ./node_modules
 RUN yarn build
 
 EXPOSE 3000
-CMD [ "yarn", "start"]
+CMD ["yarn", "start"]
