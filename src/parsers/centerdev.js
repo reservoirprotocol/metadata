@@ -17,12 +17,18 @@ export const parse = (asset) => {
     }));
   }
 
+  let imageUrl = asset.metadata?.image;
+
+  if (imageUrl && imageUrl.startsWith("ipfs://")) {
+    imageUrl = asset.small_preview_image_url;
+  }
+
   return {
     contract: asset.address,
     tokenId: asset.token_id,
     name: asset.name,
     description: asset.metadata?.description,
-    imageUrl: asset.metadata?.image,
+    imageUrl,
     mediaUrl: asset.metadata?.animation_url,
     attributes,
   };
