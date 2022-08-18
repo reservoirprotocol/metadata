@@ -15,11 +15,18 @@ export const fetchCollection = async (chainId, { contract }) => {
   );
 
   try {
-    const url = `https://api.opensea.io/api/v1/asset_contract/${contract}`;
+    const url =
+        chainId === 1
+            ? `https://api.opensea.io/api/v1/asset_contract/${contract}`
+            : `https://rinkeby-api.opensea.io/api/v1/asset_contract/${contract}`;
+
     const { data } = await axios.get(url, {
-      headers: {
-        "x-api-key": process.env.OPENSEA_COLLECTION_API_KEY.trim(),
-      },
+      headers:
+          chainId === 1
+              ? {
+                "X-API-KEY": process.env.OPENSEA_COLLECTION_API_KEY.trim(),
+              }
+              : {},
     });
 
     if (!data.collection) {
