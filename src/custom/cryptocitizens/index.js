@@ -12,15 +12,15 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     id: `${contract}:${startTokenId}:${endTokenId}`,
     slug: slugify(data.collection_name, { lower: true }),
     name: data.collection_name,
-    community: "artblocks",
+    community: "cryptocitizens",
     metadata: {
-      imageUrl: `https://media.artblocks.io/${startTokenId}.png`,
+      imageUrl: `https://crypto-citizens-mainnet.s3.amazonaws.com/${startTokenId}.png`,
       description: data.description,
       externalUrl: data.website,
     },
     royalties: [
       {
-        recipient: "0x6c093fe8bc59e1e0cae2ec10f0b717d3d182056b",
+        recipient: "0xb96e81f80b3aeef65cb6d0e280b15fd5dbe71937",
         bps: 750,
       },
     ],
@@ -31,7 +31,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
 };
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
-  const url = `https://token.artblocks.io/${tokenId}`;
+  const url = `https://token.artblocks.io/0xbdde08bd57e5c9fd563ee7ac61618cb2ecdc0ce0/${tokenId}`;
   console.log(url)
   const { data } = await axios.get(url);
 
