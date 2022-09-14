@@ -15,7 +15,9 @@ const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)) {
+    if (
+      !["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)
+    ) {
       throw new Error("Unknown network");
     }
 
@@ -74,11 +76,9 @@ const api = async (req, res) => {
       throw new Error("no collection found");
     }
 
-    return res
-      .status(200)
-      .json({
-        collection: await extendCollectionMetadata(chainId, collection),
-      });
+    return res.status(200).json({
+      collection: await extendCollectionMetadata(chainId, collection),
+    });
   } catch (error) {
     return res.status(500).json({ error: `Internal error: ${error}` });
   }

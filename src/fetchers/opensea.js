@@ -11,22 +11,23 @@ import { parseAsset, parseAssets } from "../parsers/opensea";
 
 export const fetchCollection = async (chainId, { contract }) => {
   logger.info(
-      "opensea-fetcher", `fetchCollection. chainId:${chainId}, contract:${contract}`
+    "opensea-fetcher",
+    `fetchCollection. chainId:${chainId}, contract:${contract}`
   );
 
   try {
     const url =
-        chainId === 1
-            ? `https://api.opensea.io/api/v1/asset_contract/${contract}`
-            : `https://rinkeby-api.opensea.io/api/v1/asset_contract/${contract}`;
+      chainId === 1
+        ? `https://api.opensea.io/api/v1/asset_contract/${contract}`
+        : `https://testnets-api.opensea.io/api/v1/asset_contract/${contract}`;
 
     const { data } = await axios.get(url, {
       headers:
-          chainId === 1
-              ? {
-                "X-API-KEY": process.env.OPENSEA_COLLECTION_API_KEY.trim(),
-              }
-              : {},
+        chainId === 1
+          ? {
+              "X-API-KEY": process.env.OPENSEA_COLLECTION_API_KEY.trim(),
+            }
+          : {},
     });
 
     if (!data.collection) {
@@ -72,8 +73,13 @@ export const fetchCollection = async (chainId, { contract }) => {
     };
   } catch (error) {
     logger.error(
-        "opensea-fetcher", `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${error.message},  status:${error.response?.status
-        }, data:${JSON.stringify(error.response?.data)}`);
+      "opensea-fetcher",
+      `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
+        error.message
+      },  status:${error.response?.status}, data:${JSON.stringify(
+        error.response?.data
+      )}`
+    );
 
     try {
       const name = await new Contract(
@@ -104,32 +110,38 @@ export const fetchToken = async (chainId, contract, tokenId) => {
   const url =
     chainId === 1
       ? `https://api.opensea.io/api/v1/asset/${contract}/${tokenId}/`
-      : `https://rinkeby-api.opensea.io/api/v1/asset/${contract}/${tokenId}/`;
+      : `https://testnets-api.opensea.io/api/v1/asset/${contract}/${tokenId}/`;
 
   const data = await axios
     .get(url, {
       headers:
         chainId === 1
           ? {
-            "X-API-KEY": process.env.OPENSEA_TOKENS_API_KEY.trim(),
-          }
+              "X-API-KEY": process.env.OPENSEA_TOKENS_API_KEY.trim(),
+            }
           : {},
     })
     .then((response) => response.data)
     .catch((error) => {
-        logger.error(
-            "opensea-fetcher", `fetchToken error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${error.message},  status:${error.response?.status
-            }, data:${JSON.stringify(error.response?.data)}`);
+      logger.error(
+        "opensea-fetcher",
+        `fetchToken error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
+          error.message
+        },  status:${error.response?.status}, data:${JSON.stringify(
+          error.response?.data
+        )}`
+      );
 
-        handleError(error);
-      });
+      handleError(error);
+    });
 
   return [parseAsset(data)].filter(Boolean);
 };
 
 export const fetchTokens = async (chainId, tokens) => {
   logger.info(
-      "opensea-fetcher", `fetchTokens. chainId:${chainId} count:${tokens.length}`
+    "opensea-fetcher",
+    `fetchTokens. chainId:${chainId} count:${tokens.length}`
   );
 
   const searchParams = new URLSearchParams();
@@ -154,8 +166,13 @@ export const fetchTokens = async (chainId, tokens) => {
     .then((response) => response.data)
     .catch((error) => {
       logger.error(
-          "opensea-fetcher", `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${error.response?.status
-          }, data:${JSON.stringify(error.response?.data)}`);
+        "opensea-fetcher",
+        `fetchTokens error. chainId:${chainId}, message:${
+          error.message
+        },  status:${error.response?.status}, data:${JSON.stringify(
+          error.response?.data
+        )}`
+      );
 
       handleError(error);
     });
@@ -197,7 +214,9 @@ const handleError = (error) => {
     let delay = 1;
 
     if (
-        error.response.data.detail?.startsWith("Request was throttled. Expected available in")
+      error.response.data.detail?.startsWith(
+        "Request was throttled. Expected available in"
+      )
     ) {
       try {
         delay = error.response.data.detail.split(" ")[6];
@@ -209,5 +228,5 @@ const handleError = (error) => {
     throw new RequestWasThrottledError(error.response.statusText, delay);
   }
 
-  throw(error);
+  throw error;
 };

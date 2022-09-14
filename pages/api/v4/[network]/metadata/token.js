@@ -16,7 +16,9 @@ const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)) {
+    if (
+      !["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)
+    ) {
       throw new Error("Unknown network");
     }
 
@@ -65,17 +67,21 @@ const api = async (req, res) => {
       } else {
         try {
           const result = await Promise.all(
-              await provider
-                  .fetchContractTokens(chainId, contract, continuation)
-                  .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+            await provider
+              .fetchContractTokens(chainId, contract, continuation)
+              .then((l) =>
+                l.map((metadata) => extendMetadata(chainId, metadata))
+              )
           );
 
           return res.status(200).json(result);
         } catch (error) {
           if (error instanceof RequestWasThrottledError) {
-            return res.status(429).json({ error: error.message, expires_in: error.delay });
+            return res
+              .status(429)
+              .json({ error: error.message, expires_in: error.delay });
           }
-          throw(error);
+          throw error;
         }
       }
     }
@@ -130,22 +136,28 @@ const api = async (req, res) => {
           newMetadata = await Promise.all(
             await provider
               .fetchToken(chainId, tokens[0].contract, tokens[0].tokenId)
-              .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+              .then((l) =>
+                l.map((metadata) => extendMetadata(chainId, metadata))
+              )
           );
         } else {
           newMetadata = await Promise.all(
             await provider
               .fetchTokens(chainId, tokens)
-              .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+              .then((l) =>
+                l.map((metadata) => extendMetadata(chainId, metadata))
+              )
           );
         }
 
         metadata = [...metadata, ...newMetadata];
       } catch (error) {
         if (error instanceof RequestWasThrottledError) {
-          return res.status(429).json({ error: error.message, expires_in: error.delay });
+          return res
+            .status(429)
+            .json({ error: error.message, expires_in: error.delay });
         }
-        throw(error);
+        throw error;
       }
     }
 
