@@ -68,7 +68,10 @@ export const fetchCollection = async (chainId, { contract }) => {
           bps: data.dev_seller_fee_basis_points,
         },
       ],
-      fees: data.collection.fees,
+      fees: {
+        sellerFees: data.collection.fees.seller_fees,
+        openseaFees: data.collection.fees.opensea_fees,
+      },
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
