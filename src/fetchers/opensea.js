@@ -59,6 +59,7 @@ export const fetchCollection = async (chainId, { contract }) => {
             discordUrl: data.collection.discord_url,
             externalUrl: data.collection.external_url,
             twitterUsername: data.collection.twitter_username,
+            safelistRequestStatus: data.collection.safelist_request_status,
           }
         : null,
       royalties: [
@@ -67,6 +68,7 @@ export const fetchCollection = async (chainId, { contract }) => {
           bps: data.dev_seller_fee_basis_points,
         },
       ],
+      fees: data.collection.fees,
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
@@ -95,6 +97,7 @@ export const fetchCollection = async (chainId, { contract }) => {
         community: null,
         metadata: null,
         royalties: [],
+        fees: {},
         contract,
         tokenIdRange: null,
         tokenSetId: `contract:${contract}`,
