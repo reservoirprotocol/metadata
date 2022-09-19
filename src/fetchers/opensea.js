@@ -7,7 +7,7 @@ import { getProvider } from "../utils";
 import { logger } from "../logger";
 
 import { RequestWasThrottledError } from "./errors";
-import { parseAsset, parseAssets } from "../parsers/opensea";
+import { parse } from "../parsers/opensea";
 
 export const fetchCollection = async (chainId, { contract }) => {
   logger.info(
@@ -59,6 +59,7 @@ export const fetchCollection = async (chainId, { contract }) => {
             discordUrl: data.collection.discord_url,
             externalUrl: data.collection.external_url,
             twitterUsername: data.collection.twitter_username,
+            safelistRequestStatus: data.collection.safelist_request_status,
           }
         : null,
       royalties: [
@@ -67,6 +68,10 @@ export const fetchCollection = async (chainId, { contract }) => {
           bps: data.dev_seller_fee_basis_points,
         },
       ],
+      fees: {
+        sellerFees: data.collection.fees.seller_fees,
+        openseaFees: data.collection.fees.opensea_fees,
+      },
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
@@ -95,6 +100,7 @@ export const fetchCollection = async (chainId, { contract }) => {
         community: null,
         metadata: null,
         royalties: [],
+        fees: {},
         contract,
         tokenIdRange: null,
         tokenSetId: `contract:${contract}`,
@@ -135,7 +141,7 @@ export const fetchToken = async (chainId, contract, tokenId) => {
       handleError(error);
     });
 
-  return [parseAsset(data)].filter(Boolean);
+  return [parse(data)].filter(Boolean);
 };
 
 export const fetchTokens = async (chainId, tokens) => {
@@ -177,7 +183,7 @@ export const fetchTokens = async (chainId, tokens) => {
       handleError(error);
     });
 
-  return data.assets.map(parseAssets).filter(Boolean);
+  return data.assets.map(parse).filter(Boolean);
 };
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
@@ -205,7 +211,7 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
 
   return {
     continuation: data.next,
-    metadata: data.assets.map(parseAssets).filter(Boolean),
+    metadata: data.assets.map(parse).filter(Boolean),
   };
 };
 
