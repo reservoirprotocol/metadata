@@ -112,38 +112,6 @@ export const fetchCollection = async (chainId, { contract }) => {
   }
 };
 
-export const fetchToken = async (chainId, contract, tokenId) => {
-  const url =
-    chainId === 1
-      ? `https://api.opensea.io/api/v1/asset/${contract}/${tokenId}/`
-      : `https://testnets-api.opensea.io/api/v1/asset/${contract}/${tokenId}/`;
-
-  const data = await axios
-    .get(url, {
-      headers:
-        chainId === 1
-          ? {
-              "X-API-KEY": process.env.OPENSEA_TOKENS_API_KEY.trim(),
-            }
-          : {},
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-      logger.error(
-        "opensea-fetcher",
-        `fetchToken error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(
-          error.response?.data
-        )}`
-      );
-
-      handleError(error);
-    });
-
-  return [parse(data)].filter(Boolean);
-};
-
 export const fetchTokens = async (chainId, tokens) => {
   logger.info(
     "opensea-fetcher",
