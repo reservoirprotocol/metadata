@@ -8,7 +8,6 @@ import { logger } from "../logger";
 
 import { RequestWasThrottledError } from "./errors";
 import { parseAsset, parseAssets } from "../parsers/opensea";
-import _ from "lodash";
 
 export const fetchCollection = async (chainId, { contract }) => {
   logger.info(
@@ -84,13 +83,7 @@ export const fetchCollection = async (chainId, { contract }) => {
             safelistRequestStatus: data.collection.safelist_request_status,
           }
         : null,
-      royalties: [
-        {
-          recipient: data.payout_address,
-          bps: data.dev_seller_fee_basis_points,
-        },
-      ],
-      fees: royalties,
+      royalties,
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
@@ -119,7 +112,6 @@ export const fetchCollection = async (chainId, { contract }) => {
         community: null,
         metadata: null,
         royalties: [],
-        fees: {},
         contract,
         tokenIdRange: null,
         tokenSetId: `contract:${contract}`,
