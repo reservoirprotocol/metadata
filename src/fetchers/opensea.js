@@ -58,14 +58,14 @@ export const fetchCollection = async (chainId, { contract }) => {
       }
     }
 
-    for(const key in data.collection.fees.opensea_fees) {
-      if(data.collection.fees.opensea_fees.hasOwnProperty(key)) {
-        royalties.push({
-          "recipient": key,
-          "bps": data.collection.fees.opensea_fees[key],
-        });
-      }
-    }
+    // for(const key in data.collection.fees.opensea_fees) {
+    //   if(data.collection.fees.opensea_fees.hasOwnProperty(key)) {
+    //     royalties.push({
+    //       "recipient": key,
+    //       "bps": data.collection.fees.opensea_fees[key],
+    //     });
+    //   }
+    // }
 
     return {
       id: contract,
