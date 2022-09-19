@@ -5,6 +5,7 @@ import slugify from "slugify";
 
 import { parse } from "../parsers/centerdev";
 import { getProvider } from "../utils";
+import {logger} from "../logger";
 
 const getNetworkName = (chainId) => {
   let network;
@@ -26,6 +27,11 @@ const getNetworkName = (chainId) => {
 };
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
+  logger.info(
+      "centerdev-fetcher",
+      `fetchCollection. chainId:${chainId}, contract:${contract}`
+  );
+
   try {
     const network = getNetworkName(chainId);
     const url = `https://api.center.dev/v1/${network}/${contract}`;
@@ -74,6 +80,11 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 };
 
 export const fetchTokens = async (chainId, tokens) => {
+  logger.info(
+      "centerdev-fetcher",
+      `fetchTokens. chainId:${chainId} count:${tokens.length}`
+  );
+
   const network = getNetworkName(chainId);
   const url = `https://api.center.dev/v1/${network}/assets`;
 
@@ -84,7 +95,19 @@ export const fetchTokens = async (chainId, tokens) => {
       headers: { "X-API-KEY": process.env.CENTERDEV_API_KEY.trim() },
     })
 
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch((error) => {
+      logger.error(
+          "centerdev-fetcher",
+          `fetchTokens error. chainId:${chainId}, message:${
+              error.message
+          },  status:${error.response?.status}, data:${JSON.stringify(
+              error.response?.data
+          )}`
+      );
+
+      throw error;
+      });
 
   return data.map(parse).filter(Boolean);
 };

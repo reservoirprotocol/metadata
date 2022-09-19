@@ -7,7 +7,7 @@ import { getProvider } from "../utils";
 import { logger } from "../logger";
 
 import { RequestWasThrottledError } from "./errors";
-import { parseAsset, parseAssets } from "../parsers/opensea";
+import { parse } from "../parsers/opensea";
 
 export const fetchCollection = async (chainId, { contract }) => {
   logger.info(
@@ -141,7 +141,7 @@ export const fetchToken = async (chainId, contract, tokenId) => {
       handleError(error);
     });
 
-  return [parseAsset(data)].filter(Boolean);
+  return [parse(data)].filter(Boolean);
 };
 
 export const fetchTokens = async (chainId, tokens) => {
@@ -183,7 +183,7 @@ export const fetchTokens = async (chainId, tokens) => {
       handleError(error);
     });
 
-  return data.assets.map(parseAssets).filter(Boolean);
+  return data.assets.map(parse).filter(Boolean);
 };
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
@@ -211,7 +211,7 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
 
   return {
     continuation: data.next,
-    metadata: data.assets.map(parseAssets).filter(Boolean),
+    metadata: data.assets.map(parse).filter(Boolean),
   };
 };
 
