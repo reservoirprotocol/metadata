@@ -46,6 +46,27 @@ export const fetchCollection = async (chainId, { contract }) => {
       "0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85": "ens",
     };
 
+    // Collect the fees
+    const royalties = [];
+
+    for(const key in data.collection.fees.seller_fees) {
+      if(data.collection.fees.seller_fees.hasOwnProperty(key)) {
+        royalties.push({
+          "recipient": key,
+          "bps": data.collection.fees.seller_fees[key],
+        });
+      }
+    }
+
+    // for(const key in data.collection.fees.opensea_fees) {
+    //   if(data.collection.fees.opensea_fees.hasOwnProperty(key)) {
+    //     royalties.push({
+    //       "recipient": key,
+    //       "bps": data.collection.fees.opensea_fees[key],
+    //     });
+    //   }
+    // }
+
     return {
       id: contract,
       slug: data.collection.slug,
@@ -62,16 +83,7 @@ export const fetchCollection = async (chainId, { contract }) => {
             safelistRequestStatus: data.collection.safelist_request_status,
           }
         : null,
-      royalties: [
-        {
-          recipient: data.payout_address,
-          bps: data.dev_seller_fee_basis_points,
-        },
-      ],
-      fees: {
-        sellerFees: data.collection.fees.seller_fees,
-        openseaFees: data.collection.fees.opensea_fees,
-      },
+      royalties,
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
@@ -100,7 +112,6 @@ export const fetchCollection = async (chainId, { contract }) => {
         community: null,
         metadata: null,
         royalties: [],
-        fees: {},
         contract,
         tokenIdRange: null,
         tokenSetId: `contract:${contract}`,
