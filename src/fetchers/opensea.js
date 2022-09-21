@@ -7,7 +7,7 @@ import { getProvider } from "../utils";
 import { logger } from "../logger";
 
 import { RequestWasThrottledError } from "./errors";
-import { parseAsset, parseAssets } from "../parsers/opensea";
+import { parse } from "../parsers/opensea";
 
 export const fetchCollection = async (chainId, { contract }) => {
   logger.info(
@@ -123,38 +123,6 @@ export const fetchCollection = async (chainId, { contract }) => {
   }
 };
 
-export const fetchToken = async (chainId, contract, tokenId) => {
-  const url =
-    chainId === 1
-      ? `https://api.opensea.io/api/v1/asset/${contract}/${tokenId}/`
-      : `https://testnets-api.opensea.io/api/v1/asset/${contract}/${tokenId}/`;
-
-  const data = await axios
-    .get(url, {
-      headers:
-        chainId === 1
-          ? {
-              "X-API-KEY": process.env.OPENSEA_TOKENS_API_KEY.trim(),
-            }
-          : {},
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-      logger.error(
-        "opensea-fetcher",
-        `fetchToken error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(
-          error.response?.data
-        )}`
-      );
-
-      handleError(error);
-    });
-
-  return [parseAsset(data)].filter(Boolean);
-};
-
 export const fetchTokens = async (chainId, tokens) => {
   logger.info(
     "opensea-fetcher",
@@ -194,7 +162,7 @@ export const fetchTokens = async (chainId, tokens) => {
       handleError(error);
     });
 
-  return data.assets.map(parseAssets).filter(Boolean);
+  return data.assets.map(parse).filter(Boolean);
 };
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
@@ -222,7 +190,7 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
 
   return {
     continuation: data.next,
-    metadata: data.assets.map(parseAssets).filter(Boolean),
+    metadata: data.assets.map(parse).filter(Boolean),
   };
 };
 

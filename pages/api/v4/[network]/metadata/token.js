@@ -130,25 +130,13 @@ const api = async (req, res) => {
     let metadata = [];
     if (tokens.length) {
       try {
-        let newMetadata;
-
-        if (tokens.length === 1) {
-          newMetadata = await Promise.all(
+        const newMetadata = await Promise.all(
             await provider
-              .fetchToken(chainId, tokens[0].contract, tokens[0].tokenId)
-              .then((l) =>
-                l.map((metadata) => extendMetadata(chainId, metadata))
-              )
-          );
-        } else {
-          newMetadata = await Promise.all(
-            await provider
-              .fetchTokens(chainId, tokens)
-              .then((l) =>
-                l.map((metadata) => extendMetadata(chainId, metadata))
-              )
-          );
-        }
+                .fetchTokens(chainId, tokens)
+                .then((l) =>
+                    l.map((metadata) => extendMetadata(chainId, metadata))
+                )
+        );
 
         metadata = [...metadata, ...newMetadata];
       } catch (error) {
