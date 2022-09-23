@@ -5,6 +5,7 @@ import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
 import { getProvider } from "../utils";
+import {logger} from "../logger";
 
 const getNetworkName = (chainId) => {
   let network;
@@ -22,6 +23,11 @@ const getNetworkName = (chainId) => {
 };
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
+  logger.info(
+      "simplehash-fetcher",
+      `fetchCollection. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}`
+  );
+
   try {
     const network = getNetworkName(chainId);
 
@@ -79,6 +85,11 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 };
 
 export const fetchTokens = async (chainId, tokens) => {
+  logger.info(
+      "simplehash-fetcher",
+      `fetchTokens. chainId:${chainId} count:${tokens.length}`
+  );
+
   const network = getNetworkName(chainId);
 
   const searchParams = new URLSearchParams();
