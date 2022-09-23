@@ -60,6 +60,15 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     };
   } catch {
     try {
+      logger.error(
+          "simplehash-fetcher",
+          `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
+              error.message
+          },  status:${error.response?.status}, data:${JSON.stringify(
+              error.response?.data
+          )}`
+      );
+
       const name = await new Contract(
         contract,
         new Interface(["function name() view returns (string)"]),
@@ -103,7 +112,19 @@ export const fetchTokens = async (chainId, tokens) => {
     .get(url, {
       headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
     })
-    .then((response) => response.data);
+    .then((response) => response.data)
+    .catch((error) => {
+        logger.error(
+            "simplehash-fetcher",
+            `fetchTokens error. chainId:${chainId}, message:${
+                error.message
+            },  status:${error.response?.status}, data:${JSON.stringify(
+                error.response?.data
+            )}`
+        );
+
+        throw error;
+      });
 
   return data.nfts.map(parse).filter(Boolean);
 };
