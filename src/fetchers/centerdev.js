@@ -27,11 +27,6 @@ const getNetworkName = (chainId) => {
 };
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
-  logger.info(
-      "centerdev-fetcher",
-      `fetchCollection. chainId:${chainId}, contract:${contract}`
-  );
-
   try {
     const network = getNetworkName(chainId);
     const url = `https://api.center.dev/v1/${network}/${contract}`;
@@ -80,11 +75,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 };
 
 export const fetchTokens = async (chainId, tokens) => {
-  logger.info(
-      "centerdev-fetcher",
-      `fetchTokens. chainId:${chainId} count:${tokens.length}`
-  );
-
   const network = getNetworkName(chainId);
   const url = `https://api.center.dev/v1/${network}/assets`;
 

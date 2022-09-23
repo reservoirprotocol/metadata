@@ -10,11 +10,6 @@ import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
 
 export const fetchCollection = async (chainId, { contract }) => {
-  logger.info(
-    "opensea-fetcher",
-    `fetchCollection. chainId:${chainId}, contract:${contract}`
-  );
-
   try {
     const url =
       chainId === 1
@@ -124,11 +119,6 @@ export const fetchCollection = async (chainId, { contract }) => {
 };
 
 export const fetchTokens = async (chainId, tokens) => {
-  logger.info(
-    "opensea-fetcher",
-    `fetchTokens. chainId:${chainId} count:${tokens.length}`
-  );
-
   const searchParams = new URLSearchParams();
   for (const { contract, tokenId } of tokens) {
     searchParams.append("asset_contract_addresses", contract);
