@@ -22,6 +22,7 @@ export const fetchToken = (_chainId, { contract, tokenId }) => {
     tokenId,
     name: wizards[tokenId]["FullName"],
     imageUrl: `https://bafybeigjl2wwcakyvqd4s6odmmyy3lqxiyffv3wk4su5p5bincksxgga2a.ipfs.infura-ipfs.io/${tokenId}.png`,
+    flagged: false,
     attributes: [],
   };
 

@@ -51,6 +51,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     tokenId,
     name: data.name,
     imageUrl: data.image,
+    flagged: false,
     attributes
   };
       

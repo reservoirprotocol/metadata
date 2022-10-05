@@ -257,6 +257,7 @@ export const fetchToken = (_chainId, { contract, tokenId }) => {
     tokenId,
     name: `Bag #${tokenId}`,
     imageUrl: `https://www.loot.exchange/api/image/${tokenId}`,
+    flagged: false,
     attributes: [],
   };
 
