@@ -1,5 +1,6 @@
 import axios from "axios";
 import slugify from "slugify";
+import _ from "lodash";
 
 export const fetchCollection = async (_chainId, { contract, tokenId }) => {
   const url = `https://token.artblocks.io/${tokenId}`;
@@ -52,7 +53,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   return {
     contract,
     tokenId,
-    collection: `${contract}:${startTokenId}:${endTokenId}`,
+    collection: _.toLower(`${contract}:${startTokenId}:${endTokenId}`),
     name: data.name,
     imageUrl: data.image,
     flagged: false,

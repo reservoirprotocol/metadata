@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export const parse = (asset) => {
   let attributes = [];
 
@@ -26,7 +28,7 @@ export const parse = (asset) => {
   return {
     contract: asset.address,
     tokenId: asset.token_id,
-    collection: asset.address,
+    collection: _.toLower(asset.address),
     name: asset.name,
     description: asset.metadata?.description,
     imageUrl,

@@ -1,5 +1,6 @@
 import axios from "axios";
 import {ethers} from "ethers";
+import _ from "lodash";
 
 const provider = new ethers.providers.JsonRpcProvider(null, "mainnet");
 
@@ -42,7 +43,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   return {
     contract,
     tokenId,
-    collection: contract,
+    collection: _.toLower(contract),
     name: response.data.name,
     imageUrl: response.data.image,
     flagged: false,
