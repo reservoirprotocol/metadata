@@ -1,4 +1,5 @@
 import axios from "axios";
+import _ from "lodash";
 
 const rank = {
   Head: 9,
@@ -30,7 +31,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
       return {
         contract,
         tokenId,
-        collection: contract,
+        collection: _.toLower(contract),
         name: response.data.name,
         imageUrl: response.data.image,
         flagged: false,

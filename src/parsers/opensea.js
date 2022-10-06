@@ -1,8 +1,10 @@
+import _ from "lodash";
+
 export const parse = (asset) => {
   return {
     contract: asset.asset_contract.address,
     tokenId: asset.token_id,
-    collection: asset.asset_contract.address,
+    collection: _.toLower(asset.asset_contract.address),
     name: asset.name,
     flagged: !asset.supports_wyvern,
     // Token descriptions are a waste of space for most collections we deal with
