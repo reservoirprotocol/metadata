@@ -1,6 +1,9 @@
 import axios from "axios";
+import { ethers } from "ethers";
 import slugify from "slugify";
+import { getProvider } from "../../utils";
 import ArtistContracts from './ArtistContracts.json';
+import ReleaseContracts from './ReleaseContracts.json';
 
 export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     const apiUrl = "https://api.sound.xyz/graphql";
@@ -41,6 +44,15 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
         } }
     )
 
+    const royaltyAbi = ["function royaltyInfo(uint256, uint256) public view returns (address, uint256)"];
+    const nftContract = new ethers.Contract(
+        contract,
+        royaltyAbi,
+        getProvider(_chainId)
+    );
+    const BPS_100 = 10000;
+    const [fundingAddress, royaltyBPS] = await nftContract.royaltyInfo(tokenId, BPS_100);
+
     return {
         id: `${contract}:${nft.release.titleSlug}`,
         slug: slugify(nft.release.titleSlug, { lower: true }),
@@ -53,8 +65,8 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
         },
         royalties: [
           {
-            recipient: nft.release.artist.user.publicAddress,
-            bps: 1000,
+            recipient: fundingAddress.toLowerCase(),
+            bps: royaltyBPS.toString(),
           },
         ],
         contract,
@@ -65,3 +77,4 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
 
 
 export const SoundxyzArtistContracts = ArtistContracts.map((c) => c.toLowerCase());
+export const SoundxyzReleaseContracts = ReleaseContracts.map((c) => c.toLowerCase());

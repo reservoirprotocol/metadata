@@ -44,6 +44,7 @@ customCollection["1,0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270"] = artblocks;
 customCollection["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
 
 soundxyz.SoundxyzArtistContracts.forEach((address) => customCollection[`1,${address}`] = soundxyz);
+soundxyz.SoundxyzReleaseContracts.forEach((address) => customCollection[`1,${address}`] = soundxyz);
 
 const custom = {};
 
