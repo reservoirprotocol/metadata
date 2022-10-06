@@ -26,6 +26,7 @@ export const parse = (asset) => {
   return {
     contract: asset.address,
     tokenId: asset.token_id,
+    collectionId: asset.address,
     name: asset.name,
     description: asset.metadata?.description,
     imageUrl,
