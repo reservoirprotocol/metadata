@@ -52,7 +52,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   return {
     contract,
     tokenId,
-    collectionId: `${contract}:${startTokenId}:${endTokenId}`,
+    collection: `${contract}:${startTokenId}:${endTokenId}`,
     name: data.name,
     imageUrl: data.image,
     flagged: false,

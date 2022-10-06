@@ -3,7 +3,7 @@ export const parse = (asset) => {
     contract: asset.contract_address,
     tokenId: asset.token_id,
     name: asset.name,
-    collectionId: asset.contract_address,
+    collection: asset.contract_address,
     // Token descriptions are a waste of space for most collections we deal with
     // so by default we ignore them (this behaviour can be overridden if needed).
     description: asset.description,
