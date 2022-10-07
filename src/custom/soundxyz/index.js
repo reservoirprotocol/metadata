@@ -78,7 +78,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
           },
         ],
         contract,
-        tokenIdRange: "",
+        tokenIdRange: null,
         tokenSetId: null,
       };
 }
