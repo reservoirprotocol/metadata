@@ -46,6 +46,7 @@ customCollection["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
 // Sound XYZ
 soundxyz.SoundxyzArtistContracts.forEach((address) => customCollection[`1,${address}`] = soundxyz);
 soundxyz.SoundxyzReleaseContracts.forEach((address) => customCollection[`1,${address}`] = soundxyz);
+customCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 
 const custom = {};
 
@@ -55,6 +56,7 @@ custom["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
 // Sound XYZ
 soundxyz.SoundxyzArtistContracts.forEach((address) => custom[`1,${address}`] = soundxyz);
 soundxyz.SoundxyzReleaseContracts.forEach((address) => custom[`1,${address}`] = soundxyz);
+custom["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 
 // Loot
 custom["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
