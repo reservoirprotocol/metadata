@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 const { BigNumber } = require("@ethersproject/bignumber");
 const { id } = require("@ethersproject/hash");
 const { lootRarity, rarityDescription } = require("loot-rarity");
@@ -255,6 +257,7 @@ export const fetchToken = (_chainId, { contract, tokenId }) => {
   const result = {
     contract,
     tokenId,
+    collection: _.toLower(contract),
     name: `Bag #${tokenId}`,
     imageUrl: `https://www.loot.exchange/api/image/${tokenId}`,
     flagged: false,

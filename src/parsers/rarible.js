@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export const parse = (asset) => {
   try {
     // Image
@@ -36,6 +38,7 @@ export const parse = (asset) => {
     return {
       contract: asset.contract,
       tokenId: asset.tokenId,
+      collection: _.toLower(asset.contract),
       name: asset.meta.name,
       imageUrl,
       mediaUrl,
