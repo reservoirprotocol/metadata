@@ -9,7 +9,7 @@ import * as opensea from "../../../src/fetchers/opensea";
 import { extendMetadata } from "../../extend";
 import { RequestWasThrottledError } from "../../fetchers/errors";
 
-export const getContractSlug = async (contract, tokenId) => {
+export const getContractSlug = async (chainId, contract, tokenId) => {
   const apiUrl = (chainId === 1 ? "https://api.sound.xyz/graphql" : "https://staging.api.sound.xyz/graphql");
 
   const query = `
@@ -50,7 +50,7 @@ export const getContractSlug = async (contract, tokenId) => {
 }
 
 export const fetchCollection = async (_chainId, { contract, tokenId }) => {
-    const { data: { data: { nft }}} = await getContractSlug(contract, tokenId);
+    const { data: { data: { nft }}} = await getContractSlug(_chainId, contract, tokenId);
 
     const royaltyAbi = ["function royaltyInfo(uint256, uint256) public view returns (address, uint256)"];
     const nftContract = new ethers.Contract(
@@ -85,7 +85,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
   try {
-    const { data: { data: { nft } } } = await getContractSlug(contract, tokenId);
+    const { data: { data: { nft } } } = await getContractSlug(_chainId, contract, tokenId);
 
     const newMetadata = await Promise.all(
       await opensea
