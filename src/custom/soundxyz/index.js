@@ -64,7 +64,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     return {
         id: `${contract}:${nft.release.titleSlug}`,
         slug: slugify(nft.release.titleSlug, { lower: true }),
-        name: nft.title,
+        name: nft.release.title,
         community: "sound.xyz",
         metadata: {
           imageUrl: nft.release.coverImage.url,
@@ -74,7 +74,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
         royalties: [
           {
             recipient: fundingAddress.toLowerCase(),
-            bps: royaltyBPS.toString(),
+            bps: Number(royaltyBPS),
           },
         ],
         contract,
