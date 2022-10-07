@@ -10,7 +10,8 @@ import { extendMetadata } from "../../extend";
 import { RequestWasThrottledError } from "../../fetchers/errors";
 
 export const getContractSlug = async (contract, tokenId) => {
-  const apiUrl = "https://api.sound.xyz/graphql";
+  const apiUrl = (chainId === 1 ? "https://api.sound.xyz/graphql" : "https://staging.api.sound.xyz/graphql");
+
   const query = `
         query ContractSlug {
             nft(input: {
