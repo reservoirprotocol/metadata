@@ -62,8 +62,8 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     const [fundingAddress, royaltyBPS] = await nftContract.royaltyInfo(tokenId, BPS_100);
 
     return {
-        id: `${contract}:${nft.release.titleSlug}`,
-        slug: slugify(nft.release.titleSlug, { lower: true }),
+        id: `${contract}:${nft.release.id}`,
+        slug: slugify(nft.release.id, { lower: true }),
         name: nft.release.title,
         community: "sound.xyz",
         metadata: {
@@ -96,7 +96,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     );
 
     if (!_.isEmpty(newMetadata)) {
-      newMetadata[0].collection = `${contract}:${nft.release.titleSlug}`;
+      newMetadata[0].collection = `${contract}:${nft.release.id}`;
       return newMetadata[0];
     }
   } catch (error) {
