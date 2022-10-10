@@ -1,5 +1,6 @@
 import axios from "axios";
 import souls from "./souls.json";
+import _ from "lodash";
 
 const rank = {
   Head: 13,
@@ -81,6 +82,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
       return {
         contract,
         tokenId,
+        collection: _.toLower(contract),
         name: response.data.name,
         imageUrl: response.data.image,
         flagged: false,

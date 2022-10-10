@@ -1,4 +1,5 @@
 import wizards from "./wizards.json";
+import _ from "lodash";
 
 const rank = {
   Head: 14,
@@ -20,6 +21,7 @@ export const fetchToken = (_chainId, { contract, tokenId }) => {
   const result = {
     contract,
     tokenId,
+    collection: _.toLower(contract),
     name: wizards[tokenId]["FullName"],
     imageUrl: `https://bafybeigjl2wwcakyvqd4s6odmmyy3lqxiyffv3wk4su5p5bincksxgga2a.ipfs.infura-ipfs.io/${tokenId}.png`,
     flagged: false,
