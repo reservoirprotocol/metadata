@@ -100,12 +100,6 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
       return newMetadata[0];
     }
   } catch (error) {
-    if (error instanceof RequestWasThrottledError) {
-      return res
-        .status(429)
-        .json({ error: error.message, expires_in: error.delay });
-    }
-
     throw error
   }
 };
