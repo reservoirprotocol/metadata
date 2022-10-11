@@ -4,6 +4,7 @@ import slugify from "slugify";
 import { getProvider } from "../../utils";
 import ArtistContracts from './ArtistContracts.json';
 import ReleaseContracts from './ReleaseContracts.json';
+import {logger} from "../../logger";
 
 export const getContractSlug = async (chainId, contract, tokenId) => {
   const apiUrl = (chainId === 1 ? "https://api.sound.xyz/graphql" : "https://staging.api.sound.xyz/graphql");
@@ -35,14 +36,27 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
             }
         }
     `
-  return await axios.post(
-    apiUrl,
-    { query },
-    { headers: {
-        'x-sound-client-key': process.env.SOUNDXYZ_API_KEY,
-        'CONTENT-TYPE': 'application/json',
-      } }
-  )
+  try {
+    return await axios.post(
+      apiUrl,
+      { query },
+      {
+        headers: {
+          'x-sound-client-key': process.env.SOUNDXYZ_API_KEY,
+          'CONTENT-TYPE': 'application/json',
+        }
+      }
+    )
+  } catch (error) {
+    logger.error("soundxyz-fetcher",
+      `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
+        error.message
+      },  status:${error.response?.status}, data:${JSON.stringify(
+        error.response?.data
+      )}`);
+
+    throw error;
+  }
 }
 
 export const fetchCollection = async (_chainId, { contract, tokenId }) => {
