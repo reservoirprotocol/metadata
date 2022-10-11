@@ -7,7 +7,7 @@ import ReleaseContracts from './ReleaseContracts.json';
 import {logger} from "../../logger";
 
 export const getContractSlug = async (chainId, contract, tokenId) => {
-  const apiUrl = (chainId === 1 ? "https://api.sound.xyz/graphql" : "https://staging.api.sound.xyz/graphql");
+  const apiUrl = (chainId === 1 ? "https://api.sound.xyz/graphql?x-sound-client-name=firstmate" : "https://staging.api.sound.xyz/graphql");
 
   const query = `
         query ContractSlug {
