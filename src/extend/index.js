@@ -5,6 +5,7 @@ import * as nouns from "./nouns";
 import * as lilnouns from "./lilnouns";
 import * as chimpers from './chimpers';
 import * as moonbirds from './moonbirds';
+import * as soundxyz from "./soundxyz";
 
 export const extendCollectionMetadata = async (chainId, metadata) => {
   if (metadata) {
@@ -55,3 +56,8 @@ extend["1,0x80336ad7a747236ef41f47ed2c7641828a480baa"] = chimpers;
 
 // Moonbirds
 extend["1,0x23581767a106ae21c074b2276d25e5c3e136a68b"] = moonbirds;
+
+// Sound XYZ
+soundxyz.SoundxyzArtistContracts.forEach((address) => extend[`1,${address}`] = soundxyz);
+soundxyz.SoundxyzReleaseContracts.forEach((address) => extend[`1,${address}`] = soundxyz);
+extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;

@@ -55,11 +55,6 @@ custom["1,0x059edd72cd353df5106d2b9cc5ab83a52287ac3a"] = artblocks;
 custom["1,0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270"] = artblocks;
 custom["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
 
-// Sound XYZ
-soundxyz.SoundxyzArtistContracts.forEach((address) => custom[`1,${address}`] = soundxyz);
-soundxyz.SoundxyzReleaseContracts.forEach((address) => custom[`1,${address}`] = soundxyz);
-custom["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
-
 // Loot
 custom["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
 custom["4,0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78"] = loot;
