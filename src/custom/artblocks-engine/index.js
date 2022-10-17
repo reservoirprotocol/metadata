@@ -50,9 +50,13 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     });
   }
 
+  const startTokenId = tokenId - (tokenId % 1000000);
+  const endTokenId = startTokenId + 1000000 - 1;
+
   return {
     contract,
     tokenId,
+    collection: `${contract}:${startTokenId}:${endTokenId}`,
     name: data.name,
     imageUrl: data.image,
     flagged: false,
