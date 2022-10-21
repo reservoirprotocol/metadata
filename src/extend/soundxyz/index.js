@@ -1,6 +1,4 @@
 import { getContractSlug } from "../../custom/soundxyz";
-import ArtistContracts from "./ArtistContracts.json";
-import ReleaseContracts from "./ReleaseContracts.json";
 
 export const extend = async (_chainId, metadata) => {
   try {
@@ -11,6 +9,3 @@ export const extend = async (_chainId, metadata) => {
     throw error
   }
 };
-
-export const SoundxyzArtistContracts = ArtistContracts.map((c) => c.toLowerCase());
-export const SoundxyzReleaseContracts = ReleaseContracts.map((c) => c.toLowerCase());

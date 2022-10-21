@@ -9,6 +9,7 @@ import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
+import * as soundxyz from "../../../../../src/fetchers/soundxyz";
 
 import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 
@@ -40,7 +41,7 @@ const api = async (req, res) => {
 
     // Validate indexing method and set up provider
     const method = req.query.method;
-    if (!["opensea", "rarible", "simplehash", "centerdev"].includes(method)) {
+    if (!["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(method)) {
       throw new Error("Unknown method");
     }
 
@@ -51,6 +52,8 @@ const api = async (req, res) => {
       provider = simplehash;
     } else if (method === "centerdev") {
       provider = centerdev;
+    } else if (method === "soundxyz") {
+      provider = soundxyz;
     }
 
     // Case 1: fetch all tokens within the given contract via pagination
