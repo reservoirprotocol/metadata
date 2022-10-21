@@ -1,16 +1,13 @@
 import axios from "axios";
-import _ from "lodash";
 import { ethers } from "ethers";
 import slugify from "slugify";
 import { getProvider } from "../../utils";
 import ArtistContracts from './ArtistContracts.json';
 import ReleaseContracts from './ReleaseContracts.json';
-import * as opensea from "../../../src/fetchers/opensea";
-import { extendMetadata } from "../../extend";
-import { RequestWasThrottledError } from "../../fetchers/errors";
+import {logger} from "../../logger";
 
 export const getContractSlug = async (chainId, contract, tokenId) => {
-  const apiUrl = (chainId === 1 ? "https://api.sound.xyz/graphql" : "https://staging.api.sound.xyz/graphql");
+  const apiUrl = (chainId === 1 ? "https://api.sound.xyz/graphql?x-sound-client-name=firstmate" : "https://staging.api.sound.xyz/graphql");
 
   const query = `
         query ContractSlug {
@@ -25,6 +22,7 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
                     titleSlug
                     description
                     externalUrl
+                    behindTheMusic
                     artist {
                         id
                         name
@@ -35,18 +33,37 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
                     coverImage {
                         url
                     }
+                    goldenEggImage {
+                        url
+                    }
+                    track {
+                        id
+                    }
                 }
             }
         }
     `
-  return await axios.post(
-    apiUrl,
-    { query },
-    { headers: {
-        'x-sound-client-key': process.env.SOUNDXYZ_API_KEY,
-        'CONTENT-TYPE': 'application/json',
-      } }
-  )
+  try {
+    return await axios.post(
+      apiUrl,
+      { query },
+      {
+        headers: {
+          'x-sound-client-key': process.env.SOUNDXYZ_API_KEY,
+          'CONTENT-TYPE': 'application/json',
+        }
+      }
+    )
+  } catch (error) {
+    logger.error("soundxyz-fetcher",
+      `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
+        error.message
+      },  status:${error.response?.status}, data:${JSON.stringify(
+        error.response?.data
+      )}`);
+
+    throw error;
+  }
 }
 
 export const fetchCollection = async (_chainId, { contract, tokenId }) => {
@@ -64,7 +81,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     return {
         id: `${contract}:soundxyz-${nft.release.id}`,
         slug: slugify(nft.release.titleSlug, { lower: true }),
-        name: nft.release.title,
+        name: `${nft.release.artist.name} - ${nft.release.title}`,
         community: "sound.xyz",
         metadata: {
           imageUrl: nft.release.coverImage.url,
@@ -82,27 +99,6 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
         tokenSetId: null,
       };
 }
-
-export const fetchToken = async (_chainId, { contract, tokenId }) => {
-  try {
-    const { data: { data: { nft } } } = await getContractSlug(_chainId, contract, tokenId);
-
-    const newMetadata = await Promise.all(
-      await opensea
-        .fetchTokens(_chainId, [{contract, tokenId}])
-        .then((l) =>
-          l.map((metadata) => extendMetadata(_chainId, metadata))
-        )
-    );
-
-    if (!_.isEmpty(newMetadata)) {
-      newMetadata[0].collection = `${contract}:soundxyz-${nft.release.id}`;
-      return newMetadata[0];
-    }
-  } catch (error) {
-    throw error
-  }
-};
 
 export const SoundxyzArtistContracts = ArtistContracts.map((c) => c.toLowerCase());
 export const SoundxyzReleaseContracts = ReleaseContracts.map((c) => c.toLowerCase());

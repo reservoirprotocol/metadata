@@ -1,4 +1,5 @@
 import * as artblocks from "./artblocks";
+import * as artblocksEngine from "./artblocks-engine";
 import * as forgottenPonies from "./forgotten-ponies";
 import * as forgottenRunes from "./forgotten-runes";
 import * as forgottenSouls from "./forgotten-souls";
@@ -36,29 +37,56 @@ export const customHandleContractTokens = async (
     continuation
   );
 
+///////////////////////
+// Custom Collections
+///////////////////////
+
 const customCollection = {};
 
 // ArtBlocks
 customCollection["1,0x059edd72cd353df5106d2b9cc5ab83a52287ac3a"] = artblocks;
 customCollection["1,0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270"] = artblocks;
+customCollection["1,0x99a9b7c1116f9ceeb1652de04d5969cce509b069"] = artblocks;
 customCollection["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
+customCollection["5,0xb614c578062a62714c927cd8193f0b8bfb90055c"] = artblocks;
 
 // Sound XYZ
 soundxyz.SoundxyzArtistContracts.forEach((address) => customCollection[`1,${address}`] = soundxyz);
 soundxyz.SoundxyzReleaseContracts.forEach((address) => customCollection[`1,${address}`] = soundxyz);
 customCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 
+///////////////////////
+// Custom Tokens
+///////////////////////
+
+// ArtBlocks Engine
+customCollection["1,0xbdde08bd57e5c9fd563ee7ac61618cb2ecdc0ce0"] = artblocksEngine;
+customCollection["1,0x28f2d3805652fb5d359486dffb7d08320d403240"] = artblocksEngine;
+customCollection["1,0x64780ce53f6e966e18a22af13a2f97369580ec11"] = artblocksEngine;
+customCollection["1,0x010be6545e14f1dc50256286d9920e833f809c6a"] = artblocksEngine;
+customCollection["1,0x13aae6f9599880edbb7d144bb13f1212cee99533"] = artblocksEngine;
+customCollection["1,0xa319c382a702682129fcbf55d514e61a16f97f9c"] = artblocksEngine;
+customCollection["1,0xd10e3dee203579fcee90ed7d0bdd8086f7e53beb"] = artblocksEngine;
+customCollection["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngine;
+
 const custom = {};
 
 // ArtBlocks
 custom["1,0x059edd72cd353df5106d2b9cc5ab83a52287ac3a"] = artblocks;
 custom["1,0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270"] = artblocks;
+custom["1,0x99a9b7c1116f9ceeb1652de04d5969cce509b069"] = artblocks;
 custom["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
+custom["5,0xb614c578062a62714c927cd8193f0b8bfb90055c"] = artblocks;
 
-// Sound XYZ
-soundxyz.SoundxyzArtistContracts.forEach((address) => custom[`1,${address}`] = soundxyz);
-soundxyz.SoundxyzReleaseContracts.forEach((address) => custom[`1,${address}`] = soundxyz);
-custom["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
+// ArtBlocks Engine
+custom["1,0xbdde08bd57e5c9fd563ee7ac61618cb2ecdc0ce0"] = artblocksEngine;
+custom["1,0x28f2d3805652fb5d359486dffb7d08320d403240"] = artblocksEngine;
+custom["1,0x64780ce53f6e966e18a22af13a2f97369580ec11"] = artblocksEngine;
+custom["1,0x010be6545e14f1dc50256286d9920e833f809c6a"] = artblocksEngine;
+custom["1,0x13aae6f9599880edbb7d144bb13f1212cee99533"] = artblocksEngine;
+custom["1,0xa319c382a702682129fcbf55d514e61a16f97f9c"] = artblocksEngine;
+custom["1,0xd10e3dee203579fcee90ed7d0bdd8086f7e53beb"] = artblocksEngine;
+custom["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngine;
 
 // Loot
 custom["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
