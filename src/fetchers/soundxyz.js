@@ -9,7 +9,7 @@ import _ from "lodash";
 export const getCollection = async (chainId, contract, tokenId) => {
   try {
     // If this is not a shared contract collection -> contract
-    if (_.indexOf(soundxyz.SoundxyzArtistContracts, contract) !== -1 && _.indexOf(soundxyz.SoundxyzReleaseContracts, contract) !== -1) {
+    if (_.indexOf(soundxyz.SoundxyzArtistContracts, _.toLower(contract)) === -1 && _.indexOf(soundxyz.SoundxyzReleaseContracts, _.toLower(contract)) === -1) {
       return contract;
     }
 
