@@ -7,6 +7,13 @@ export const extend = async (_chainId, metadata) => {
     metadata.collection = `${metadata.contract}:soundxyz-${nft.release.id}`;
     metadata.description = nft.release.behindTheMusic;
     metadata.imageUrl = nft.release.coverImage.url;
+    metadata.attributes = (nft.openSeaMetadataAttributes || []).map((trait) => ({
+      key: trait.traitType || "property",
+      value: trait.value,
+      kind: typeof trait.value == "number" ? "number" : "string",
+      rank: 1,
+    }));
+
     return { ...metadata };
   } catch (error) {
     throw error

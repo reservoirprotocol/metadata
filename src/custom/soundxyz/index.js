@@ -16,6 +16,10 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
                 tokenId: "${tokenId}"
             }) {
                 id
+                openSeaMetadataAttributes {
+                    traitType
+                    value
+                }
                 release {
                     id
                     title
