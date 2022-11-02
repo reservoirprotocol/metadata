@@ -5,7 +5,14 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   return axios
     .get(`https://portal.forgottenrunes.com/api/treats/data/${tokenId}`)
     .then((response) => {
-      const attributes = [{'key': 'name', 'value': response.data.name}];
+      const attributes = [
+        {
+          key: "name",
+          value: response.data.name,
+          kind: "string",
+          rank: 1,
+        },
+      ];
 
       return {
         contract,
