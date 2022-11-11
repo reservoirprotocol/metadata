@@ -24,7 +24,7 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
                     id
                     title
                     titleSlug
-                    description
+                    behindTheMusic
                     externalUrl
                     behindTheMusic
                     artist {
