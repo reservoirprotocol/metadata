@@ -4,7 +4,8 @@ import slugify from "slugify";
 import { getProvider } from "../../utils";
 import ArtistContracts from './ArtistContracts.json';
 import ReleaseContracts from './ReleaseContracts.json';
-import {logger} from "../../logger";
+import { logger } from "../../logger";
+import _ from "lodash";
 
 export const getContractSlug = async (chainId, contract, tokenId) => {
   const apiUrl = (chainId === 1 ? "https://api.sound.xyz/graphql?x-sound-client-name=firstmate" : "https://staging.api.sound.xyz/graphql");
@@ -27,6 +28,8 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
                     behindTheMusic
                     externalUrl
                     behindTheMusic
+                    fundingAddress
+                    royaltyBps
                     artist {
                         id
                         name
@@ -42,6 +45,10 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
                     }
                     track {
                         id
+                        revealedAudio {
+                          id
+                          url
+                        }
                     }
                 }
             }
@@ -72,15 +79,14 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
 
 export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     const { data: { data: { nft }}} = await getContractSlug(_chainId, contract, tokenId);
+    const royalties = [];
 
-    const royaltyAbi = ["function royaltyInfo(uint256, uint256) public view returns (address, uint256)"];
-    const nftContract = new ethers.Contract(
-        contract,
-        royaltyAbi,
-        getProvider(_chainId)
-    );
-    const BPS_100 = 10000;
-    const [fundingAddress, royaltyBPS] = await nftContract.royaltyInfo(tokenId, BPS_100);
+    if (nft.release.fundingAddress && nft.release.royaltyBps) {
+      royalties.push({
+        recipient: _.toLower(nft.release.fundingAddress),
+        bps: nft.release.royaltyBps,
+      });
+    }
 
     return {
         id: `${contract}:soundxyz-${nft.release.id}`,
@@ -92,12 +98,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
           description: nft.release.description,
           externalUrl: nft.release.externalUrl,
         },
-        royalties: [
-          {
-            recipient: fundingAddress.toLowerCase(),
-            bps: Number(royaltyBPS),
-          },
-        ],
+        royalties,
         contract,
         tokenIdRange: null,
         tokenSetId: null,
