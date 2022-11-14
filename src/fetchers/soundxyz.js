@@ -70,7 +70,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     metadata: {
       imageUrl: nft.release.coverImage.url,
       description: nft.release.description,
-      externalUrl: nft.release.externalUrl,
+      externalUrl: `https://sound.xyz/${nft.artist.soundHandle}/${nft.release.titleSlug}`,
     },
     royalties,
     contract,
