@@ -28,6 +28,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     contract,
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${contract}:${startTokenId}:${endTokenId}`,
+    openseaVerificationStatus: 'verified',
   };
 };
 
