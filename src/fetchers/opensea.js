@@ -44,23 +44,14 @@ export const fetchCollection = async (chainId, { contract }) => {
     // Collect the fees
     const royalties = [];
 
-    for(const key in data.collection.fees.seller_fees) {
-      if(data.collection.fees.seller_fees.hasOwnProperty(key)) {
+    for (const key in data.collection.fees.seller_fees) {
+      if (data.collection.fees.seller_fees.hasOwnProperty(key)) {
         royalties.push({
-          "recipient": key,
-          "bps": data.collection.fees.seller_fees[key],
+          recipient: key,
+          bps: data.collection.fees.seller_fees[key],
         });
       }
     }
-
-    // for(const key in data.collection.fees.opensea_fees) {
-    //   if(data.collection.fees.opensea_fees.hasOwnProperty(key)) {
-    //     royalties.push({
-    //       "recipient": key,
-    //       "bps": data.collection.fees.opensea_fees[key],
-    //     });
-    //   }
-    // }
 
     return {
       id: contract,
@@ -79,6 +70,7 @@ export const fetchCollection = async (chainId, { contract }) => {
           }
         : null,
       royalties,
+      openseaRoyalties: royalties,
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
@@ -107,6 +99,7 @@ export const fetchCollection = async (chainId, { contract }) => {
         community: null,
         metadata: null,
         royalties: [],
+        openseaRoyalties: [],
         contract,
         tokenIdRange: null,
         tokenSetId: `contract:${contract}`,

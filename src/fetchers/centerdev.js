@@ -5,7 +5,7 @@ import slugify from "slugify";
 
 import { parse } from "../parsers/centerdev";
 import { getProvider } from "../utils";
-import {logger} from "../logger";
+import { logger } from "../logger";
 
 const getNetworkName = (chainId) => {
   let network;
@@ -44,6 +44,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       community: null,
       metadata: null,
       royalties: [],
+      openseaRoyalties: [],
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
@@ -63,6 +64,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         community: null,
         metadata: null,
         royalties: [],
+        openseaRoyalties: [],
         contract,
         tokenIdRange: null,
         tokenSetId: `contract:${contract}`,
@@ -79,25 +81,31 @@ export const fetchTokens = async (chainId, tokens) => {
   const url = `https://api.center.dev/v1/${network}/assets`;
 
   const data = await axios
-    .post(url, {
-      assets: tokens.map(({ contract, tokenId }) => { return { Address: contract, TokenID: tokenId } }),
-    },{
-      headers: { "X-API-KEY": process.env.CENTERDEV_API_KEY.trim() },
-    })
+    .post(
+      url,
+      {
+        assets: tokens.map(({ contract, tokenId }) => {
+          return { Address: contract, TokenID: tokenId };
+        }),
+      },
+      {
+        headers: { "X-API-KEY": process.env.CENTERDEV_API_KEY.trim() },
+      }
+    )
 
     .then((response) => response.data)
     .catch((error) => {
       logger.error(
-          "centerdev-fetcher",
-          `fetchTokens error. chainId:${chainId}, message:${
-              error.message
-          },  status:${error.response?.status}, data:${JSON.stringify(
-              error.response?.data
-          )}`
+        "centerdev-fetcher",
+        `fetchTokens error. chainId:${chainId}, message:${
+          error.message
+        },  status:${error.response?.status}, data:${JSON.stringify(
+          error.response?.data
+        )}`
       );
 
       throw error;
-      });
+    });
 
   return data.map(parse).filter(Boolean);
 };

@@ -18,17 +18,33 @@ You can start editing the page by modifying `pages/index.js`. The page auto-upda
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-## Learn More
+## Adding custom metadata
 
-To learn more about Next.js, take a look at the following resources:
+To add custom metadata for a collection, create a directory in `src/custom` containing an `index.js` file (See [src/custom/forgotten-ponies/index.js](src/custom/forgotten-ponies/index.js) for example). Example directory structure:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/custom
+.
+├── my-custom-contract                    # Directory for your collection with custom metadata
+│   ├── index.js                               # Implement required functions and customize metadata
+│   ├── ...                                    # If needed, data files or other helpers can also go in this directory
+└── ...
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+An update is also required in [src/custom/index.js](src/custom/index.js):
 
-## Deploy on Vercel
+```
+import * as myCustomContract from "./my-custom-contract";
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+custom["1,${YOUR_CONTRACT}"] = myCustomContract;
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+
+### Testing
+
+You can test the custom metadata response at `http://localhost:3000/api/v4/mainnet/metadata/token?method=opensea&token=YOUR_CONTRACT:TOKEN_ID`
+
+
+
+
+

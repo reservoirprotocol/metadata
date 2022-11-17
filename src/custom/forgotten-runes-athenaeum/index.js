@@ -3,19 +3,16 @@ import _ from "lodash";
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
   return axios
-    .get(`https://portal.forgottenrunes.com/api/shadowfax/data/${tokenId}`)
+    .get(`https://portal.forgottenrunes.com/api/treats/data/${tokenId}`)
     .then((response) => {
-      const attributes = response.data.attributes.reduce((result, trait) => {
-        const traitType =
-          trait.trait_type.charAt(0).toUpperCase() + trait.trait_type.slice(1);
-        result.push({
-          key: traitType,
-          value: trait.value,
+      const attributes = [
+        {
+          key: "name",
+          value: response.data.name,
           kind: "string",
           rank: 1,
-        });
-        return result;
-      }, []);
+        },
+      ];
 
       return {
         contract,

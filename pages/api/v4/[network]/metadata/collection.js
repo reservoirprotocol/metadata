@@ -59,7 +59,7 @@ const api = async (req, res) => {
 
     const [contract, tokenId] = token.split(":");
     if (!contract) {
-      throw new Error(`Unknown contract=${contract}`);
+      throw new Error(`Unknown contract ${contract}`);
     }
 
     let collection = null;
@@ -73,7 +73,7 @@ const api = async (req, res) => {
     }
 
     if (!collection || _.isEmpty(collection)) {
-      throw new Error("no collection found");
+      throw new Error("No collection found");
     }
 
     return res.status(200).json({
