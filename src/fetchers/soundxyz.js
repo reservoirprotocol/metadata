@@ -5,6 +5,7 @@ import { parse } from "../parsers/soundxyz";
 import { RequestWasThrottledError } from "./errors";
 import * as soundxyz from "../custom/soundxyz";
 import _ from "lodash";
+import slugify from "slugify";
 
 export const getCollection = async (chainId, contract, tokenId) => {
   try {
@@ -49,6 +50,34 @@ export const fetchTokens = async (chainId, tokens) => {
 
   return data.filter(Boolean);
 };
+
+export const fetchCollection = async (_chainId, { contract, tokenId }) => {
+  const { data: { data: { nft }}} = await getContractSlug(_chainId, contract, tokenId);
+  const royalties = [];
+
+  if (nft.release.fundingAddress && nft.release.royaltyBps) {
+    royalties.push({
+      recipient: _.toLower(nft.release.fundingAddress),
+      bps: nft.release.royaltyBps,
+    });
+  }
+
+  return {
+    id: `${contract}`,
+    slug: slugify(nft.release.titleSlug, { lower: true }),
+    name: `${nft.release.artist.name} - ${nft.release.title}`,
+    community: "sound.xyz",
+    metadata: {
+      imageUrl: nft.release.coverImage.url,
+      description: nft.release.description,
+      externalUrl: nft.release.externalUrl,
+    },
+    royalties,
+    contract,
+    tokenIdRange: null,
+    tokenSetId: `contract:${contract}`,
+  };
+}
 
 const handleError = (error) => {
   if (error.response?.status === 429) {
