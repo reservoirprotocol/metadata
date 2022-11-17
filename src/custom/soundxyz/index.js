@@ -96,7 +96,8 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     data: {
       data: { nft },
     },
-  } = await getContractSlug(_chainId, contract, tokenId);
+  } = await getContractSlug(chainId, contract, tokenId);
+
   const royalties = [];
 
   if (nft.release.fundingAddress && nft.release.royaltyBps) {
