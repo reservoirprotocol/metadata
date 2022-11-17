@@ -2,6 +2,7 @@ import axios from "axios";
 import _ from "lodash";
 import slugify from "slugify";
 
+import * as opensea from "../../fetchers/opensea";
 import { logger } from "../../logger";
 
 import ArtistContracts from "./ArtistContracts.json";
@@ -90,7 +91,7 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
   }
 };
 
-export const fetchCollection = async (_chainId, { contract, tokenId }) => {
+export const fetchCollection = async (chainId, { contract, tokenId }) => {
   const {
     data: {
       data: { nft },
@@ -116,8 +117,10 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
       externalUrl: nft.release.externalUrl,
     },
     royalties,
-    // TODO: Integrate OpenSea royalties
-    openseaRoyalties: [],
+    openseaRoyalties: await opensea
+      .fetchCollection(chainId, { contract })
+      .then((m) => m.openseaRoyalties)
+      .catch(() => []),
     contract,
     tokenIdRange: null,
     tokenSetId: null,
