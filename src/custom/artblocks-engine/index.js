@@ -29,6 +29,12 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
         bps: customRoyalties[contract] || 750,
       },
     ],
+    openseaRoyalties: [
+      {
+        recipient: data.payout_address,
+        bps: customRoyalties[contract] || 750,
+      },
+    ],
     contract,
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${contract}:${startTokenId}:${endTokenId}`,
@@ -39,7 +45,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   const url = `https://token.artblocks.io/${contract}/${tokenId}`;
   const { data } = await axios.get(url);
 
-  let attributes = []
+  const attributes = [];
   // Add None value for core traits
   for (const [key, value] of Object.entries(data.features)) {
     attributes.push({
@@ -60,6 +66,6 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     name: data.name,
     imageUrl: data.image,
     flagged: false,
-    attributes
+    attributes,
   };
 };

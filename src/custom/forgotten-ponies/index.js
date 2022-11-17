@@ -1,17 +1,6 @@
 import axios from "axios";
 import _ from "lodash";
 
-const rank = {
-  Head: 9,
-  Body: 8,
-  Familiar: 7,
-  Prop: 6,
-  Rune: 5,
-  Background: 4,
-  Affinity: 3,
-  Undesirable: 2,
-};
-
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
   return axios
     .get(`https://portal.forgottenrunes.com/api/shadowfax/data/${tokenId}`)
