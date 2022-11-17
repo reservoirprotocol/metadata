@@ -1,9 +1,9 @@
 import axios from "axios";
-import { ethers } from "ethers";
+import _ from "lodash";
 import slugify from "slugify";
 
+import * as opensea from "../../fetchers/opensea";
 import { logger } from "../../logger";
-import { getProvider } from "../../utils";
 
 import ArtistContracts from "./ArtistContracts.json";
 import ReleaseContracts from "./ReleaseContracts.json";
@@ -11,7 +11,6 @@ import ReleaseContracts from "./ReleaseContracts.json";
 export const SoundxyzArtistContracts = ArtistContracts.map((c) =>
   c.toLowerCase()
 );
-
 export const SoundxyzReleaseContracts = ReleaseContracts.map((c) =>
   c.toLowerCase()
 );
@@ -23,43 +22,49 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
       : "https://staging.api.sound.xyz/graphql";
 
   const query = `
-    query ContractSlug {
-        nft(input: {
-            contractAddress: "${contract}", 
-            tokenId: "${tokenId}"
-        }) {
-            id
-            openSeaMetadataAttributes {
-                traitType
-                value
-            }
-            release {
+        query ContractSlug {
+            nft(input: {
+                contractAddress: "${contract}", 
+                tokenId: "${tokenId}"
+            }) {
                 id
-                title
-                titleSlug
-                description
-                externalUrl
-                behindTheMusic
-                artist {
+                openSeaMetadataAttributes {
+                    traitType
+                    value
+                }
+                release {
                     id
-                    name
-                    user { 
-                        publicAddress
+                    title
+                    titleSlug
+                    behindTheMusic
+                    externalUrl
+                    behindTheMusic
+                    fundingAddress
+                    royaltyBps
+                    artist {
+                        id
+                        name
+                        user { 
+                            publicAddress
+                        }
                     }
-                }
-                coverImage {
-                    url
-                }
-                goldenEggImage {
-                    url
-                }
-                track {
-                    id
+                    coverImage {
+                        url
+                    }
+                    goldenEggImage {
+                        url
+                    }
+                    track {
+                        id
+                        revealedAudio {
+                          id
+                          url
+                        }
+                    }
                 }
             }
         }
-    }
-  `;
+    `;
 
   try {
     return axios.post(
@@ -86,26 +91,20 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
   }
 };
 
-export const fetchCollection = async (_chainId, { contract, tokenId }) => {
+export const fetchCollection = async (chainId, { contract, tokenId }) => {
   const {
     data: {
       data: { nft },
     },
   } = await getContractSlug(_chainId, contract, tokenId);
+  const royalties = [];
 
-  const royaltyAbi = [
-    "function royaltyInfo(uint256, uint256) public view returns (address, uint256)",
-  ];
-  const nftContract = new ethers.Contract(
-    contract,
-    royaltyAbi,
-    getProvider(_chainId)
-  );
-  const BPS_100 = 10000;
-  const [fundingAddress, royaltyBPS] = await nftContract.royaltyInfo(
-    tokenId,
-    BPS_100
-  );
+  if (nft.release.fundingAddress && nft.release.royaltyBps) {
+    royalties.push({
+      recipient: _.toLower(nft.release.fundingAddress),
+      bps: nft.release.royaltyBps,
+    });
+  }
 
   return {
     id: `${contract}:soundxyz-${nft.release.id}`,
@@ -117,13 +116,11 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
       description: nft.release.description,
       externalUrl: nft.release.externalUrl,
     },
-    royalties: [
-      {
-        recipient: fundingAddress.toLowerCase(),
-        bps: Number(royaltyBPS),
-      },
-    ],
-    openseaRoyalties: [],
+    royalties,
+    openseaRoyalties: await opensea
+      .fetchCollection(chainId, { contract })
+      .then((m) => m.openseaRoyalties)
+      .catch(() => []),
     contract,
     tokenIdRange: null,
     tokenSetId: null,
