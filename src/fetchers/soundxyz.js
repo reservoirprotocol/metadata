@@ -1,24 +1,32 @@
-import { getContractSlug } from "../custom/soundxyz";
 import axios from "axios";
+import _ from "lodash";
+import slugify from "slugify";
+
+import * as soundxyz from "../custom/soundxyz";
 import { logger } from "../logger";
 import { parse } from "../parsers/soundxyz";
 import { RequestWasThrottledError } from "./errors";
-import * as soundxyz from "../custom/soundxyz";
-import _ from "lodash";
-import slugify from "slugify";
+import * as opensea from "./opensea";
 
 export const getCollection = async (chainId, contract, tokenId) => {
   try {
     // If this is not a shared contract collection -> contract
-    if (_.indexOf(soundxyz.SoundxyzArtistContracts, _.toLower(contract)) === -1 && _.indexOf(soundxyz.SoundxyzReleaseContracts, _.toLower(contract)) === -1) {
+    if (
+      _.indexOf(soundxyz.SoundxyzArtistContracts, _.toLower(contract)) === -1 &&
+      _.indexOf(soundxyz.SoundxyzReleaseContracts, _.toLower(contract)) === -1
+    ) {
       return contract;
     }
 
     // Shared contract logic
-    const { data: { data: { nft } } } = await getContractSlug(chainId, contract, tokenId);
+    const {
+      data: {
+        data: { nft },
+      },
+    } = await soundxyz.getContractSlug(chainId, contract, tokenId);
     return `${contract}:soundxyz-${nft.release.id}`;
   } catch (error) {
-    throw error
+    throw error;
   }
 };
 
@@ -32,7 +40,10 @@ export const fetchTokens = async (chainId, tokens) => {
         : `https://staging.metadata.sound.xyz/v1/${contract}/${tokenId}`;
 
     try {
-      const[response, collection] = await Promise.all([axios.get(url), getCollection(chainId, contract, tokenId)]);
+      const [response, collection] = await Promise.all([
+        axios.get(url),
+        getCollection(chainId, contract, tokenId),
+      ]);
       data.push(parse(contract, tokenId, collection, response.data));
     } catch (error) {
       logger.error(
@@ -51,8 +62,12 @@ export const fetchTokens = async (chainId, tokens) => {
   return data.filter(Boolean);
 };
 
-export const fetchCollection = async (_chainId, { contract, tokenId }) => {
-  const { data: { data: { nft }}} = await getContractSlug(_chainId, contract, tokenId);
+export const fetchCollection = async (chainId, { contract, tokenId }) => {
+  const {
+    data: {
+      data: { nft },
+    },
+  } = await soundxyz.getContractSlug(chainId, contract, tokenId);
   const royalties = [];
 
   if (nft.release.fundingAddress && nft.release.royaltyBps) {
@@ -73,11 +88,15 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
       externalUrl: nft.release.externalUrl,
     },
     royalties,
+    openseaRoyalties: await opensea
+      .fetchCollection(chainId, { contract })
+      .then((m) => m.openseaRoyalties)
+      .catch((error) => []),
     contract,
     tokenIdRange: null,
     tokenSetId: `contract:${contract}`,
   };
-}
+};
 
 const handleError = (error) => {
   if (error.response?.status === 429) {

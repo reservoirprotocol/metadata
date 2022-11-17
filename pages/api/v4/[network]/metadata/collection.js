@@ -40,7 +40,11 @@ const api = async (req, res) => {
 
     // Validate indexing method and set up provider
     const method = req.query.method;
-    if (!["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(method)) {
+    if (
+      !["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(
+        method
+      )
+    ) {
       throw new Error("Unknown method");
     }
 
