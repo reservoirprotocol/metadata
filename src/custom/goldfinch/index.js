@@ -1,5 +1,5 @@
 import axios from "axios";
-import {ethers} from "ethers";
+import { ethers } from "ethers";
 import _ from "lodash";
 
 const provider = new ethers.providers.JsonRpcProvider(null, "mainnet");
@@ -7,30 +7,35 @@ const provider = new ethers.providers.JsonRpcProvider(null, "mainnet");
 const poolTokensAddress = "0x57686612C601Cb5213b01AA8e80AfEb24BBd01df";
 const poolTokensAbi = [
   {
-    "inputs": [],
-    "name": "totalSupply",
-    "outputs": [
+    inputs: [],
+    name: "totalSupply",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
-  }
+    stateMutability: "view",
+    type: "function",
+  },
 ];
-const poolTokensContract = new ethers.Contract(poolTokensAddress, poolTokensAbi, provider);
+const poolTokensContract = new ethers.Contract(
+  poolTokensAddress,
+  poolTokensAbi,
+  provider
+);
 
-const metadataBaseURI = "https://us-central1-goldfinch-frontends-prod.cloudfunctions.net/poolTokenMetadata";
+const metadataBaseURI =
+  "https://us-central1-goldfinch-frontends-prod.cloudfunctions.net/poolTokenMetadata";
 
 const ranks = {
   "Pool Name": 99,
   "Borrower Name": 98,
   "USDC Interest Rate": 97,
   "Backer Position Principal": 96,
-  "Last Updated At": 0
-}
+  "Last Updated At": 0,
+};
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
   const response = await axios.get(`${metadataBaseURI}/${tokenId}`);
@@ -38,8 +43,8 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     key: a.trait_type,
     value: a.value,
     kind: "string",
-    rank: ranks[a.trait_type] !== undefined ? ranks[a.trait_type] : 1
-  }))
+    rank: ranks[a.trait_type] !== undefined ? ranks[a.trait_type] : 1,
+  }));
   return {
     contract,
     tokenId,
@@ -47,7 +52,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     name: response.data.name,
     imageUrl: response.data.image,
     flagged: false,
-    attributes
+    attributes,
   };
 };
 

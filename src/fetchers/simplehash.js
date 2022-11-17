@@ -5,7 +5,7 @@ import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
 import { getProvider } from "../utils";
-import {logger} from "../logger";
+import { logger } from "../logger";
 
 const getNetworkName = (chainId) => {
   let network;
@@ -49,6 +49,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       royalties: [
         // TODO: Integrate royalties
       ],
+      openseaRoyalties: [],
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
@@ -56,12 +57,12 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
   } catch {
     try {
       logger.error(
-          "simplehash-fetcher",
-          `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
-              error.message
-          },  status:${error.response?.status}, data:${JSON.stringify(
-              error.response?.data
-          )}`
+        "simplehash-fetcher",
+        `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
+          error.message
+        },  status:${error.response?.status}, data:${JSON.stringify(
+          error.response?.data
+        )}`
       );
 
       const name = await new Contract(
@@ -77,6 +78,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         community: null,
         metadata: null,
         royalties: [],
+        openseaRoyalties: [],
         contract,
         tokenIdRange: null,
         tokenSetId: `contract:${contract}`,
@@ -104,17 +106,17 @@ export const fetchTokens = async (chainId, tokens) => {
     })
     .then((response) => response.data)
     .catch((error) => {
-        logger.error(
-            "simplehash-fetcher",
-            `fetchTokens error. chainId:${chainId}, message:${
-                error.message
-            },  status:${error.response?.status}, data:${JSON.stringify(
-                error.response?.data
-            )}`
-        );
+      logger.error(
+        "simplehash-fetcher",
+        `fetchTokens error. chainId:${chainId}, message:${
+          error.message
+        },  status:${error.response?.status}, data:${JSON.stringify(
+          error.response?.data
+        )}`
+      );
 
-        throw error;
-      });
+      throw error;
+    });
 
   return data.nfts.map(parse).filter(Boolean);
 };

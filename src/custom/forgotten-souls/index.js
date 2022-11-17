@@ -1,6 +1,7 @@
 import axios from "axios";
-import souls from "./souls.json";
 import _ from "lodash";
+
+import souls from "./souls.json";
 
 const rank = {
   Head: 13,
@@ -27,7 +28,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     Familiar: "",
     Prop: "",
     Rune: "",
-  }
+  };
 
   return axios
     .get(`https://portal.forgottenrunes.com/api/souls/data/${tokenId}`)
@@ -55,7 +56,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
 
       if (!isUndesirable) {
         // Add name traits
-        for (var attribute of ['Title', 'Name', 'Origin']) {
+        for (var attribute of ["Title", "Name", "Origin"]) {
           if (String(tokenId) in souls) {
             attributes.push({
               key: attribute,
@@ -67,7 +68,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
         }
 
         // Add None value for core traits
-        for (var trait of ['Head', 'Body', 'Familiar', 'Prop', 'Rune']) {
+        for (var trait of ["Head", "Body", "Familiar", "Prop", "Rune"]) {
           if (!coreTraits[trait]) {
             attributes.push({
               key: trait,

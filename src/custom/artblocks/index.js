@@ -1,6 +1,6 @@
 import axios from "axios";
-import slugify from "slugify";
 import _ from "lodash";
+import slugify from "slugify";
 
 export const fetchCollection = async (_chainId, { contract, tokenId }) => {
   const url = `https://token.artblocks.io/${tokenId}`;
@@ -25,6 +25,12 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
         bps: 750,
       },
     ],
+    openSeaRoyalties: [
+      {
+        recipient: "0x6c093fe8bc59e1e0cae2ec10f0b717d3d182056b",
+        bps: 750,
+      },
+    ],
     contract,
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${contract}:${startTokenId}:${endTokenId}`,
@@ -33,10 +39,9 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
   const url = `https://token.artblocks.io/${tokenId}`;
-  console.log(url)
   const { data } = await axios.get(url);
 
-  let attributes = []
+  const attributes = [];
   // Add None value for core traits
   for (const [key, value] of Object.entries(data.features)) {
     attributes.push({
@@ -57,7 +62,6 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     name: data.name,
     imageUrl: data.image,
     flagged: false,
-    attributes
+    attributes,
   };
-      
 };

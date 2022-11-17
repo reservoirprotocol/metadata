@@ -1,6 +1,7 @@
 import axios from "axios";
-import warriors from "./warriors.json";
 import _ from "lodash";
+
+import warriors from "./warriors.json";
 
 const rank = {
   Head: 14,
@@ -16,12 +17,12 @@ const rank = {
   "# Traits": 4,
   Name: 3,
   Title: 2,
-  Affiliation: 1
+  Affiliation: 1,
 };
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
   var rankCopy = JSON.parse(JSON.stringify(rank));
-  
+
   return axios
     .get(`https://portal.forgottenrunes.com/api/warriors/data/${tokenId}`)
     .then((response) => {
@@ -40,13 +41,13 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
       }, []);
 
       // Add Name attributes
-      for (var attribute of ['Name', 'Title', 'Affiliation']) {
+      for (var attribute of ["Name", "Title", "Affiliation"]) {
         attributes.push({
           key: attribute,
           rank: rankCopy[attribute] ? rankCopy[attribute] : null,
           value: warriors[tokenId][attribute],
           kind: "string",
-        })
+        });
 
         delete rankCopy[attribute];
       }
@@ -58,7 +59,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
           rank: rankCopy[attribute] ? rankCopy[attribute] : null,
           value: "None",
           kind: "string",
-        })
+        });
       }
 
       return {
