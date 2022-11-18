@@ -2,7 +2,9 @@ import axios from "axios";
 import _ from "lodash";
 import slugify from "slugify";
 
-export const fetchCollection = async (_chainId, { contract, tokenId }) => {
+import * as opensea from "../../fetchers/opensea";
+
+export const fetchCollection = async (chainId, { contract, tokenId }) => {
   const url = `https://token.artblocks.io/${tokenId}`;
   const { data } = await axios.get(url);
 
@@ -25,12 +27,10 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
         bps: 750,
       },
     ],
-    openseaRoyalties: [
-      {
-        recipient: "0x6c093fe8bc59e1e0cae2ec10f0b717d3d182056b",
-        bps: 750,
-      },
-    ],
+    openseaRoyalties: await opensea
+      .fetchCollection(chainId, { contract })
+      .then((m) => m.openseaRoyalties)
+      .catch(() => []),
     contract,
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${contract}:${startTokenId}:${endTokenId}`,
