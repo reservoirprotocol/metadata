@@ -25,7 +25,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
         bps: 750,
       },
     ],
-    openSeaRoyalties: [
+    openseaRoyalties: [
       {
         recipient: "0x6c093fe8bc59e1e0cae2ec10f0b717d3d182056b",
         bps: 750,
