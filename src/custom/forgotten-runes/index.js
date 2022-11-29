@@ -1,5 +1,6 @@
-import wizards from "./wizards.json";
 import _ from "lodash";
+
+import wizards from "./wizards.json";
 
 const rank = {
   Head: 14,
