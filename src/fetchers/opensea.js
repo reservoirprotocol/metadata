@@ -9,12 +9,12 @@ import { logger } from "../logger";
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
 
-export const fetchCollection = async (chainId, { contract }) => {
+export const fetchCollection = async (chainId, { contract, tokenId }) => {
   try {
     const url =
       chainId === 1
-        ? `https://api.opensea.io/api/v1/asset_contract/${contract}`
-        : `https://testnets-api.opensea.io/api/v1/asset_contract/${contract}`;
+        ? `https://api.opensea.io/api/v1/asset/${contract}/${tokenId}`
+        : `https://testnets-api.opensea.io/api/v1/asset/${contract}/${tokenId}`;
 
     const { data } = await axios.get(url, {
       headers:
