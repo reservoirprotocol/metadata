@@ -44,6 +44,7 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
                     artist {
                         id
                         name
+                        soundHandle
                         user { 
                             publicAddress
                         }
@@ -115,7 +116,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     metadata: {
       imageUrl: nft.release.coverImage.url,
       description: nft.release.description,
-      externalUrl: nft.release.externalUrl,
+      externalUrl: `https://sound.xyz/${nft.artist.soundHandle}/${nft.release.titleSlug}`,
     },
     royalties,
     openseaRoyalties: await opensea
