@@ -9,23 +9,51 @@ import { logger } from "../logger";
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
 
-export const fetchCollection = async (chainId, { contract }) => {
+export const fetchCollection = async (chainId, { contract, tokenId }) => {
   try {
-    const url =
-      chainId === 1
-        ? `https://api.opensea.io/api/v1/asset_contract/${contract}`
-        : `https://testnets-api.opensea.io/api/v1/asset_contract/${contract}`;
+    let data;
 
-    const { data } = await axios.get(url, {
-      headers:
-        chainId === 1
-          ? {
-              "X-API-KEY": process.env.OPENSEA_COLLECTION_API_KEY.trim(),
-            }
-          : {},
-    });
+    try {
+      const url =
+          chainId === 1
+              ? `https://api.opensea.io/api/v1/asset/${contract}/${tokenId}`
+              : `https://testnets-api.opensea.io/api/v1/asset/${contract}/${tokenId}`;
 
-    if (!data.collection) {
+      const assetResponse = await axios.get(url, {
+        headers:
+            chainId === 1
+                ? {
+                  "X-API-KEY": process.env.OPENSEA_COLLECTION_API_KEY.trim(),
+                }
+                : {},
+      });
+
+      data = assetResponse.data;
+    } catch (error) {
+      // Try to get the collection only based on the contract.
+      if (error.response?.status === 404) {
+        const url =
+            chainId === 1
+                ? `https://api.opensea.io/api/v1/asset_contract/${contract}`
+                : `https://testnets-api.opensea.io/api/v1/asset_contract/${contract}`;
+
+        const assetContractResponse = await axios.get(url, {
+          headers:
+              chainId === 1
+                  ? {
+                    "X-API-KEY": process.env.OPENSEA_COLLECTION_API_KEY.trim(),
+                  }
+                  : {},
+        });
+
+        data = assetContractResponse.data;
+      } else {
+        throw error;
+      }
+    }
+
+
+    if (!data?.collection) {
       throw new Error("Missing collection");
     }
 
