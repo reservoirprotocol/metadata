@@ -7,6 +7,7 @@ import * as chimpers from './chimpers';
 import * as moonbirds from './moonbirds';
 import * as soundxyz from "../custom/soundxyz";
 import * as soundxyzExtend from "../extend/soundxyz";
+import * as bayc from "./bayc";
 
 export const extendCollectionMetadata = async (chainId, metadata) => {
   if (metadata) {
@@ -47,6 +48,9 @@ extend["1,0x28472a58a490c5e09a238847f66a68a47cc76f0f"] = adidasOriginals;
 
 // Mutant Ape Yacht Club
 extend["1,0x60e4d786628fea6478f785a6d7e704777c86a7c6"] = mutantApeYachtClub;
+
+//Bored ape yacht club
+extend["1,0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"] = bayc
 
 // Nouns
 extend["1,0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03"] = nouns;
