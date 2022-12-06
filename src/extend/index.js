@@ -1,10 +1,11 @@
 import * as adidasOriginals from "./adidas-originals";
 import * as admitOne from "./admit-one";
+import * as artTennis from "./art-tennis";
 import * as mutantApeYachtClub from "./mutant-ape-yacht-club";
 import * as nouns from "./nouns";
 import * as lilnouns from "./lilnouns";
-import * as chimpers from './chimpers';
-import * as moonbirds from './moonbirds';
+import * as chimpers from "./chimpers";
+import * as moonbirds from "./moonbirds";
 import * as soundxyz from "../custom/soundxyz";
 import * as soundxyzExtend from "../extend/soundxyz";
 
@@ -40,6 +41,9 @@ const extendCollection = {};
 extendCollection["1,0xd2a077ec359d94e0a0b7e84435eacb40a67a817c"] = admitOne;
 extendCollection["4,0xa7d49d78ab0295ad5a857dc4d0ab16445663ab85"] = admitOne;
 
+// Art Tennis
+extendCollection["1,0x4d928ab507bf633dd8e68024a1fb4c99316bbdf3"] = artTennis;
+
 const extend = {};
 
 // Adidas Originals
@@ -59,6 +63,10 @@ extend["1,0x80336ad7a747236ef41f47ed2c7641828a480baa"] = chimpers;
 extend["1,0x23581767a106ae21c074b2276d25e5c3e136a68b"] = moonbirds;
 
 // Sound XYZ
-soundxyz.SoundxyzArtistContracts.forEach((address) => extend[`1,${address}`] = soundxyzExtend);
-soundxyz.SoundxyzReleaseContracts.forEach((address) => extend[`1,${address}`] = soundxyzExtend);
+soundxyz.SoundxyzArtistContracts.forEach(
+  (address) => (extend[`1,${address}`] = soundxyzExtend)
+);
+soundxyz.SoundxyzReleaseContracts.forEach(
+  (address) => (extend[`1,${address}`] = soundxyzExtend)
+);
 extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyzExtend;
