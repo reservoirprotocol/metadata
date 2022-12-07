@@ -1,14 +1,14 @@
-export const parse = (contract, tokenId, collection, response) => {
+export const parse = (contract, tokenId, collection, nft) => {
   return {
     contract: contract,
     tokenId: tokenId,
     collection,
-    name: response.name,
+    name: nft.release.title,
     flagged: false,
-    description: response.description,
-    imageUrl: response.image,
-    mediaUrl: response.animation_url,
-    attributes: (response.attributes || []).map((trait) => ({
+    description: nft.release.behindTheMusic,
+    imageUrl: nft.release.coverImage.url,
+    mediaUrl: nft.release.track.revealedAudio.url,
+    attributes: (nft.openSeaMetadataAttributes || []).map((trait) => ({
       key: trait.traitType || "property",
       value: trait.value,
       kind: typeof trait.value == "number" ? "number" : "string",
