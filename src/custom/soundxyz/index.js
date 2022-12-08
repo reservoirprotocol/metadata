@@ -28,13 +28,13 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
                 tokenId: "${tokenId}"
             }) {
                 id
+                isGoldenEgg
                 openSeaMetadataAttributes {
                     traitType
                     value
                 }
                 release {
                     id
-                    isGoldenEgg
                     title
                     titleSlug
                     behindTheMusic
