@@ -34,6 +34,7 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
                 }
                 release {
                     id
+                    isGoldenEgg
                     title
                     titleSlug
                     behindTheMusic
@@ -52,8 +53,10 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
                     coverImage {
                         url
                     }
-                    goldenEggImage {
+                    eggGame {
+                      goldenEggImage {
                         url
+                      }
                     }
                     track {
                         id
