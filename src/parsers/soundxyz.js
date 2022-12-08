@@ -6,7 +6,7 @@ export const parse = (contract, tokenId, collection, nft) => {
     name: nft.release.title,
     flagged: false,
     description: nft.release.behindTheMusic,
-    imageUrl: nft.release.coverImage.url,
+    imageUrl: nft.isGoldenEgg ? nft.eggGame.goldenEggImage.url : nft.release.coverImage.url,
     mediaUrl: nft.release.track.revealedAudio.url,
     attributes: (nft.openSeaMetadataAttributes || []).map((trait) => ({
       key: trait.traitType || "property",
