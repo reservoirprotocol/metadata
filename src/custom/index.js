@@ -69,6 +69,8 @@ customCollection["1,0x13aae6f9599880edbb7d144bb13f1212cee99533"] = artblocksEngi
 customCollection["1,0xa319c382a702682129fcbf55d514e61a16f97f9c"] = artblocksEngine;
 customCollection["1,0xd10e3dee203579fcee90ed7d0bdd8086f7e53beb"] = artblocksEngine;
 customCollection["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngine;
+customCollection["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
+customCollection["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 
 const custom = {};
 
@@ -88,6 +90,8 @@ custom["1,0x13aae6f9599880edbb7d144bb13f1212cee99533"] = artblocksEngine;
 custom["1,0xa319c382a702682129fcbf55d514e61a16f97f9c"] = artblocksEngine;
 custom["1,0xd10e3dee203579fcee90ed7d0bdd8086f7e53beb"] = artblocksEngine;
 custom["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngine;
+custom["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
+custom["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 
 // Loot
 custom["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
