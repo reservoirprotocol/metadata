@@ -6,6 +6,7 @@ import slugify from "slugify";
 import { parse } from "../parsers/simplehash";
 import { getProvider } from "../utils";
 import { logger } from "../logger";
+import _ from "lodash";
 
 const getNetworkName = (chainId) => {
   let network;
@@ -33,9 +34,18 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       })
       .then((response) => response.data.collection);
 
+    let slug = slugify(data.name, { lower: true });
+    if (_.isArray(data.marketplace_pages)) {
+      for (const market of data.marketplace_pages) {
+        if (market.marketplace_id === "opensea") {
+          slug = slugify(market.marketplace_collection_id, { lower: true });
+        }
+      }
+    }
+
     return {
       id: contract,
-      slug: slugify(data.name, { lower: true }),
+      slug,
       name: data.name,
       community: null,
       metadata: {
