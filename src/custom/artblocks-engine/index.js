@@ -22,12 +22,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
       }))
       .catch(() => ({
         slug: slugify(data.collection_name, { lower: true }),
-        openseaRoyalties: [
-          {
-            recipient: data.payout_address,
-            bps: customRoyalties[contract] || 750,
-          },
-        ]
+        openseaRoyalties: []
       }));
 
   return {
