@@ -34,17 +34,13 @@ export const fetchTokens = async (chainId, tokens) => {
   let data = [];
 
   for (const { contract, tokenId } of tokens) {
-    const url =
-      chainId === 1
-        ? `https://metadata.sound.xyz/v1/${contract}/${tokenId}`
-        : `https://staging.metadata.sound.xyz/v1/${contract}/${tokenId}`;
-
     try {
       const [response, collection] = await Promise.all([
-        axios.get(url),
+        soundxyz.getContractSlug(chainId, contract, tokenId),
         getCollection(chainId, contract, tokenId),
       ]);
-      data.push(parse(contract, tokenId, collection, response.data));
+
+      data.push(parse(contract, tokenId, collection, response.data.data.nft));
     } catch (error) {
       logger.error(
         "soundxyz-fetcher",
@@ -85,7 +81,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     metadata: {
       imageUrl: nft.release.coverImage.url,
       description: nft.release.description,
-      externalUrl: nft.release.externalUrl,
+      externalUrl: `https://sound.xyz/${nft.release.artist.soundHandle}/${nft.release.titleSlug}`,
     },
     royalties,
     openseaRoyalties: await opensea
