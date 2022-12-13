@@ -15,7 +15,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
   const endTokenId = startTokenId + 1000000 - 1;
 
   const { slug, openseaRoyalties } = await opensea
-      .fetchCollection(chainId, { contract, tokenId })
+      .fetchCollection(_chainId, { contract, tokenId })
       .then((m) => ({
         slug: m.slug,
         openseaRoyalties: m.openseaRoyalties
