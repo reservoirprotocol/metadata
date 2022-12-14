@@ -118,7 +118,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         openseaRoyalties: m.openseaRoyalties
       }))
       .catch(() => ({
-        slug: slugify(data.collection_name, { lower: true }),
+        slug: slugify(nft.release.titleSlug, { lower: true }),
         openseaRoyalties: []
       }));
 
