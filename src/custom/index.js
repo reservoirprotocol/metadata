@@ -109,7 +109,7 @@ custom["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
 custom["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 
 // Cryptokicks IRL
-// custom["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
+custom["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
 
 // Forgotten Ponies
 custom["1,0xf55b615b479482440135ebf1b907fd4c37ed9420"] = forgottenPonies;
