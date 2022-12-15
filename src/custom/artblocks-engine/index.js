@@ -1,5 +1,6 @@
 import axios from "axios";
 import slugify from "slugify";
+import * as opensea from "../../fetchers/opensea";
 
 const customRoyalties = {
   "0x13aae6f9599880edbb7d144bb13f1212cee99533": 1000,
@@ -13,9 +14,20 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
+  const { slug, openseaRoyalties } = await opensea
+      .fetchCollection(_chainId, { contract, tokenId })
+      .then((m) => ({
+        slug: m.slug,
+        openseaRoyalties: m.openseaRoyalties
+      }))
+      .catch(() => ({
+        slug: slugify(data.collection_name, { lower: true }),
+        openseaRoyalties: []
+      }));
+
   return {
     id: `${contract}:${startTokenId}:${endTokenId}`,
-    slug: slugify(data.collection_name, { lower: true }),
+    slug,
     name: data.collection_name,
     community: data.platform.toLowerCase(),
     metadata: {
@@ -29,12 +41,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
         bps: customRoyalties[contract] || 750,
       },
     ],
-    openseaRoyalties: [
-      {
-        recipient: data.payout_address,
-        bps: customRoyalties[contract] || 750,
-      },
-    ],
+    openseaRoyalties,
     contract,
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${contract}:${startTokenId}:${endTokenId}`,

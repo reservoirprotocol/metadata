@@ -111,9 +111,20 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     });
   }
 
+  const { slug, openseaRoyalties } = await opensea
+      .fetchCollection(chainId, { contract, tokenId })
+      .then((m) => ({
+        slug: m.slug,
+        openseaRoyalties: m.openseaRoyalties
+      }))
+      .catch(() => ({
+        slug: slugify(nft.release.titleSlug, { lower: true }),
+        openseaRoyalties: []
+      }));
+
   return {
     id: `${contract}:soundxyz-${nft.release.id}`,
-    slug: slugify(nft.release.titleSlug, { lower: true }),
+    slug,
     name: `${nft.release.artist.name} - ${nft.release.title}`,
     community: "sound.xyz",
     metadata: {
@@ -122,10 +133,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       externalUrl: `https://sound.xyz/${nft.release.artist.soundHandle}/${nft.release.titleSlug}`,
     },
     royalties,
-    openseaRoyalties: await opensea
-      .fetchCollection(chainId, { contract })
-      .then((m) => m.openseaRoyalties)
-      .catch(() => []),
+    openseaRoyalties,
     contract,
     tokenIdRange: null,
     tokenSetId: null,
