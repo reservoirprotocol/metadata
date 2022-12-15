@@ -17,7 +17,7 @@ export const fetchToken = async (chainId, { contract, tokenId }) => {
     uri.slice(7)
   );
   const metadata = await axios
-    .get(`https://ipfs.io/ipfs/${tokenUri}`)
+    .get(`https://cf-ipfs.com/ipfs/${tokenUri}`)
     .then((response) => response.data);
 
   const attributesMap = {};
