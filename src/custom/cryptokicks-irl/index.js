@@ -1,10 +1,11 @@
 import { Interface } from "@ethersproject/abi";
 import { Contract } from "@ethersproject/contracts";
-import { AlchemyProvider } from "@ethersproject/providers";
 import axios from "axios";
 
+import { getProvider } from "../../utils";
+
 export const fetchToken = async (chainId, { contract, tokenId }) => {
-  const provider = new AlchemyProvider(chainId, process.env.ALCHEMY_KEY);
+  const provider = getProvider(chainId);
 
   const nft = new Contract(
     contract,
