@@ -1,5 +1,5 @@
 export const parse = (contract, tokenId, collection, releaseFromToken) => {
-  const isGoldenEgg = releaseFromToken.eggGame.nft.tokenId === tokenId;
+  const isGoldenEgg = releaseFromToken.eggGame?.nft.tokenId === tokenId;
   let imageUrl = releaseFromToken.animatedCoverImage?.url ?? releaseFromToken.coverImage?.url ?? releaseFromToken.staticCoverImage?.url;
   if (isGoldenEgg) {
     imageUrl = releaseFromToken.eggGame.animatedGoldenEggImageOptimized?.url ?? releaseFromToken.eggGame.goldenEggImage?.url
