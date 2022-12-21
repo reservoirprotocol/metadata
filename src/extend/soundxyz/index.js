@@ -13,7 +13,7 @@ export const extend = async (_chainId, metadata) => {
     metadata.name = releaseFromToken.title;
     metadata.collection = `${metadata.contract}:soundxyz-${releaseFromToken.id}`;
     metadata.description = releaseFromToken.behindTheMusic;
-    metadata.imageUrl = imageUrl,
+    metadata.imageUrl = imageUrl;
     metadata.attributes = ((isGoldenEgg ? releaseFromToken.eggGame.nft.openSeaMetadataAttributes : releaseFromToken.baseMetadataAttributes) || []).map((trait) => ({
       key: trait.traitType || "property",
       value: trait.value,
