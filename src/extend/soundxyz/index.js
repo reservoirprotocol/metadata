@@ -3,7 +3,6 @@ import { getContractSlug } from "../../custom/soundxyz";
 export const extend = async (_chainId, metadata) => {
   try {
     const { data: { data: { releaseFromToken } } } = await getContractSlug(_chainId, metadata.contract, metadata.tokenId);
-    console.log(releaseFromToken);
     const isGoldenEgg = releaseFromToken.eggGame?.nft.tokenId === metadata.tokenId;
     let imageUrl = releaseFromToken.animatedCoverImage?.url ?? releaseFromToken.coverImage?.url ?? releaseFromToken.staticCoverImage?.url;
     if (isGoldenEgg) {

@@ -80,7 +80,7 @@ export default async function handler(req, res) {
   if (data.error) {
     res.status(200).json(data);
   }
-  console.log(`data: ${JSON.stringify(data)}`);
+
   let tokens = [];
   for (let asset of data.assets) {
     //console.log(asset)
