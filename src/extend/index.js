@@ -9,6 +9,7 @@ import * as moonbirds from "./moonbirds";
 import * as soundxyz from "../custom/soundxyz";
 import * as soundxyzExtend from "../extend/soundxyz";
 import * as bayc from "./bayc";
+import * as asyncBlueprints from "./async-blueprints";
 
 export const extendCollectionMetadata = async (chainId, metadata) => {
   if (metadata) {
@@ -74,3 +75,6 @@ soundxyz.SoundxyzReleaseContracts.forEach(
   (address) => (extend[`1,${address}`] = soundxyzExtend)
 );
 extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyzExtend;
+
+// Async Blueprints
+extend["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
