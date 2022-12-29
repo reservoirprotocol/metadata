@@ -9,6 +9,7 @@ import * as forgottenSouls from "./forgotten-souls";
 import * as goldfinch from "./goldfinch";
 import * as loot from "./loot";
 import * as soundxyz from "./soundxyz";
+import * as asyncBlueprints from "./async-blueprints";
 
 export const hasCustomCollectionHandler = (chainId, contract) =>
   Boolean(customCollection[`${chainId},${contract}`]);
@@ -82,6 +83,9 @@ soundxyz.SoundxyzReleaseContracts.forEach(
   (address) => (customCollection[`1,${address}`] = soundxyz)
 );
 customCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
+
+// Async Blueprints
+customCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
 
 ////////////////
 // Custom Tokens
