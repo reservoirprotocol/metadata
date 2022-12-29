@@ -23,50 +23,63 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
 
   const query = `
         query ContractSlug {
-            nft(input: {
-                contractAddress: "${contract}", 
-                tokenId: "${tokenId}"
-            }) {
-                id
-                isGoldenEgg
-                openSeaMetadataAttributes {
-                    traitType
-                    value
-                }
-                release {
-                    id
-                    title
-                    titleSlug
-                    behindTheMusic
-                    externalUrl
-                    behindTheMusic
-                    fundingAddress
-                    royaltyBps
-                    artist {
-                        id
-                        name
-                        soundHandle
-                        user { 
-                            publicAddress
-                        }
-                    }
-                    coverImage {
-                        url
-                    }
-                    eggGame {
-                      goldenEggImage {
-                        url
-                      }
-                    }
-                    track {
-                        id
-                        revealedAudio {
-                          id
-                          url
-                        }
-                    }
-                }
+          releaseFromToken(
+            input: { contractAddress: "${contract}", tokenId: "${tokenId}" }
+          ) {
+            baseMetadataAttributes {
+              traitType
+              value
             }
+            id
+            title
+            titleSlug
+            behindTheMusic
+            externalUrl
+            behindTheMusic
+            fundingAddress
+            royaltyBps
+            artist {
+              id
+              name
+              soundHandle
+              user {
+                publicAddress
+              }
+            }
+            coverImage {
+              url
+            }
+            staticCoverImage {
+               url
+            }
+            animatedCoverImage {
+               url
+            }
+            eggGame {
+              id
+              goldenEggImage {
+                url
+              }
+              animatedGoldenEggImageOptimized {
+                 url
+              }
+              nft {
+                id
+                tokenId
+                openSeaMetadataAttributes {
+                  traitType
+                  value
+                }
+              }
+            }
+            track {
+              id
+              revealedAudio {
+                id
+                url
+              }
+            }
+          }
         }
     `;
 
@@ -98,16 +111,16 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
   const {
     data: {
-      data: { nft },
+      data: { releaseFromToken },
     },
   } = await getContractSlug(chainId, contract, tokenId);
 
   const royalties = [];
 
-  if (nft.release.fundingAddress && nft.release.royaltyBps) {
+  if (releaseFromToken.fundingAddress && releaseFromToken.royaltyBps) {
     royalties.push({
-      recipient: _.toLower(nft.release.fundingAddress),
-      bps: nft.release.royaltyBps,
+      recipient: _.toLower(releaseFromToken.fundingAddress),
+      bps: releaseFromToken.royaltyBps,
     });
   }
 
@@ -118,19 +131,19 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         openseaRoyalties: m.openseaRoyalties
       }))
       .catch(() => ({
-        slug: slugify(nft.release.titleSlug, { lower: true }),
+        slug: slugify(releaseFromToken.titleSlug, { lower: true }),
         openseaRoyalties: []
       }));
 
   return {
-    id: `${contract}:soundxyz-${nft.release.id}`,
+    id: `${contract}:soundxyz-${releaseFromToken.id}`,
     slug,
-    name: `${nft.release.artist.name} - ${nft.release.title}`,
+    name: `${releaseFromToken.artist.name} - ${releaseFromToken.title}`,
     community: "sound.xyz",
     metadata: {
-      imageUrl: nft.release.coverImage.url,
-      description: nft.release.description,
-      externalUrl: `https://sound.xyz/${nft.release.artist.soundHandle}/${nft.release.titleSlug}`,
+      imageUrl: releaseFromToken.coverImage.url,
+      description: releaseFromToken.description,
+      externalUrl: `https://sound.xyz/${releaseFromToken.artist.soundHandle}/${releaseFromToken.titleSlug}`,
     },
     royalties,
     openseaRoyalties,

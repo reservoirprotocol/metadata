@@ -3,10 +3,13 @@ import _ from "lodash";
 import slugify from "slugify";
 
 import * as opensea from "../../fetchers/opensea";
-import {logger} from "../../logger";
+import { logger } from "../../logger";
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
-  logger.info("custom-artblocks", `fetchCollection. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}`);
+  logger.info(
+    "custom-artblocks",
+    `fetchCollection. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}`
+  );
 
   const url = `https://token.artblocks.io/${tokenId}`;
   const { data } = await axios.get(url);
@@ -15,15 +18,15 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
   const endTokenId = startTokenId + 1000000 - 1;
 
   const { slug, openseaRoyalties } = await opensea
-          .fetchCollection(chainId, { contract, tokenId })
-          .then((m) => ({
-            slug: m.slug,
-            openseaRoyalties: m.openseaRoyalties
-          }))
-          .catch(() => ({
-            slug: slugify(data.collection_name, { lower: true }),
-            openseaRoyalties: []
-          }));
+    .fetchCollection(chainId, { contract, tokenId })
+    .then((m) => ({
+      slug: m.slug,
+      openseaRoyalties: m.openseaRoyalties,
+    }))
+    .catch(() => ({
+      slug: slugify(data.collection_name, { lower: true }),
+      openseaRoyalties: [],
+    }));
 
   return {
     id: `${contract}:${startTokenId}:${endTokenId}`,

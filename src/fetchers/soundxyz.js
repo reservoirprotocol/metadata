@@ -8,7 +8,7 @@ import { parse } from "../parsers/soundxyz";
 import { RequestWasThrottledError } from "./errors";
 import * as opensea from "./opensea";
 
-export const getCollection = async (chainId, contract, tokenId) => {
+export const getCollectionId = async (chainId, contract, tokenId) => {
   try {
     // If this is not a shared contract collection -> contract
     if (
@@ -21,10 +21,10 @@ export const getCollection = async (chainId, contract, tokenId) => {
     // Shared contract logic
     const {
       data: {
-        data: { nft },
+        data: { releaseFromToken },
       },
     } = await soundxyz.getContractSlug(chainId, contract, tokenId);
-    return `${contract}:soundxyz-${nft.release.id}`;
+    return `${contract}:soundxyz-${releaseFromToken.id}`;
   } catch (error) {
     throw error;
   }
@@ -37,10 +37,10 @@ export const fetchTokens = async (chainId, tokens) => {
     try {
       const [response, collection] = await Promise.all([
         soundxyz.getContractSlug(chainId, contract, tokenId),
-        getCollection(chainId, contract, tokenId),
+        getCollectionId(chainId, contract, tokenId),
       ]);
 
-      data.push(parse(contract, tokenId, collection, response.data.data.nft));
+      data.push(parse(contract, tokenId, collection, response.data.data.releaseFromToken));
     } catch (error) {
       logger.error(
         "soundxyz-fetcher",
@@ -61,27 +61,27 @@ export const fetchTokens = async (chainId, tokens) => {
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
   const {
     data: {
-      data: { nft },
+      data: { releaseFromToken },
     },
   } = await soundxyz.getContractSlug(chainId, contract, tokenId);
   const royalties = [];
 
-  if (nft.release.fundingAddress && nft.release.royaltyBps) {
+  if (releaseFromToken.fundingAddress && releaseFromToken.royaltyBps) {
     royalties.push({
-      recipient: _.toLower(nft.release.fundingAddress),
-      bps: nft.release.royaltyBps,
+      recipient: _.toLower(releaseFromToken.fundingAddress),
+      bps: releaseFromToken.royaltyBps,
     });
   }
 
   return {
     id: `${contract}`,
-    slug: slugify(nft.release.titleSlug, { lower: true }),
-    name: `${nft.release.artist.name} - ${nft.release.title}`,
+    slug: slugify(releaseFromToken.titleSlug, { lower: true }),
+    name: `${releaseFromToken.artist.name} - ${releaseFromToken.title}`,
     community: "sound.xyz",
     metadata: {
-      imageUrl: nft.release.coverImage.url,
-      description: nft.release.description,
-      externalUrl: `https://sound.xyz/${nft.release.artist.soundHandle}/${nft.release.titleSlug}`,
+      imageUrl: releaseFromToken.coverImage.url,
+      description: releaseFromToken.description,
+      externalUrl: `https://sound.xyz/${releaseFromToken.artist.soundHandle}/${releaseFromToken.titleSlug}`,
     },
     royalties,
     openseaRoyalties: await opensea

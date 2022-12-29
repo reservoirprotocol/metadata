@@ -68,7 +68,7 @@ async function getCollectionTokens(contract, community) {
     }
     if (data.items && data.items.length > 0) {
       for (let item of data.items) {
-        console.log(item.meta.attributes);
+
         // Parse Image
         let imageURL = null;
         try {
