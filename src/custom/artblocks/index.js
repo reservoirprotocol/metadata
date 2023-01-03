@@ -38,12 +38,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       description: data.description,
       externalUrl: data.website,
     },
-    royalties: [
-      {
-        recipient: "0x6c093fe8bc59e1e0cae2ec10f0b717d3d182056b",
-        bps: 750,
-      },
-    ],
     openseaRoyalties,
     contract,
     tokenIdRange: [startTokenId, endTokenId],
