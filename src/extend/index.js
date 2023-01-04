@@ -7,9 +7,10 @@ import * as lilnouns from "./lilnouns";
 import * as chimpers from "./chimpers";
 import * as moonbirds from "./moonbirds";
 import * as soundxyz from "../custom/soundxyz";
-import * as soundxyzExtend from "../extend/soundxyz";
+import * as soundxyzExtend from "./soundxyz";
 import * as bayc from "./bayc";
 import * as asyncBlueprints from "./async-blueprints";
+import * as sharedContracts from "./shared-contracts";
 
 export const extendCollectionMetadata = async (chainId, metadata) => {
   if (metadata) {
@@ -45,6 +46,26 @@ extendCollection["4,0xa7d49d78ab0295ad5a857dc4d0ab16445663ab85"] = admitOne;
 
 // Art Tennis
 extendCollection["1,0x4d928ab507bf633dd8e68024a1fb4c99316bbdf3"] = artTennis;
+
+// Rarible ERC721
+extendCollection["1,0xc9154424b823b10579895ccbe442d41b9abd96ed"] =
+  sharedContracts;
+extendCollection["5,0xd8560c88d1dc85f9ed05b25878e366c49b68bef9"] =
+  sharedContracts;
+
+// Rarible ERC1155
+extendCollection["1,0xb66a603f4cfe17e3d27b87a8bfcad319856518b8"] =
+  sharedContracts;
+extendCollection["5,0x7c4b13b5893cd82f371c5e28f12fb2f37542bbc5"] =
+  sharedContracts;
+
+// Superrare
+extendCollection["1,0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0"] =
+  sharedContracts;
+
+// Foundation
+extendCollection["1,0x3b3ee1931dc30c1957379fac9aba94d1c48a5405"] =
+  sharedContracts;
 
 const extend = {};
 
