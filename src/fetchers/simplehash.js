@@ -56,10 +56,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         externalUrl: data.external_url,
         twitterUsername: data.twitter_username,
       },
-      royalties: [
-        // TODO: Integrate royalties
-      ],
-      openseaRoyalties: [],
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
@@ -87,8 +83,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         name: name,
         community: null,
         metadata: null,
-        royalties: [],
-        openseaRoyalties: [],
         contract,
         tokenIdRange: null,
         tokenSetId: `contract:${contract}`,
