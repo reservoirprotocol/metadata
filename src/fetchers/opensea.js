@@ -124,8 +124,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         name: name,
         community: null,
         metadata: null,
-        royalties: [],
-        openseaRoyalties: [],
         contract,
         tokenIdRange: null,
         tokenSetId: `contract:${contract}`,
