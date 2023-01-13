@@ -13,12 +13,13 @@ import * as asyncBlueprints from "./async-blueprints";
 import * as sharedContracts from "./shared-contracts";
 import * as reservoir from "./reservoir";
 
-export const extendCollectionMetadata = async (chainId, metadata) => {
+export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
     if (Boolean(extendCollection[`${chainId},${metadata.id}`])) {
       return extendCollection[`${chainId},${metadata.id}`].extendCollection(
         chainId,
-        metadata
+        metadata,
+        tokenId
       );
     } else {
       return metadata;

@@ -1,5 +1,4 @@
-export const extendCollection = async (_chainId, metadata) => {
-  const tokenId = metadata.tokenId;
+export const extendCollection = async (_chainId, metadata, tokenId = null) => {
   let startTokenId;
   let endTokenId;
 
