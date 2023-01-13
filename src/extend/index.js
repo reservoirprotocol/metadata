@@ -11,6 +11,7 @@ import * as soundxyzExtend from "./soundxyz";
 import * as bayc from "./bayc";
 import * as asyncBlueprints from "./async-blueprints";
 import * as sharedContracts from "./shared-contracts";
+import * as reservoir from "./reservoir";
 
 export const extendCollectionMetadata = async (chainId, metadata) => {
   if (metadata) {
@@ -40,6 +41,9 @@ export const extendMetadata = async (chainId, metadata) => {
 
 const extendCollection = {};
 
+// Reservoir
+extendCollection["5,0x349a3154fbe62dcba32d522091a87fca333dc4e9"] = reservoir;
+
 // Admit One
 extendCollection["1,0xd2a077ec359d94e0a0b7e84435eacb40a67a817c"] = admitOne;
 extendCollection["4,0xa7d49d78ab0295ad5a857dc4d0ab16445663ab85"] = admitOne;
@@ -68,6 +72,9 @@ extendCollection["1,0x3b3ee1931dc30c1957379fac9aba94d1c48a5405"] =
   sharedContracts;
 
 const extend = {};
+
+// Reservoir
+extend["5,0x349a3154fbe62dcba32d522091a87fca333dc4e9"] = reservoir;
 
 // Adidas Originals
 extend["1,0x28472a58a490c5e09a238847f66a68a47cc76f0f"] = adidasOriginals;
