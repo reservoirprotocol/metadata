@@ -11,6 +11,9 @@ export const extendCollection = async (_chainId, metadata, tokenId = null) => {
   }
 
   metadata.id = `${metadata.contract}:${startTokenId}:${endTokenId}`;
+  metadata.tokenIdRange = [startTokenId, endTokenId];
+  metadata.tokenSetId = `range:${metadata.contract}:${startTokenId}:${endTokenId}`;
+
   return { ...metadata };
 };
 
