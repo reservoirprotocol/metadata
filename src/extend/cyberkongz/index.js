@@ -2,12 +2,12 @@ export const extendCollection = async (_chainId, metadata, tokenId = null) => {
   let startTokenId;
   let endTokenId;
 
-  if (tokenId < 10) {
-    startTokenId = 0;
-    endTokenId = 9;
+  if (tokenId <= 1000) {
+    startTokenId = 1;
+    endTokenId = 1000;
   } else {
-    startTokenId = 10;
-    endTokenId = 10000;
+    startTokenId = 1001;
+    endTokenId = 5000;
   }
 
   metadata.id = `${metadata.contract}:${startTokenId}:${endTokenId}`;
@@ -23,12 +23,12 @@ export const extend = async (_chainId, metadata) => {
   let startTokenId;
   let endTokenId;
 
-  if (tokenId < 10) {
-    startTokenId = 0;
-    endTokenId = 9;
+  if (tokenId <= 1000) {
+    startTokenId = 1;
+    endTokenId = 1000;
   } else {
-    startTokenId = 10;
-    endTokenId = 10000;
+    startTokenId = 1001;
+    endTokenId = 5000;
   }
 
   metadata.collection = `${metadata.contract}:${startTokenId}:${endTokenId}`;
