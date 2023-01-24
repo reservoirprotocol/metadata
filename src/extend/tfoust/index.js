@@ -6,8 +6,8 @@ export const extend = async (_chainId, metadata) => {
     }
 
     metadata.attributes = {
-        Series: series.trim(),
         ... metadata.attributes,
+        Series: series.trim(),
     }
 
     return metadata;
