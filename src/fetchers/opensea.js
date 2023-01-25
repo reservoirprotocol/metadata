@@ -16,8 +16,8 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     try {
       const url =
         chainId === 1
-          ? `https://api.opensea.io/api/v1/asset/${contract}/${tokenId}`
-          : `https://testnets-api.opensea.io/api/v1/asset/${contract}/${tokenId}`;
+          ? `${process.env.OPENSEA_COLLECTION_URL}/${contract}/${tokenId}`
+          : `${process.env.OPENSEA_COLLECTION_TESTNET_URL}/${contract}/${tokenId}`;
 
       const assetResponse = await axios.get(url, {
         headers:
