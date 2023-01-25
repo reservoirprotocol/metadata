@@ -28,8 +28,8 @@ export const extendCollectionMetadata = async (chainId, metadata) => {
 
 export const extendMetadata = async (chainId, metadata) => {
   if (metadata) {
-    if (Boolean(extend[`${chainId},${metadata.contract}`])) {
-      return extend[`${chainId},${metadata.contract}`].extend(
+    if (Boolean(extend[`${chainId},${metadata.contract.toLowerCase()}`])) {
+      return extend[`${chainId},${metadata.contract.toLowerCase()}`].extend(
         chainId,
         metadata
       );
