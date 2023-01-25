@@ -10,6 +10,7 @@ import * as soundxyz from "../custom/soundxyz";
 import * as soundxyzExtend from "./soundxyz";
 import * as bayc from "./bayc";
 import * as asyncBlueprints from "./async-blueprints";
+import * as tfoust from './tfoust';
 import * as sharedContracts from "./shared-contracts";
 
 export const extendCollectionMetadata = async (chainId, metadata) => {
@@ -99,3 +100,9 @@ extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyzExtend;
 
 // Async Blueprints
 extend["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
+
+// tfoust
+extend["137,0x907808732079863886443057c65827a0f1c64357"] = tfoust;
+extend["137,0xe1b5e23fdbc003aec16e6e79726a0b5f75ff93f5"] = tfoust;
+extend["137,0x5846728730366d686cdc95dae80a70b44ec9eab2"] = tfoust;
+extend["137,0x45308788743bbdae5de7ba9e565c0502d0ebb81f"] = tfoust;
