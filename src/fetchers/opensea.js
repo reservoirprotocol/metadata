@@ -27,7 +27,9 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
                 "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
                 "Accept": "application/json",
               }
-            : {},
+              : {
+                "Accept": "application/json"
+              },
       });
 
       data = assetResponse.data;
@@ -47,7 +49,9 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
                   "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
                   "Accept": "application/json",
                 }
-              : {},
+                : {
+                  "Accept": "application/json"
+                },
         });
 
         data = assetContractResponse.data;
@@ -159,7 +163,9 @@ export const fetchTokens = async (chainId, tokens) => {
               "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
               "Accept": "application/json",
             }
-          : {},
+            : {
+              "Accept": "application/json"
+            },
     })
     .then((response) => response.data)
     .catch((error) => {
@@ -198,7 +204,9 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
               "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
               "Accept": "application/json",
             }
-          : {},
+          : {
+              "Accept": "application/json"
+            },
     })
     .then((response) => response.data)
     .catch((error) => handleError(error));
