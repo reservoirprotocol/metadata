@@ -16,16 +16,20 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     try {
       const url =
         chainId === 1
-          ? `${process.env.OPENSEA_COLLECTION_URL ?? "https://api.opensea.io/api/v1/asset"}/${contract}/${tokenId}`
-          : `${process.env.OPENSEA_COLLECTION_TESTNET_URL ?? "https://testnets-api.opensea.io/api/v1/asset"}/${contract}/${tokenId}`;
+          ? `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/asset/${contract}/${tokenId}`
+          : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://testnets-api.opensea.io" }/api/v1/asset/${contract}/${tokenId}`;
 
       const assetResponse = await axios.get(url, {
         headers:
           chainId === 1
             ? {
-                "X-API-KEY": process.env.OPENSEA_COLLECTION_API_KEY.trim(),
+                "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
+                "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+                "Accept": "application/json",
               }
-            : {},
+              : {
+                "Accept": "application/json"
+              },
       });
 
       data = assetResponse.data;
@@ -34,16 +38,20 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       if (error.response?.status === 404) {
         const url =
           chainId === 1
-            ? `https://api.opensea.io/api/v1/asset_contract/${contract}`
-            : `https://testnets-api.opensea.io/api/v1/asset_contract/${contract}`;
+            ? `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/asset_contract/${contract}`
+            : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://testnets-api.opensea.io" }/api/v1/asset_contract/${contract}`;
 
         const assetContractResponse = await axios.get(url, {
           headers:
             chainId === 1
               ? {
-                  "X-API-KEY": process.env.OPENSEA_COLLECTION_API_KEY.trim(),
+                  "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
+                  "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+                  "Accept": "application/json",
                 }
-              : {},
+                : {
+                  "Accept": "application/json"
+                },
         });
 
         data = assetContractResponse.data;
@@ -144,16 +152,20 @@ export const fetchTokens = async (chainId, tokens) => {
 
   const url =
     chainId === 1
-      ? `https://api.opensea.io/api/v1/assets?${searchParams.toString()}`
-      : `https://rinkeby-api.opensea.io/api/v1/assets?${searchParams.toString()}`;
+      ? `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/assets?${searchParams.toString()}`
+      : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://testnets-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
   const data = await axios
     .get(url, {
       headers:
         chainId === 1
           ? {
-              "X-API-KEY": process.env.OPENSEA_TOKENS_API_KEY.trim(),
+              "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
+              "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+              "Accept": "application/json",
             }
-          : {},
+            : {
+              "Accept": "application/json"
+            },
     })
     .then((response) => response.data)
     .catch((error) => {
@@ -181,16 +193,20 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
 
   const url =
     chainId === 1
-      ? `https://api.opensea.io/api/v1/assets?${searchParams.toString()}`
-      : `https://rinkeby-api.opensea.io/api/v1/assets?${searchParams.toString()}`;
+      ? `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/assets?${searchParams.toString()}`
+      : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://testnets-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
   const data = await axios
     .get(url, {
       headers:
         chainId === 1
           ? {
               "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
+              "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+              "Accept": "application/json",
             }
-          : {},
+          : {
+              "Accept": "application/json"
+            },
     })
     .then((response) => response.data)
     .catch((error) => handleError(error));
