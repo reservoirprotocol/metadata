@@ -14,7 +14,10 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     let data;
 
     try {
-      const url = `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/asset/${contract}/${tokenId}`;
+        const url =
+            chainId === 1
+            ? `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/asset/${contract}/${tokenId}`
+            : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://testnets-api.opensea.io" }/api/v1/asset/${contract}/${tokenId}`;
 
       const assetResponse = await axios.get(url, {
         headers:
@@ -32,8 +35,10 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     } catch (error) {
       // Try to get the collection only based on the contract.
       if (error.response?.status === 404) {
-        const url = `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/asset_contract/${contract}`;
-
+      const url =
+          chainId === 1
+          ? `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/asset_contract/${contract}`
+          : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://testnets-api.opensea.io" }/api/v1/asset_contract/${contract}`;
         const assetContractResponse = await axios.get(url, {
           headers:
             chainId === 1
