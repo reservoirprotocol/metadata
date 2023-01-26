@@ -20,8 +20,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         headers:
           chainId === 1
             ? {
-                "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
-                "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+                [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
                 "Accept": "application/json",
               }
               : {
@@ -39,8 +38,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
           headers:
             chainId === 1
               ? {
-                  "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
-                  "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+                  [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
                   "Accept": "application/json",
                 }
                 : {
@@ -144,14 +142,16 @@ export const fetchTokens = async (chainId, tokens) => {
     searchParams.append("token_ids", tokenId);
   }
 
-  const url = `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
+  const url =
+    chainId === 1
+      ? `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/assets?${searchParams.toString()}`
+      : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://rinkeby-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
   const data = await axios
     .get(url, {
       headers:
         chainId === 1
           ? {
-              "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
-              "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
               "Accept": "application/json",
             }
             : {
@@ -182,14 +182,16 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
     searchParams.append("cursor", continuation);
   }
 
-  const url = `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
+  const url =
+    chainId === 1
+      ? `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/assets?${searchParams.toString()}`
+      : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://rinkeby-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
   const data = await axios
     .get(url, {
       headers:
         chainId === 1
           ? {
-              "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
-              "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
               "Accept": "application/json",
             }
           : {
