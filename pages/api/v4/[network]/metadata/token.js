@@ -110,7 +110,7 @@ const api = async (req, res) => {
     });
 
     // Method-specific validations
-    if (method === "opensea" && tokens.length > 20) {
+    if (method === "opensea" && tokens.length > 30) {
       throw new Error("Too many tokens");
     }
     if (method === "rarible" && tokens.length > 50) {
