@@ -23,8 +23,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         headers:
           chainId === 1
             ? {
-                "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
-                "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+                [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
                 "Accept": "application/json",
               }
               : {
@@ -45,8 +44,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
           headers:
             chainId === 1
               ? {
-                  "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
-                  "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+                  [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
                   "Accept": "application/json",
                 }
                 : {
@@ -159,8 +157,7 @@ export const fetchTokens = async (chainId, tokens) => {
       headers:
         chainId === 1
           ? {
-              "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
-              "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
               "Accept": "application/json",
             }
             : {
@@ -200,8 +197,7 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
       headers:
         chainId === 1
           ? {
-              "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
-              "X-RapidAPI-Key": process.env.OPENSEA_RAPID_API_KEY.trim(),
+              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
               "Accept": "application/json",
             }
           : {
