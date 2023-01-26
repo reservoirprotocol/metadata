@@ -84,7 +84,7 @@ const api = async (req, res) => {
     }
 
     return res.status(200).json({
-      collection: await extendCollectionMetadata(chainId, collection),
+      collection: await extendCollectionMetadata(chainId, collection, tokenId),
     });
   } catch (error) {
     return res.status(500).json({ error: `Internal error: ${error}` });

@@ -91,6 +91,7 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
         headers: {
           "x-sound-client-key": process.env.SOUNDXYZ_API_KEY,
           "CONTENT-TYPE": "application/json",
+          "user-agent": process.env.SOUNDXYZ_USER_AGENT
         },
       }
     );
