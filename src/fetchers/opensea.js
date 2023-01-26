@@ -153,7 +153,7 @@ export const fetchTokens = async (chainId, tokens) => {
   const url =
     chainId === 1
       ? `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/assets?${searchParams.toString()}`
-      : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://testnets-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
+      : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://rinkeby-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
   const data = await axios
     .get(url, {
       headers:
@@ -194,7 +194,7 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
   const url =
     chainId === 1
       ? `${ process.env.OPENSEA_BASE_URL ?? "https://api.opensea.io" }/api/v1/assets?${searchParams.toString()}`
-      : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://testnets-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
+      : `${ process.env.OPENSEA_BASE_TESTNET_URL ?? "https://rinkeby-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
   const data = await axios
     .get(url, {
       headers:
