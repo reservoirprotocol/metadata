@@ -12,13 +12,15 @@ import * as bayc from "./bayc";
 import * as asyncBlueprints from "./async-blueprints";
 import * as tfoust from './tfoust';
 import * as sharedContracts from "./shared-contracts";
+import * as cyberkongz from "./cyberkongz";
 
-export const extendCollectionMetadata = async (chainId, metadata) => {
+export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
     if (Boolean(extendCollection[`${chainId},${metadata.id}`])) {
       return extendCollection[`${chainId},${metadata.id}`].extendCollection(
         chainId,
-        metadata
+        metadata,
+        tokenId
       );
     } else {
       return metadata;
@@ -40,6 +42,9 @@ export const extendMetadata = async (chainId, metadata) => {
 };
 
 const extendCollection = {};
+
+// CyberKongz
+extendCollection["1,0x57a204aa1042f6e66dd7730813f4024114d74f37"] = cyberkongz;
 
 // Admit One
 extendCollection["1,0xd2a077ec359d94e0a0b7e84435eacb40a67a817c"] = admitOne;
@@ -69,6 +74,9 @@ extendCollection["1,0x3b3ee1931dc30c1957379fac9aba94d1c48a5405"] =
   sharedContracts;
 
 const extend = {};
+
+// CyberKongz
+extend["1,0x57a204aa1042f6e66dd7730813f4024114d74f37"] = cyberkongz;
 
 // Adidas Originals
 extend["1,0x28472a58a490c5e09a238847f66a68a47cc76f0f"] = adidasOriginals;
