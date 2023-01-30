@@ -15,7 +15,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
     try {
       const url =
-          `${ process.env.OPENSEA_BASE_URL || chainId === 1 ? "https://api.opensea.io" : "https://testnets-api.opensea.io" }/api/v1/asset/${contract}/${tokenId}`;
+          `${ chainId === 1 ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io" : "https://testnets-api.opensea.io" }/api/v1/asset/${$contract}/${tokenId}`;
 
       const assetResponse = await axios.get(url, {
         headers:
@@ -34,7 +34,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       // Try to get the collection only based on the contract.
       if (error.response?.status === 404) {
         const url =
-            `${ process.env.OPENSEA_BASE_URL || chainId === 1 ? "https://api.opensea.io" : "https://testnets-api.opensea.io" }/api/v1/asset_contract/${contract}`;
+            `${ chainId === 1 ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io" : "https://testnets-api.opensea.io" }/api/v1/asset_contract/${contract}`;
 
         const assetContractResponse = await axios.get(url, {
           headers:
@@ -145,7 +145,7 @@ export const fetchTokens = async (chainId, tokens) => {
   }
 
   const url =
-      `${ process.env.OPENSEA_BASE_URL || chainId === 1 ? "https://api.opensea.io" : "https://rinkeby-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
+      `${ chainId === 1 ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io" : "https://rinkeby-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
   const data = await axios
     .get(url, {
       headers:
@@ -183,7 +183,7 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
   }
 
   const url =
-      `${ process.env.OPENSEA_BASE_URL || chainId === 1 ? "https://api.opensea.io" : "https://rinkeby-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
+      `${ chainId === 1 ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io" : "https://rinkeby-api.opensea.io" }/api/v1/assets?${searchParams.toString()}`;
   const data = await axios
     .get(url, {
       headers:
