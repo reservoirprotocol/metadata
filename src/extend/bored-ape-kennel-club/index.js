@@ -1,10 +1,8 @@
 import { getStakedAmountWei } from '../apecoin'
 
-const POOL_ID = 1;
+const POOL_ID = 3;
 
 export const extend = async (_chainId, metadata) => {
-  const traitCount = metadata.attributes.length
-
   let isApeCoinStaked = false;
   try {
     const { tokenId } = metadata
@@ -18,11 +16,6 @@ export const extend = async (_chainId, metadata) => {
     ...metadata,
     attributes: [
     ...metadata.attributes,
-    {
-      key: "Trait Count",
-      value: traitCount,
-      kind: "string",
-    },
     {
       key: "ApeCoin Staked",
       value: isApeCoinStaked ? "Yes" : "No",
