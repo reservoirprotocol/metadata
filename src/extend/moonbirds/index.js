@@ -25,7 +25,7 @@ export const extend = async (_chainId, metadata) => {
         key: "Trait Count",
         value: metadata.attributes.length,
         kind: "string",
-        rank: 2
+        rank: 2,
       },
       {
         key: "Nested",

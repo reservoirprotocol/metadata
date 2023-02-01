@@ -20,11 +20,7 @@ const poolTokensAbi = [
     type: "function",
   },
 ];
-const poolTokensContract = new ethers.Contract(
-  poolTokensAddress,
-  poolTokensAbi,
-  provider
-);
+const poolTokensContract = new ethers.Contract(poolTokensAddress, poolTokensAbi, provider);
 
 const metadataBaseURI =
   "https://us-central1-goldfinch-frontends-prod.cloudfunctions.net/poolTokenMetadata";
@@ -62,9 +58,7 @@ export const fetchContractTokens = async (_chainId, contract, continuation) => {
   // tokenId starts at 1 (0 was never minted)
   const tokenIdRange = [1, totalSupply];
 
-  const minTokenId = continuation
-    ? Math.max(continuation, tokenIdRange[0])
-    : tokenIdRange[0];
+  const minTokenId = continuation ? Math.max(continuation, tokenIdRange[0]) : tokenIdRange[0];
   const maxTokenId = continuation
     ? Math.min(continuation + pageSize, tokenIdRange[1])
     : tokenIdRange[1];

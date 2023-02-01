@@ -17,9 +17,7 @@ const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (
-      !["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)
-    ) {
+    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)) {
       throw new Error("Unknown network");
     }
 
@@ -58,31 +56,24 @@ const api = async (req, res) => {
 
     // Case 1: fetch all tokens within the given contract via pagination
     const contract = req.query.contract?.toLowerCase();
+    const slug = req.query.slug;
+    const continuation = req.query.continuation;
     if (contract) {
-      const continuation = req.query.continuation;
       if (hasCustomHandler(chainId, contract)) {
-        const result = await customHandleContractTokens(
-          chainId,
-          contract,
-          continuation
-        );
+        const result = await customHandleContractTokens(chainId, contract, continuation);
         return res.status(200).json(result);
       } else {
         try {
           const result = await Promise.all(
             await provider
               .fetchContractTokens(chainId, contract, continuation)
-              .then((l) =>
-                l.map((metadata) => extendMetadata(chainId, metadata))
-              )
+              .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
           );
 
           return res.status(200).json(result);
         } catch (error) {
           if (error instanceof RequestWasThrottledError) {
-            return res
-              .status(429)
-              .json({ error: error.message, expires_in: error.delay });
+            return res.status(429).json({ error: error.message, expires_in: error.delay });
           }
           throw error;
         }
@@ -131,37 +122,34 @@ const api = async (req, res) => {
     });
 
     let metadata = [];
+    let newContinuation, previousContinuation;
     if (tokens.length) {
       try {
         const newMetadata = await Promise.all(
-            await provider
-                .fetchTokens(chainId, tokens)
-                .then((l) =>
-                    l.map((metadata) => extendMetadata(chainId, metadata))
-                )
+          await provider.fetchTokens(chainId, tokens, slug, continuation).then((response) => {
+            newContinuation = response.continuation;
+            previousContinuation = response.previous;
+            return response.assets.map((metadata) => extendMetadata(chainId, metadata));
+          })
         );
-
         metadata = [...metadata, ...newMetadata];
       } catch (error) {
         if (error instanceof RequestWasThrottledError) {
-          return res
-            .status(429)
-            .json({ error: error.message, expires_in: error.delay });
+          return res.status(429).json({ error: error.message, expires_in: error.delay });
         }
         throw error;
       }
     }
-
     if (customTokens.length) {
       metadata = [
         ...metadata,
-        ...(await Promise.all(
-          customTokens.map((token) => customHandleToken(chainId, token))
-        )),
+        ...(await Promise.all(customTokens.map((token) => customHandleToken(chainId, token)))),
       ];
     }
 
-    return res.status(200).json({ metadata });
+    return res
+      .status(200)
+      .json({ metadata, continuation: newContinuation, previous: previousContinuation });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: error.message });

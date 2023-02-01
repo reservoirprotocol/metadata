@@ -115,9 +115,7 @@ const api = async (req, res) => {
         });
       }
 
-      return res
-        .status(200)
-        .json({ collection: await extendCollectionMetadata(1, collection) });
+      return res.status(200).json({ collection: await extendCollectionMetadata(1, collection) });
     }
   } catch (error) {
     return res.status(500).json({ error: `Internal error: ${error}` });

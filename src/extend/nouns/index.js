@@ -1,5 +1,5 @@
 import { request, gql } from "graphql-request";
-import { utils } from 'ethers'
+import { utils } from "ethers";
 
 import nouns from "./nouns.json";
 
@@ -27,20 +27,20 @@ export const extend = async (_chainId, metadata) => {
   );
 
   const traits = [];
-  if(data.auctions[0]) {
+  if (data.auctions[0]) {
     traits.push({
-      key: 'Auction Price',
+      key: "Auction Price",
       value: utils.formatEther(data.auctions[0].amount),
       kind: "string",
       rank: 1,
     });
-    let date = new Date(data.auctions[0].startTime*1000);
+    let date = new Date(data.auctions[0].startTime * 1000);
     let year = date.getUTCFullYear();
-    let month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-    let day = date.getUTCDate().toString().padStart(2, '0');
+    let month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+    let day = date.getUTCDate().toString().padStart(2, "0");
     let dateString = year + "-" + month + "-" + day;
     traits.push({
-      key: 'Birthdate',
+      key: "Birthdate",
       value: dateString,
       kind: "string",
       rank: 2,

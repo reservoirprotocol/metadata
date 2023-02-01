@@ -50,9 +50,7 @@ export default async function handler(req, res) {
   let url = `${base}?asset_contract_address=${contract}`;
   // Batch
   if (req.query.token_ids) {
-    let ids = Array.isArray(req.query.token_ids)
-      ? req.query.token_ids
-      : [req.query.token_ids];
+    let ids = Array.isArray(req.query.token_ids) ? req.query.token_ids : [req.query.token_ids];
     for (let token of ids) {
       url += `&token_ids=${token}`;
     }
