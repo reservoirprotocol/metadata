@@ -55,7 +55,6 @@ const api = async (req, res) => {
     }
 
     // Case 1: fetch all tokens within the given contract and slug via pagination
-    const contract = req.query.contract?.toLowerCase();
     const collectionSlug = req.query.collectionSlug;
     const continuation = req.query.continuation;
     if (collectionSlug) {
@@ -67,23 +66,21 @@ const api = async (req, res) => {
       if (hasCustomHandler(chainId, contract)) {
         throw new Error("Customer handler is not supported with collection slug.");
       }
-      let metadata = [];
       let newContinuation, previousContinuation;
       try {
         const newMetadata = await Promise.all(
           await provider
-            .fetchContractTokensBySlug(chainId, contract, slug, continuation)
+            .fetchTokensByCollectionSlug(chainId, contract, slug, continuation)
             .then((response) => {
               newContinuation = response.continuation;
               previousContinuation = response.previous;
               return response.assets.map((metadata) => extendMetadata(chainId, metadata));
             })
         );
-        metadata = [...metadata, ...newMetadata];
 
         return res
           .status(200)
-          .json({ metadata, continuation: newContinuation, previous: previousContinuation });
+          .json({ metadata: newMetadata, continuation: newContinuation, previous: previousContinuation });
       } catch (error) {
         if (error instanceof RequestWasThrottledError) {
           return res.status(429).json({ error: error.message, expires_in: error.delay });
@@ -92,6 +89,7 @@ const api = async (req, res) => {
       }
     }
     // Case 2: fetch all tokens within the given contract via pagination
+    const contract = req.query.contract?.toLowerCase();
     if (contract) {
       if (hasCustomHandler(chainId, contract)) {
         const result = await customHandleContractTokens(chainId, contract, continuation);
@@ -100,7 +98,7 @@ const api = async (req, res) => {
         try {
           const result = await Promise.all(
             await provider
-              .fetchContractTokens(chainId, contract, continuation) // fetchContractTokensBySlug and then extend the metadata
+              .fetchContractTokens(chainId, contract, continuation)
               .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
           );
 
