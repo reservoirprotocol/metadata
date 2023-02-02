@@ -54,10 +54,44 @@ const api = async (req, res) => {
       provider = soundxyz;
     }
 
-    // Case 1: fetch all tokens within the given contract via pagination
+    // Case 1: fetch all tokens within the given contract and slug via pagination
     const contract = req.query.contract?.toLowerCase();
-    const slug = req.query.slug;
+    const collectionSlug = req.query.collectionSlug;
     const continuation = req.query.continuation;
+    if (collectionSlug) {
+      if (method !== "opensea") {
+        throw new Error("Collection slug is only valid on opensea.");
+      }
+      const [contract, slug] = collectionSlug.split(":");
+
+      if (hasCustomHandler(chainId, contract)) {
+        throw new Error("Customer handler is not supported with collection slug.");
+      }
+      let metadata = [];
+      let newContinuation, previousContinuation;
+      try {
+        const newMetadata = await Promise.all(
+          await provider
+            .fetchContractTokensBySlug(chainId, contract, slug, continuation)
+            .then((response) => {
+              newContinuation = response.continuation;
+              previousContinuation = response.previous;
+              return response.assets.map((metadata) => extendMetadata(chainId, metadata));
+            })
+        );
+        metadata = [...metadata, ...newMetadata];
+
+        return res
+          .status(200)
+          .json({ metadata, continuation: newContinuation, previous: previousContinuation });
+      } catch (error) {
+        if (error instanceof RequestWasThrottledError) {
+          return res.status(429).json({ error: error.message, expires_in: error.delay });
+        }
+        throw error;
+      }
+    }
+    // Case 2: fetch all tokens within the given contract via pagination
     if (contract) {
       if (hasCustomHandler(chainId, contract)) {
         const result = await customHandleContractTokens(chainId, contract, continuation);
@@ -66,7 +100,7 @@ const api = async (req, res) => {
         try {
           const result = await Promise.all(
             await provider
-              .fetchContractTokens(chainId, contract, continuation)
+              .fetchContractTokens(chainId, contract, continuation) // fetchContractTokensBySlug and then extend the metadata
               .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
           );
 
@@ -80,7 +114,7 @@ const api = async (req, res) => {
       }
     }
 
-    // Case 2: fetch specific tokens only
+    // Case 3: fetch specific tokens only
     let tokens = req.query.token;
     if (!tokens) {
       throw new Error("Missing token(s)");
@@ -122,16 +156,14 @@ const api = async (req, res) => {
     });
 
     let metadata = [];
-    let newContinuation, previousContinuation;
     if (tokens.length) {
       try {
         const newMetadata = await Promise.all(
-          await provider.fetchTokens(chainId, tokens, slug, continuation).then((response) => {
-            newContinuation = response.continuation;
-            previousContinuation = response.previous;
-            return response.assets.map((metadata) => extendMetadata(chainId, metadata));
-          })
+          await provider
+            .fetchTokens(chainId, tokens)
+            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
         );
+
         metadata = [...metadata, ...newMetadata];
       } catch (error) {
         if (error instanceof RequestWasThrottledError) {
@@ -140,6 +172,7 @@ const api = async (req, res) => {
         throw error;
       }
     }
+
     if (customTokens.length) {
       metadata = [
         ...metadata,
@@ -147,9 +180,7 @@ const api = async (req, res) => {
       ];
     }
 
-    return res
-      .status(200)
-      .json({ metadata, continuation: newContinuation, previous: previousContinuation });
+    return res.status(200).json({ metadata });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: error.message });

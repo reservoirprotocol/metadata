@@ -142,18 +142,11 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
   }
 };
 
-export const fetchTokens = async (chainId, tokens, slug, continuation) => {
+export const fetchTokens = async (chainId, tokens) => {
   const searchParams = new URLSearchParams();
   for (const { contract, tokenId } of tokens) {
     searchParams.append("asset_contract_addresses", contract);
     searchParams.append("token_ids", tokenId);
-    searchParams.append("limit", "200");
-    if (slug) {
-      searchParams.append("collection_slug", slug);
-    }
-    if (continuation) {
-      searchParams.append("cursor", continuation);
-    }
   }
 
   const url = `${
@@ -184,12 +177,8 @@ export const fetchTokens = async (chainId, tokens, slug, continuation) => {
 
       handleError(error);
     });
-  const assets = data.assets.map(parse).filter(Boolean);
-  return {
-    assets,
-    continuation: data.next ?? undefined,
-    previous: data.previous ?? undefined,
-  };
+
+  return data.assets.map(parse).filter(Boolean);
 };
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
@@ -222,6 +211,45 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
   return {
     continuation: data.next,
     metadata: data.assets.map(parse).filter(Boolean),
+  };
+};
+
+export const fetchContractTokensBySlug = async (chainId, contract, slug, continuation) => {
+  const searchParams = new URLSearchParams();
+  searchParams.append("asset_contract_address", contract);
+  if (continuation) {
+    searchParams.append("cursor", continuation);
+  }
+  if (slug) {
+    searchParams.append("collection_slug", slug);
+  }
+  searchParams.append("limit", "200");
+
+  const url = `${
+    chainId === 1
+      ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
+      : "https://rinkeby-api.opensea.io"
+  }/api/v1/assets?${searchParams.toString()}`;
+  const data = await axios
+    .get(url, {
+      headers:
+        chainId === 1
+          ? {
+              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
+              Accept: "application/json",
+            }
+          : {
+              Accept: "application/json",
+            },
+    })
+    .then((response) => response.data)
+    .catch((error) => handleError(error));
+
+  const assets = data.assets.map(parse).filter(Boolean);
+  return {
+    assets,
+    continuation: data.next ?? undefined,
+    previous: data.previous ?? undefined,
   };
 };
 
