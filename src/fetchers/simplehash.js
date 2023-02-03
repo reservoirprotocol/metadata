@@ -4,8 +4,8 @@ import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
-import { getProvider } from "../utils";
-import { logger } from "../logger";
+import { getProvider } from "../shared/utils";
+import { logger } from "../shared/logger";
 import _ from "lodash";
 
 const getNetworkName = (chainId) => {

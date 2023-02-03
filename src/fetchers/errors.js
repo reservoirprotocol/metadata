@@ -8,12 +8,3 @@ export class RequestWasThrottledError extends Error {
     Object.setPrototypeOf(this, RequestWasThrottledError.prototype);
   }
 }
-
-export class ValidationError extends Error {
-  constructor(message) {
-    super(message);
-    this.status = 400;
-
-    Object.setPrototypeOf(this, ValidationError.prototype);
-  }
-}

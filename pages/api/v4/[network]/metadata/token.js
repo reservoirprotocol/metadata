@@ -11,7 +11,8 @@ import * as simplehash from "../../../../../src/fetchers/simplehash";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
 
-import { RequestWasThrottledError, ValidationError } from "../../../../../src/fetchers/errors";
+import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
+import { ValidationError } from "../../../../../src/shared/errors";
 
 const api = async (req, res) => {
   try {
@@ -78,13 +79,11 @@ const api = async (req, res) => {
             })
         );
 
-        return res
-          .status(200)
-          .json({
-            metadata: newMetadata,
-            continuation: newContinuation,
-            previous: previousContinuation,
-          });
+        return res.status(200).json({
+          metadata: newMetadata,
+          continuation: newContinuation,
+          previous: previousContinuation,
+        });
       } catch (error) {
         if (error instanceof ValidationError) {
           return res.status(400).json({ error: error.message });

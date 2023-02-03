@@ -3,7 +3,7 @@ import _ from "lodash";
 import slugify from "slugify";
 
 import * as opensea from "../../fetchers/opensea";
-import { logger } from "../../logger";
+import { logger } from "../../shared/logger";
 
 import ArtistContracts from "./ArtistContracts.json";
 import ReleaseContracts from "./ReleaseContracts.json";

@@ -3,8 +3,8 @@ import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
-import { getProvider } from "../utils";
-import { logger } from "../logger";
+import { getProvider } from "../shared/utils";
+import { logger } from "../shared/logger";
 
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";

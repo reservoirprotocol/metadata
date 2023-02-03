@@ -2,7 +2,7 @@ import { Interface } from "@ethersproject/abi";
 import { Contract } from "@ethersproject/contracts";
 import axios from "axios";
 
-import { getProvider } from "../../utils";
+import { getProvider } from "../../shared/utils";
 
 export const fetchToken = async (chainId, { contract, tokenId }) => {
   const provider = getProvider(chainId);
