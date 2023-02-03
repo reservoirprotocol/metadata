@@ -214,9 +214,8 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
   };
 };
 
-export const fetchTokensByCollectionSlug = async (chainId, contract, slug, continuation) => {
+export const fetchTokensByCollectionSlug = async (chainId, slug, continuation) => {
   const searchParams = new URLSearchParams();
-  searchParams.append("asset_contract_address", contract);
   if (continuation) {
     searchParams.append("cursor", continuation);
   }

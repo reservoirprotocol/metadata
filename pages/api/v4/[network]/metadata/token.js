@@ -11,7 +11,7 @@ import * as simplehash from "../../../../../src/fetchers/simplehash";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
 
-import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
+import { RequestWasThrottledError, ValidationError } from "../../../../../src/fetchers/errors";
 
 const api = async (req, res) => {
   try {
@@ -58,19 +58,19 @@ const api = async (req, res) => {
     const collectionSlug = req.query.collectionSlug;
     const continuation = req.query.continuation;
     if (collectionSlug) {
-      if (method !== "opensea") {
-        throw new Error("Collection slug is only valid on opensea.");
-      }
-      const [contract, slug] = collectionSlug.split(":");
-
-      if (hasCustomHandler(chainId, contract)) {
-        throw new Error("Customer handler is not supported with collection slug.");
-      }
-      let newContinuation, previousContinuation;
       try {
+        if (method !== "opensea") {
+          throw new ValidationError("Collection slug is only valid on opensea.");
+        }
+        const [contract, slug] = collectionSlug.split(":");
+
+        if (hasCustomHandler(chainId, contract)) {
+          throw new ValidationError("Custom handler is not supported with collection slug.");
+        }
+        let newContinuation, previousContinuation;
         const newMetadata = await Promise.all(
           await provider
-            .fetchTokensByCollectionSlug(chainId, contract, slug, continuation)
+            .fetchTokensByCollectionSlug(chainId, slug, continuation)
             .then((response) => {
               newContinuation = response.continuation;
               previousContinuation = response.previous;
@@ -80,10 +80,14 @@ const api = async (req, res) => {
 
         return res
           .status(200)
-          .json({ metadata: newMetadata, continuation: newContinuation, previous: previousContinuation });
+          .json({
+            metadata: newMetadata,
+            continuation: newContinuation,
+            previous: previousContinuation,
+          });
       } catch (error) {
-        if (error instanceof RequestWasThrottledError) {
-          return res.status(429).json({ error: error.message, expires_in: error.delay });
+        if (error instanceof ValidationError) {
+          return res.status(400).json({ error: error.message });
         }
         throw error;
       }
