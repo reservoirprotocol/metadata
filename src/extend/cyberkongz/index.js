@@ -17,7 +17,6 @@ export const extendCollection = async (_chainId, metadata, tokenId = null) => {
   return { ...metadata };
 };
 
-
 export const extend = async (_chainId, metadata) => {
   const tokenId = metadata.tokenId;
   let startTokenId;
@@ -33,4 +32,4 @@ export const extend = async (_chainId, metadata) => {
 
   metadata.collection = `${metadata.contract}:${startTokenId}:${endTokenId}`;
   return { ...metadata };
-}
+};

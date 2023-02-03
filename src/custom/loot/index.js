@@ -119,13 +119,7 @@ items.HAND = [
 
 items.NECK = ["Necklace", "Amulet", "Pendant"];
 
-items.RING = [
-  "Gold Ring",
-  "Silver Ring",
-  "Bronze Ring",
-  "Platinum Ring",
-  "Titanium Ring",
-];
+items.RING = ["Gold Ring", "Silver Ring", "Bronze Ring", "Platinum Ring", "Titanium Ring"];
 
 const suffixes = [
   "of Power",
@@ -368,9 +362,7 @@ export const fetchContractTokens = (_chainId, contract, continuation) => {
   const pageSize = 1000;
   const tokenIdRange = [1, 7881];
 
-  const minTokenId = continuation
-    ? Math.max(continuation, tokenIdRange[0])
-    : tokenIdRange[0];
+  const minTokenId = continuation ? Math.max(continuation, tokenIdRange[0]) : tokenIdRange[0];
   const maxTokenId = continuation
     ? Math.min(continuation + pageSize, tokenIdRange[1])
     : tokenIdRange[1];

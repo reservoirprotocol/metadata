@@ -1,9 +1,6 @@
 import _ from "lodash";
 
-import {
-  customHandleCollection,
-  hasCustomCollectionHandler,
-} from "../../../../../src/custom";
+import { customHandleCollection, hasCustomCollectionHandler } from "../../../../../src/custom";
 import { extendCollectionMetadata } from "../../../../../src/extend";
 
 import * as opensea from "../../../../../src/fetchers/opensea";
@@ -16,9 +13,7 @@ const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (
-      !["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)
-    ) {
+    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)) {
       throw new Error("Unknown network");
     }
 
@@ -40,11 +35,7 @@ const api = async (req, res) => {
 
     // Validate indexing method and set up provider
     const method = req.query.method;
-    if (
-      !["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(
-        method
-      )
-    ) {
+    if (!["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(method)) {
       throw new Error("Unknown method");
     }
 

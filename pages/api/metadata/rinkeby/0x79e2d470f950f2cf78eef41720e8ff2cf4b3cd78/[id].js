@@ -1,13 +1,8 @@
 const { BigNumber } = require("@ethersproject/bignumber");
 const { id } = require("@ethersproject/hash");
-import {
-  itemRarity,
-  rarityColor,
-  rarityDescription,
-  lootRarity
-} from "loot-rarity";
+import { itemRarity, rarityColor, rarityDescription, lootRarity } from "loot-rarity";
 
-let items = {}
+let items = {};
 
 items.WEAPON = [
   "Warhammer",
@@ -122,13 +117,7 @@ items.HAND = [
 
 items.NECK = ["Necklace", "Amulet", "Pendant"];
 
-items.RING = [
-  "Gold Ring",
-  "Silver Ring",
-  "Bronze Ring",
-  "Platinum Ring",
-  "Titanium Ring",
-];
+items.RING = ["Gold Ring", "Silver Ring", "Bronze Ring", "Platinum Ring", "Titanium Ring"];
 
 const suffixes = [
   "of Power",
@@ -259,103 +248,103 @@ function capitalize(string) {
 
 const getMetadata = (id) => {
   let scores = {
-    "greatness":0,
-    "orders":0,
-    "names":0,
-    "plusones":0
-  }
+    greatness: 0,
+    orders: 0,
+    names: 0,
+    plusones: 0,
+  };
   let meta = {
-    "name": `Bag #${id}`,
-    "description": "Loot is randomized adventurer gear generated and stored on chain. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use Loot in any way you want.",
-    "image": `https://www.loot.exchange/api/image/${id}`,
-    "community": "loot",
-    "collection": {
-      "id":"loot",
-      "name":"Loot (for Adventurers)",
-      "description": "Loot is randomized adventurer gear generated and stored on chain. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use Loot in any way you want.",
-      "image":"https://lh3.googleusercontent.com/g-NFUWjS4IGgym8PHBxyhg5-G_B4x-IHgPKRkxo00JQFE3LOd-95yU2uhrokITVmV7KHEav6OMfAhfJ4roC5hwP-0tI9dMRd9wQLdw=s130",
-      "royalty_amount": "0",
-      "royalty_recipient": null,
-      "royaltyBps": "500",
-      "royaltyRecipient": "0x8cFDF9E9f7EA8c0871025318407A6f1Fbc5d5a18",
-      "community": "loot",
-      "contract": "0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78",
-      "filters": [
-        "Item",
-        "Greatness"
-      ],
-      "sort":[
+    name: `Bag #${id}`,
+    description:
+      "Loot is randomized adventurer gear generated and stored on chain. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use Loot in any way you want.",
+    image: `https://www.loot.exchange/api/image/${id}`,
+    community: "loot",
+    collection: {
+      id: "loot",
+      name: "Loot (for Adventurers)",
+      description:
+        "Loot is randomized adventurer gear generated and stored on chain. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use Loot in any way you want.",
+      image:
+        "https://lh3.googleusercontent.com/g-NFUWjS4IGgym8PHBxyhg5-G_B4x-IHgPKRkxo00JQFE3LOd-95yU2uhrokITVmV7KHEav6OMfAhfJ4roC5hwP-0tI9dMRd9wQLdw=s130",
+      royalty_amount: "0",
+      royalty_recipient: null,
+      royaltyBps: "500",
+      royaltyRecipient: "0x8cFDF9E9f7EA8c0871025318407A6f1Fbc5d5a18",
+      community: "loot",
+      contract: "0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78",
+      filters: ["Item", "Greatness"],
+      sort: [
         {
-          "key":"Greatness",
-          "direction": "DESC",
-          "label": "Greatness"
-        }
-      ]
+          key: "Greatness",
+          direction: "DESC",
+          label: "Greatness",
+        },
+      ],
     },
-    "attributes":[]
-  }
-  let bagItems = []
-  for(let keyPrefix in items) {
-    let sourceArray = items[keyPrefix]
+    attributes: [],
+  };
+  let bagItems = [];
+  for (let keyPrefix in items) {
+    let sourceArray = items[keyPrefix];
     const rand = random(keyPrefix + id);
     let output = sourceArray[rand.mod(sourceArray.length).toNumber()];
     const greatness = rand.mod(21);
     scores.greatness += greatness.toNumber();
     if (greatness.gt(14)) {
-      scores.orders++
-      let order = suffixes[rand.mod(suffixes.length).toNumber()]
+      scores.orders++;
+      let order = suffixes[rand.mod(suffixes.length).toNumber()];
       //meta.itemOrders[keyPrefix.toLowerCase()] = order
       meta.attributes.push({
-        "key": `${capitalize(keyPrefix)} Order`,
-        "category": "Item Orders",
-        "value": order.slice(3)
-      })
+        key: `${capitalize(keyPrefix)} Order`,
+        category: "Item Orders",
+        value: order.slice(3),
+      });
       output = output + " " + order;
     }
     if (greatness.gte(19)) {
-      scores.names++
+      scores.names++;
       const name = ["", ""];
       name[0] = namePrefixes[rand.mod(namePrefixes.length).toNumber()];
       name[1] = nameSuffixes[rand.mod(nameSuffixes.length).toNumber()];
       if (greatness.eq(19)) {
         output = '"' + name[0] + " " + name[1] + '" ' + output;
       } else {
-        scores.plusones++  
+        scores.plusones++;
         output = '"' + name[0] + " " + name[1] + '" ' + output + " +1";
       }
     }
     meta.attributes.push({
-      "key": `${capitalize(keyPrefix)}`,
-      "category": "Items",
-      "value": output
-    })
-    bagItems.push(output)
+      key: `${capitalize(keyPrefix)}`,
+      category: "Items",
+      value: output,
+    });
+    bagItems.push(output);
   }
   meta.attributes.push({
-    "key": "Greatness",
-    "category": "Properties",
-    "value": scores.greatness,
-  })
+    key: "Greatness",
+    category: "Properties",
+    value: scores.greatness,
+  });
   meta.attributes.push({
-    "key": "Orders",
-    "category": "Properties",
-    "value": scores.orders,
-  })
+    key: "Orders",
+    category: "Properties",
+    value: scores.orders,
+  });
   meta.attributes.push({
-    "key": "Names",
-    "category": "Properties",
-    "value": scores.names,
-  })
+    key: "Names",
+    category: "Properties",
+    value: scores.names,
+  });
   meta.attributes.push({
-    "key": "Plus Ones",
-    "category": "Properties",
-    "value": scores.plusones,
-  })
+    key: "Plus Ones",
+    category: "Properties",
+    value: scores.plusones,
+  });
   meta.attributes.push({
-    "key": "Rarity",
-    "category": "Properties",
-    "value": rarityDescription(lootRarity(bagItems.map(i => i))),
-  })
+    key: "Rarity",
+    category: "Properties",
+    value: rarityDescription(lootRarity(bagItems.map((i) => i))),
+  });
 
   for (const attr of meta.attributes) {
     if (isNaN(attr.value)) {
@@ -364,13 +353,13 @@ const getMetadata = (id) => {
       attr.kind = "number";
     }
   }
-  
-  return meta
-}
+
+  return meta;
+};
 
 const api = async (req, res) => {
-  const { id } = req.query
-  let meta = getMetadata(id)
+  const { id } = req.query;
+  let meta = getMetadata(id);
   res.status(200).json(meta);
 };
 

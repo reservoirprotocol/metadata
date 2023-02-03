@@ -44,11 +44,9 @@ export const fetchTokens = async (chainId, tokens) => {
     } catch (error) {
       logger.error(
         "soundxyz-fetcher",
-        `fetchTokens error. chainId:${chainId}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(
-          error.response?.data
-        )}`
+        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+          error.response?.status
+        }, data:${JSON.stringify(error.response?.data)}`
       );
 
       handleError(error);
