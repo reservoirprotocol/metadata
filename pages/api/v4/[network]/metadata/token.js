@@ -89,6 +89,9 @@ const api = async (req, res) => {
         if (error instanceof ValidationError) {
           return res.status(400).json({ error: error.message });
         }
+        if (error instanceof RequestWasThrottledError) {
+          return res.status(429).json({ error: error.message, expires_in: error.delay });
+        }
         throw error;
       }
     }
