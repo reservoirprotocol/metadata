@@ -1,3 +1,7 @@
+import { getStakedAmountWei } from '../apecoin'
+
+const POOL_ID = 2;
+
 export const extend = async (_chainId, metadata) => {
   let serumType;
   let name;
@@ -11,6 +15,15 @@ export const extend = async (_chainId, metadata) => {
     name = `#${metadata.tokenId} (${serumType})`;
   }
 
+  let isApeCoinStaked = false;
+  try {
+    const { tokenId } = metadata
+    const stakedAmountWei = await getStakedAmountWei({ poolId: POOL_ID, tokenId })
+    isApeCoinStaked = stakedAmountWei !== 0
+  } catch (error) {
+    console.log(error)
+  }
+
   return {
     ...metadata,
     name,
@@ -21,6 +34,11 @@ export const extend = async (_chainId, metadata) => {
         value: serumType,
         kind: "string",
         rank: 2,
+      },
+      {
+        key: "ApeCoin Staked",
+        value: isApeCoinStaked ? "Yes" : "No",
+        kind: "string",
       },
     ],
   };

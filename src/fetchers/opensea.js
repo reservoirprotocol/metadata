@@ -3,8 +3,8 @@ import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
-import { getProvider } from "../utils";
-import { logger } from "../logger";
+import { getProvider } from "../shared/utils";
+import { logger } from "../shared/logger";
 
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
@@ -226,7 +226,7 @@ export const fetchTokensByCollectionSlug = async (chainId, slug, continuation) =
 
   const url = `${
     chainId === 1
-      ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
+      ? process.env.OPENSEA_SLUG_BASE_URL || "https://api.opensea.io"
       : "https://rinkeby-api.opensea.io"
   }/api/v1/assets?${searchParams.toString()}`;
   const data = await axios
@@ -234,7 +234,7 @@ export const fetchTokensByCollectionSlug = async (chainId, slug, continuation) =
       headers:
         chainId === 1
           ? {
-              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
+              [process.env.OPENSEA_SLUG_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_SLUG_API_KEY.trim(),
               Accept: "application/json",
             }
           : {

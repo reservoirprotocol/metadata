@@ -3,7 +3,7 @@ import _ from "lodash";
 import slugify from "slugify";
 
 import * as soundxyz from "../custom/soundxyz";
-import { logger } from "../logger";
+import { logger } from "../shared/logger";
 import { parse } from "../parsers/soundxyz";
 import { RequestWasThrottledError } from "./errors";
 import * as opensea from "./opensea";

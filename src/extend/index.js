@@ -2,6 +2,7 @@ import * as adidasOriginals from "./adidas-originals";
 import * as admitOne from "./admit-one";
 import * as artTennis from "./art-tennis";
 import * as mutantApeYachtClub from "./mutant-ape-yacht-club";
+import * as boredApeKennelClub from "./bored-ape-kennel-club";
 import * as nouns from "./nouns";
 import * as lilnouns from "./lilnouns";
 import * as chimpers from "./chimpers";
@@ -74,6 +75,9 @@ extend["1,0x28472a58a490c5e09a238847f66a68a47cc76f0f"] = adidasOriginals;
 
 // Mutant Ape Yacht Club
 extend["1,0x60e4d786628fea6478f785a6d7e704777c86a7c6"] = mutantApeYachtClub;
+
+// Bored Ape Kennel Club
+extend["1,0xba30e5f9bb24caa003e9f2f0497ad287fdf95623"] = boredApeKennelClub;
 
 // Bored Ape Yacht Club
 extend["1,0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"] = bayc;
