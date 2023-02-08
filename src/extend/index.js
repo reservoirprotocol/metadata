@@ -15,7 +15,11 @@ import * as tfoust from "./tfoust";
 import * as sharedContracts from "./shared-contracts";
 import * as cyberkongz from "./cyberkongz";
 
-export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
+export const extendCollectionMetadata = async (
+  chainId,
+  metadata,
+  tokenId = null
+) => {
   if (metadata) {
     if (Boolean(extendCollection[`${chainId},${metadata.id}`])) {
       return extendCollection[`${chainId},${metadata.id}`].extendCollection(
@@ -64,6 +68,9 @@ extendCollection["1,0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0"] = sharedContrac
 
 // Foundation
 extendCollection["1,0x3b3ee1931dc30c1957379fac9aba94d1c48a5405"] = sharedContracts;
+
+// Zora
+extendCollection["1,0xabefbc9fd2f806065b4f3c237d4b59d9a97bcac7"] = sharedContracts;
 
 const extend = {};
 
