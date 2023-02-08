@@ -3,8 +3,8 @@ import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
-import { getProvider } from "../utils";
-import { logger } from "../logger";
+import { getProvider } from "../shared/utils";
+import { logger } from "../shared/logger";
 
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
@@ -24,8 +24,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         headers:
           chainId === 1
             ? {
-                [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]:
-                  process.env.OPENSEA_API_KEY.trim(),
+                [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
                 Accept: "application/json",
               }
             : {
@@ -116,9 +115,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       "opensea-fetcher",
       `fetchCollection error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
         error.message
-      },  status:${error.response?.status}, data:${JSON.stringify(
-        error.response?.data
-      )}`
+      },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
     );
 
     try {
@@ -162,8 +159,7 @@ export const fetchTokens = async (chainId, tokens) => {
       headers:
         chainId === 1
           ? {
-              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]:
-                process.env.OPENSEA_API_KEY.trim(),
+              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
               Accept: "application/json",
             }
           : {
@@ -174,11 +170,9 @@ export const fetchTokens = async (chainId, tokens) => {
     .catch((error) => {
       logger.error(
         "opensea-fetcher",
-        `fetchTokens error. chainId:${chainId}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(
-          error.response?.data
-        )}`
+        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+          error.response?.status
+        }, data:${JSON.stringify(error.response?.data)}`
       );
 
       handleError(error);
@@ -204,8 +198,7 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
       headers:
         chainId === 1
           ? {
-              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]:
-                process.env.OPENSEA_API_KEY.trim(),
+              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
               Accept: "application/json",
             }
           : {
@@ -221,15 +214,49 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
   };
 };
 
+export const fetchTokensByCollectionSlug = async (chainId, slug, continuation) => {
+  const searchParams = new URLSearchParams();
+  if (continuation) {
+    searchParams.append("cursor", continuation);
+  }
+  if (slug) {
+    searchParams.append("collection_slug", slug);
+  }
+  searchParams.append("limit", "200");
+
+  const url = `${
+    chainId === 1
+      ? process.env.OPENSEA_SLUG_BASE_URL || "https://api.opensea.io"
+      : "https://rinkeby-api.opensea.io"
+  }/api/v1/assets?${searchParams.toString()}`;
+  const data = await axios
+    .get(url, {
+      headers:
+        chainId === 1
+          ? {
+              [process.env.OPENSEA_SLUG_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_SLUG_API_KEY.trim(),
+              Accept: "application/json",
+            }
+          : {
+              Accept: "application/json",
+            },
+    })
+    .then((response) => response.data)
+    .catch((error) => handleError(error));
+
+  const assets = data.assets.map(parse).filter(Boolean);
+  return {
+    assets,
+    continuation: data.next ?? undefined,
+    previous: data.previous ?? undefined,
+  };
+};
+
 const handleError = (error) => {
   if (error.response?.status === 429) {
     let delay = 1;
 
-    if (
-      error.response.data.detail?.startsWith(
-        "Request was throttled. Expected available in"
-      )
-    ) {
+    if (error.response.data.detail?.startsWith("Request was throttled. Expected available in")) {
       try {
         delay = error.response.data.detail.split(" ")[6];
       } catch {

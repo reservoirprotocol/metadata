@@ -14,29 +14,21 @@ import * as asyncBlueprints from "./async-blueprints";
 export const hasCustomCollectionHandler = (chainId, contract) =>
   Boolean(customCollection[`${chainId},${contract}`]);
 
-export const hasCustomHandler = (chainId, contract) =>
-  Boolean(custom[`${chainId},${contract}`]);
+export const hasCustomHandler = (chainId, contract) => Boolean(custom[`${chainId},${contract}`]);
 
 // All of the below methods assume the caller ensured that a custom
 // handler exists (eg. via calling the above check methods)
 
 export const customHandleCollection = async (chainId, token) =>
-  customCollection[`${chainId},${token.contract}`].fetchCollection(
-    chainId,
-    token
-  );
+  customCollection[`${chainId},${token.contract}`].fetchCollection(chainId, token);
 
 export const customHandleToken = async (chainId, token) =>
   custom[`${chainId},${token.contract}`].fetchToken(chainId, token);
 
-export const customHandleContractTokens = async (
-  chainId,
-  contract,
-  continuation
-) =>
+export const customHandleContractTokens = async (chainId, contract, continuation) =>
   custom[`${chainId},${contract}`].fetchContractTokens(
     null,
-    chainId,
+    chainId, // todo is this wrong order?
     continuation
   );
 
@@ -54,26 +46,16 @@ customCollection["5,0xda62f67be7194775a75be91cbf9feedcc5776d4b"] = artblocks;
 customCollection["5,0xb614c578062a62714c927cd8193f0b8bfb90055c"] = artblocks;
 
 // ArtBlocks Engine
-customCollection["1,0xbdde08bd57e5c9fd563ee7ac61618cb2ecdc0ce0"] =
-  artblocksEngine;
-customCollection["1,0x28f2d3805652fb5d359486dffb7d08320d403240"] =
-  artblocksEngine;
-customCollection["1,0x64780ce53f6e966e18a22af13a2f97369580ec11"] =
-  artblocksEngine;
-customCollection["1,0x010be6545e14f1dc50256286d9920e833f809c6a"] =
-  artblocksEngine;
-customCollection["1,0x13aae6f9599880edbb7d144bb13f1212cee99533"] =
-  artblocksEngine;
-customCollection["1,0xa319c382a702682129fcbf55d514e61a16f97f9c"] =
-  artblocksEngine;
-customCollection["1,0xd10e3dee203579fcee90ed7d0bdd8086f7e53beb"] =
-  artblocksEngine;
-customCollection["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] =
-  artblocksEngine;
-customCollection["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] =
-  artblocksEngine;
-customCollection["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] =
-  artblocksEngine;
+customCollection["1,0xbdde08bd57e5c9fd563ee7ac61618cb2ecdc0ce0"] = artblocksEngine;
+customCollection["1,0x28f2d3805652fb5d359486dffb7d08320d403240"] = artblocksEngine;
+customCollection["1,0x64780ce53f6e966e18a22af13a2f97369580ec11"] = artblocksEngine;
+customCollection["1,0x010be6545e14f1dc50256286d9920e833f809c6a"] = artblocksEngine;
+customCollection["1,0x13aae6f9599880edbb7d144bb13f1212cee99533"] = artblocksEngine;
+customCollection["1,0xa319c382a702682129fcbf55d514e61a16f97f9c"] = artblocksEngine;
+customCollection["1,0xd10e3dee203579fcee90ed7d0bdd8086f7e53beb"] = artblocksEngine;
+customCollection["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngine;
+customCollection["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
+customCollection["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 
 // Sound XYZ
 soundxyz.SoundxyzArtistContracts.forEach(
@@ -125,8 +107,7 @@ custom["1,0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42"] = forgottenRunes;
 custom["1,0x9690b63eb85467be5267a3603f770589ab12dc95"] = forgottenRunesWarriors;
 
 // Forgotten Runes Athenaeum
-custom["1,0x7c104b4db94494688027cced1e2ebfb89642c80f"] =
-  forgottenRunesAthenaeum;
+custom["1,0x7c104b4db94494688027cced1e2ebfb89642c80f"] = forgottenRunesAthenaeum;
 
 // Forgotten Souls
 custom["1,0x251b5f14a825c537ff788604ea1b58e49b70726f"] = forgottenSouls;

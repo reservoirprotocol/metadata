@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "NODE_OPTIONS=--openssl-legacy-provider next build",
     "start": "yarn build && next start",
-    "lint": "next lint"
+    "format-check": "prettier --check \"src/**/*.+(js|ts|json)\" \"pages/**/*.+(js|ts|json)\"",
+    "format": "prettier --write \"src/**/*.+(js|ts|json)\" \"pages/**/*.+(js|ts|json)\""
   },
   "dependencies": {
     "@ethersproject/bignumber": "^5.5.0",
@@ -26,7 +27,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "eslint": "7.32.0",
-    "eslint-config-next": "11.1.0"
+    "prettier": "^2.8.3",
+    "eslint": "^8.33.0"
   }
 }

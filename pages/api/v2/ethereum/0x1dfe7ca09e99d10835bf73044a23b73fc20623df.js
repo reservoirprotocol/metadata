@@ -4,14 +4,9 @@
 
 const { BigNumber } = require("@ethersproject/bignumber");
 const { id } = require("@ethersproject/hash");
-import {
-  itemRarity,
-  rarityColor,
-  rarityDescription,
-  lootRarity
-} from "loot-rarity";
+import { itemRarity, rarityColor, rarityDescription, lootRarity } from "loot-rarity";
 
-let items = {}
+let items = {};
 
 items.WEAPON = [
   "Warhammer",
@@ -126,13 +121,7 @@ items.HAND = [
 
 items.NECK = ["Necklace", "Amulet", "Pendant"];
 
-items.RING = [
-  "Gold Ring",
-  "Silver Ring",
-  "Bronze Ring",
-  "Platinum Ring",
-  "Titanium Ring",
-];
+items.RING = ["Gold Ring", "Silver Ring", "Bronze Ring", "Platinum Ring", "Titanium Ring"];
 
 const suffixes = [
   "of Power",
@@ -263,85 +252,87 @@ function capitalize(string) {
 
 const getMetadata = (id) => {
   let scores = {
-    "greatness":0,
-    "orders":0,
-    "names":0,
-    "plusones":0
-  }
+    greatness: 0,
+    orders: 0,
+    names: 0,
+    plusones: 0,
+  };
   let meta = {
-    "name": `Bag #${id}`,
-    "description": "More Loot is additional randomized adventurer gear generated and stored on chain. Maximum supply is dynamic, increasing at 1/10th of Ethereum's block rate. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use More Loot in any way you want.",
-    "image": `https://www.loot.exchange/api/image/${id}`,
-    "community": "loot",
-    "collection": {
-      "id":"more-loot",
-      "setId":null,
-      "name":"More Loot",
-      "description": "More Loot is additional randomized adventurer gear generated and stored on chain. Maximum supply is dynamic, increasing at 1/10th of Ethereum's block rate. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use More Loot in any way you want.",
-      "image":"https://www.lootproject.com/mlootheader.svg",
-      "royaltyBps": "500",
-      "royaltyRecipient": "0x74E568a889123bAecf6708242Da34d8A99e7fCD0",
-      "community": "loot"
+    name: `Bag #${id}`,
+    description:
+      "More Loot is additional randomized adventurer gear generated and stored on chain. Maximum supply is dynamic, increasing at 1/10th of Ethereum's block rate. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use More Loot in any way you want.",
+    image: `https://www.loot.exchange/api/image/${id}`,
+    community: "loot",
+    collection: {
+      id: "more-loot",
+      setId: null,
+      name: "More Loot",
+      description:
+        "More Loot is additional randomized adventurer gear generated and stored on chain. Maximum supply is dynamic, increasing at 1/10th of Ethereum's block rate. Stats, images, and other functionality are intentionally omitted for others to interpret. Feel free to use More Loot in any way you want.",
+      image: "https://www.lootproject.com/mlootheader.svg",
+      royaltyBps: "500",
+      royaltyRecipient: "0x74E568a889123bAecf6708242Da34d8A99e7fCD0",
+      community: "loot",
     },
-    "attributes":[]
-  }
-  let bagItems = []
-  for(let keyPrefix in items) {
-    let sourceArray = items[keyPrefix]
+    attributes: [],
+  };
+  let bagItems = [];
+  for (let keyPrefix in items) {
+    let sourceArray = items[keyPrefix];
     const rand = random(keyPrefix + id);
     let output = sourceArray[rand.mod(sourceArray.length).toNumber()];
     const greatness = rand.mod(21);
     scores.greatness += greatness.toNumber();
     meta.attributes.push({
-      "key": `Item`,
-      "category": "Items",
-      "value": output
-    })
+      key: `Item`,
+      category: "Items",
+      value: output,
+    });
     if (greatness.gt(14)) {
-      scores.orders++
-      let order = suffixes[rand.mod(suffixes.length).toNumber()]
+      scores.orders++;
+      let order = suffixes[rand.mod(suffixes.length).toNumber()];
       //meta.itemOrders[keyPrefix.toLowerCase()] = order
       meta.attributes.push({
-        "key": `${capitalize(keyPrefix)} Order`,
-        "category": "Item Orders",
-        "value": order.slice(3)
-      })
+        key: `${capitalize(keyPrefix)} Order`,
+        category: "Item Orders",
+        value: order.slice(3),
+      });
       output = output + " " + order;
     }
     if (greatness.gte(19)) {
-      scores.names++
+      scores.names++;
       const name = ["", ""];
       name[0] = namePrefixes[rand.mod(namePrefixes.length).toNumber()];
       name[1] = nameSuffixes[rand.mod(nameSuffixes.length).toNumber()];
       if (greatness.eq(19)) {
         output = '"' + name[0] + " " + name[1] + '" ' + output;
       } else {
-        scores.plusones++  
+        scores.plusones++;
         output = '"' + name[0] + " " + name[1] + '" ' + output + " +1";
       }
     }
-    bagItems.push(output)
+    bagItems.push(output);
   }
   meta.attributes.push({
-    "key": "Greatness",
-    "category": "Properties",
-    "value": scores.greatness
-  })
+    key: "Greatness",
+    category: "Properties",
+    value: scores.greatness,
+  });
   meta.attributes.push({
-    "key": "Orders",
-    "category": "Properties",
-    "value": scores.orders
-  })
+    key: "Orders",
+    category: "Properties",
+    value: scores.orders,
+  });
   meta.attributes.push({
-    "key": "Names",
-    "category": "Properties",
-    "value": scores.names
-  })
+    key: "Names",
+    category: "Properties",
+    value: scores.names,
+  });
   meta.attributes.push({
-    "key": "Plus Ones",
-    "category": "Properties",
-    "value": scores.plusones
-  })
+    key: "Plus Ones",
+    category: "Properties",
+    value: scores.plusones,
+  });
   for (const attr of meta.attributes) {
     if (isNaN(attr.value)) {
       attr.kind = "string";
@@ -349,23 +340,23 @@ const getMetadata = (id) => {
       attr.kind = "number";
     }
   }
-  return meta
-}
+  return meta;
+};
 
 const api = async (req, res) => {
-    if(req.query.token_ids) {
-        let ids = Array.isArray(req.query.token_ids) ? req.query.token_ids : [req.query.token_ids];
-        console.log(ids)
-        let results = []
-        for(let id of ids) {
-            let result = getMetadata(id)
-            result.token_id = id
-            results.push(result)
-        }
-        res.status(200).json(results);
-    } else {
-        res.status(200).json({"error": "Missing token_ids param"});
+  if (req.query.token_ids) {
+    let ids = Array.isArray(req.query.token_ids) ? req.query.token_ids : [req.query.token_ids];
+    console.log(ids);
+    let results = [];
+    for (let id of ids) {
+      let result = getMetadata(id);
+      result.token_id = id;
+      results.push(result);
     }
+    res.status(200).json(results);
+  } else {
+    res.status(200).json({ error: "Missing token_ids param" });
+  }
 };
 
 export default api;

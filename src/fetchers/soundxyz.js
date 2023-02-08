@@ -3,7 +3,7 @@ import _ from "lodash";
 import slugify from "slugify";
 
 import * as soundxyz from "../custom/soundxyz";
-import { logger } from "../logger";
+import { logger } from "../shared/logger";
 import { parse } from "../parsers/soundxyz";
 import { RequestWasThrottledError } from "./errors";
 import * as opensea from "./opensea";
@@ -44,11 +44,9 @@ export const fetchTokens = async (chainId, tokens) => {
     } catch (error) {
       logger.error(
         "soundxyz-fetcher",
-        `fetchTokens error. chainId:${chainId}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(
-          error.response?.data
-        )}`
+        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+          error.response?.status
+        }, data:${JSON.stringify(error.response?.data)}`
       );
 
       handleError(error);

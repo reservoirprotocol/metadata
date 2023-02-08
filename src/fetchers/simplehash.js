@@ -4,8 +4,8 @@ import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
-import { getProvider } from "../utils";
-import { logger } from "../logger";
+import { getProvider } from "../shared/utils";
+import { logger } from "../shared/logger";
 import _ from "lodash";
 
 const getNetworkName = (chainId) => {
@@ -66,9 +66,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         "simplehash-fetcher",
         `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
           error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(
-          error.response?.data
-        )}`
+        },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
       );
 
       const name = await new Contract(
@@ -98,9 +96,7 @@ export const fetchTokens = async (chainId, tokens) => {
   const network = getNetworkName(chainId);
 
   const searchParams = new URLSearchParams();
-  const nftIds = tokens.map(
-    ({ contract, tokenId }) => `${network}.${contract}.${tokenId}`
-  );
+  const nftIds = tokens.map(({ contract, tokenId }) => `${network}.${contract}.${tokenId}`);
   searchParams.append("nft_ids", nftIds.join(","));
 
   const url = `https://api.simplehash.com/api/v0/nfts/assets?${searchParams.toString()}`;
@@ -112,11 +108,9 @@ export const fetchTokens = async (chainId, tokens) => {
     .catch((error) => {
       logger.error(
         "simplehash-fetcher",
-        `fetchTokens error. chainId:${chainId}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(
-          error.response?.data
-        )}`
+        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+          error.response?.status
+        }, data:${JSON.stringify(error.response?.data)}`
       );
 
       throw error;

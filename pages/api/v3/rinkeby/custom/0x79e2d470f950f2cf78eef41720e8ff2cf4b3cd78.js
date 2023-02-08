@@ -117,13 +117,7 @@ items.HAND = [
 
 items.NECK = ["Necklace", "Amulet", "Pendant"];
 
-items.RING = [
-  "Gold Ring",
-  "Silver Ring",
-  "Bronze Ring",
-  "Platinum Ring",
-  "Titanium Ring",
-];
+items.RING = ["Gold Ring", "Silver Ring", "Bronze Ring", "Platinum Ring", "Titanium Ring"];
 
 const suffixes = [
   "of Power",

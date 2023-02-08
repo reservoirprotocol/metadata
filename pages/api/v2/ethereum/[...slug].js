@@ -6,9 +6,7 @@ export default async function handler(req, res) {
   const tokenId = slug[1];
   let community = getCommunity(contract);
   if (req.query.token_ids) {
-    return res
-      .status(200)
-      .json(await getTokens(req.query.token_ids, contract, community, false));
+    return res.status(200).json(await getTokens(req.query.token_ids, contract, community, false));
   } else if (req.query.all) {
     // Get tokens from Rarible
     let tokens = await getCollectionTokens(contract, community);
@@ -25,9 +23,7 @@ export default async function handler(req, res) {
     // Combine
     return res.status(200).json({ collection, tokens });
   } else if (tokenId) {
-    return res
-      .status(200)
-      .json(await getTokens(tokenId, contract, community, true));
+    return res.status(200).json(await getTokens(tokenId, contract, community, true));
   } else {
     return res.status(200).json({ error: "Unrecognized request" });
   }
@@ -68,7 +64,6 @@ async function getCollectionTokens(contract, community) {
     }
     if (data.items && data.items.length > 0) {
       for (let item of data.items) {
-
         // Parse Image
         let imageURL = null;
         try {
@@ -123,9 +118,7 @@ async function getTokens(token_ids, contract, community, isSingle) {
       community: community,
       collection: {
         id: asset.collection.slug,
-        setId: ["artblocks"].includes(community)
-          ? null
-          : `contract:${contract}`,
+        setId: ["artblocks"].includes(community) ? null : `contract:${contract}`,
         name: asset.collection.name,
         description: asset.collection.description,
         image: asset.collection.image_url,

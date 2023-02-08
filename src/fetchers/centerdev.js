@@ -4,8 +4,8 @@ import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/centerdev";
-import { getProvider } from "../utils";
-import { logger } from "../logger";
+import { getProvider } from "../shared/utils";
+import { logger } from "../shared/logger";
 
 const getNetworkName = (chainId) => {
   let network;
@@ -93,11 +93,9 @@ export const fetchTokens = async (chainId, tokens) => {
     .catch((error) => {
       logger.error(
         "centerdev-fetcher",
-        `fetchTokens error. chainId:${chainId}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(
-          error.response?.data
-        )}`
+        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+          error.response?.status
+        }, data:${JSON.stringify(error.response?.data)}`
       );
 
       throw error;

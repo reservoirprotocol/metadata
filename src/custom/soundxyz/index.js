@@ -3,17 +3,13 @@ import _ from "lodash";
 import slugify from "slugify";
 
 import * as opensea from "../../fetchers/opensea";
-import { logger } from "../../logger";
+import { logger } from "../../shared/logger";
 
 import ArtistContracts from "./ArtistContracts.json";
 import ReleaseContracts from "./ReleaseContracts.json";
 
-export const SoundxyzArtistContracts = ArtistContracts.map((c) =>
-  c.toLowerCase()
-);
-export const SoundxyzReleaseContracts = ReleaseContracts.map((c) =>
-  c.toLowerCase()
-);
+export const SoundxyzArtistContracts = ArtistContracts.map((c) => c.toLowerCase());
+export const SoundxyzReleaseContracts = ReleaseContracts.map((c) => c.toLowerCase());
 
 export const getContractSlug = async (chainId, contract, tokenId) => {
   const apiUrl =
@@ -91,7 +87,7 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
         headers: {
           "x-sound-client-key": process.env.SOUNDXYZ_API_KEY,
           "CONTENT-TYPE": "application/json",
-          "user-agent": process.env.SOUNDXYZ_USER_AGENT
+          "user-agent": process.env.SOUNDXYZ_USER_AGENT,
         },
       }
     );
@@ -100,9 +96,7 @@ export const getContractSlug = async (chainId, contract, tokenId) => {
       "soundxyz-fetcher",
       `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
         error.message
-      },  status:${error.response?.status}, data:${JSON.stringify(
-        error.response?.data
-      )}`
+      },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
     );
 
     throw error;
@@ -126,15 +120,15 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
   }
 
   const { slug, openseaRoyalties } = await opensea
-      .fetchCollection(chainId, { contract, tokenId })
-      .then((m) => ({
-        slug: m.slug,
-        openseaRoyalties: m.openseaRoyalties
-      }))
-      .catch(() => ({
-        slug: slugify(releaseFromToken.titleSlug, { lower: true }),
-        openseaRoyalties: []
-      }));
+    .fetchCollection(chainId, { contract, tokenId })
+    .then((m) => ({
+      slug: m.slug,
+      openseaRoyalties: m.openseaRoyalties,
+    }))
+    .catch(() => ({
+      slug: slugify(releaseFromToken.titleSlug, { lower: true }),
+      openseaRoyalties: [],
+    }));
 
   return {
     id: `${contract}:soundxyz-${releaseFromToken.id}`,
