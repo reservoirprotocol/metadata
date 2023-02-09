@@ -21,6 +21,8 @@ const METHOD_NAMES = [
   'getBakcStakes',
 ]
 
+const ONE_APECOIN_IN_WEI = BigInt(10 ** 18)
+
 const provider = new ethers.providers.JsonRpcProvider("https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161");
 
 const multicall = new Multicall({ ethersProvider: provider, tryAggregate: true });
@@ -65,3 +67,19 @@ export const getStakedAmountWei = async ({ poolId, tokenId }) => {
   const stakeStruct = returnedStakes.find(stake => stake[1]?.hex === tokenIdHex)
   return Number(stakeStruct[2]?.hex)
 };
+
+export const stakedAmountWeiToAttributeBucket = ({ stakedAmountWei }) => {
+  if (!stakedAmountWei || stakedAmountWei < ONE_APECOIN_IN_WEI) {
+    return "0 - 1 ApeCoin"
+  }
+  if (stakedAmountWei < BigInt(10) * ONE_APECOIN_IN_WEI) {
+    return "1 - 10 ApeCoin"
+  }
+  if (stakedAmountWei < BigInt(100) * ONE_APECOIN_IN_WEI) {
+    return "10 - 100 ApeCoin"
+  }
+  if (stakedAmountWei < BigInt(1000) * ONE_APECOIN_IN_WEI) {
+    return "100 - 1000 ApeCoin"
+  }
+  return "1000+ ApeCoin"
+}
