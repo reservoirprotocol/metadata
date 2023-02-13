@@ -1,10 +1,21 @@
 import * as hashToSlug from "./hash-to-slug.json";
 import * as tokenIdToHash from "./token-id-to-hash.json";
 
-export const extendCollection = async (_chainId, metadata) => {
+export const extendCollection = async (_chainId, metadata, tokenId) => {
+  let id = metadata.id;
+  let community = null;
+
+  const hash = tokenIdToHash[tokenId];
+  const slug = hash && hashToSlug[hash];
+  if (slug) {
+    community = "ordinals";
+    id = `${id}:ordinals-${slug}`;
+  }
+
   return {
     ...metadata,
-    community: "ordinals",
+    id,
+    community,
     tokenIdRange: null,
     tokenSetId: null,
   };
