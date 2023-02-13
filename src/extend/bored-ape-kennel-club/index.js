@@ -1,13 +1,12 @@
-import { getStakedAmountWei } from '../apecoin'
+import { getStakedAmountWei, stakedAmountWeiToAttributeBucket } from '../apecoin'
 
 const POOL_ID = 3;
 
 export const extend = async (_chainId, metadata) => {
-  let isApeCoinStaked = false;
+  let stakedAmountWei;
   try {
     const { tokenId } = metadata
-    const stakedAmountWei = await getStakedAmountWei({ poolId: POOL_ID, tokenId })
-    isApeCoinStaked = stakedAmountWei !== 0
+    stakedAmountWei = await getStakedAmountWei({ poolId: POOL_ID, tokenId })
   } catch (error) {
     console.log(error)
   }
@@ -18,7 +17,7 @@ export const extend = async (_chainId, metadata) => {
     ...metadata.attributes,
     {
       key: "ApeCoin Staked",
-      value: isApeCoinStaked ? "Yes" : "No",
+      value: stakedAmountWeiToAttributeBucket({ stakedAmountWei }),
       kind: "string",
     },
     ],
