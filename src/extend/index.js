@@ -14,12 +14,9 @@ import * as asyncBlueprints from "./async-blueprints";
 import * as tfoust from "./tfoust";
 import * as sharedContracts from "./shared-contracts";
 import * as cyberkongz from "./cyberkongz";
+import * as emblemVault from "./emblem-vault";
 
-export const extendCollectionMetadata = async (
-  chainId,
-  metadata,
-  tokenId = null
-) => {
+export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
     if (Boolean(extendCollection[`${chainId},${metadata.id}`])) {
       return extendCollection[`${chainId},${metadata.id}`].extendCollection(
@@ -72,6 +69,9 @@ extendCollection["1,0x3b3ee1931dc30c1957379fac9aba94d1c48a5405"] = sharedContrac
 // Zora
 extendCollection["1,0xabefbc9fd2f806065b4f3c237d4b59d9a97bcac7"] = sharedContracts;
 
+// Emblem Vault
+extendCollection["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
+
 const extend = {};
 
 // CyberKongz
@@ -113,3 +113,6 @@ extend["137,0xe1b5e23fdbc003aec16e6e79726a0b5f75ff93f5"] = tfoust;
 extend["137,0x5846728730366d686cdc95dae80a70b44ec9eab2"] = tfoust;
 extend["137,0x45308788743bbdae5de7ba9e565c0502d0ebb81f"] = tfoust;
 extend["137,0x3b477a6b1be236628b08839e1e8cf8ba8d93589a"] = tfoust;
+
+// Emblem Vault
+extend["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
