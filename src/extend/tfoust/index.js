@@ -1,3 +1,7 @@
+import CollectiblesContracts from './contracts.json'
+
+export const CollectiblesCollections = CollectiblesContracts.map(c => c.toLowerCase());
+
 export const extend = async (_chainId, metadata) => {
   const [series, tokenNumber] = metadata.name.split("#");
 
