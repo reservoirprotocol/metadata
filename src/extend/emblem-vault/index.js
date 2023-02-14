@@ -10,6 +10,18 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
   if (slug) {
     community = "ordinals";
     id = `${id}:ordinals-${slug}`;
+    switch(slug) {
+      case "bitcoin-punks":
+        metadata.name = "Bitcoin Punks"
+        metadata.metadata = {
+          "description":"Bitcoin Punks are the first byte-perfect uploads of the original Ethereum CryptoPunks onto the Bitcoin Blockchain using Ordinals.",
+          "imageUrl":"https://bitcoinpunks.com/punks/punk0205.png",
+          "discordUrl": "https://discord.gg/RzvY6UyEes",
+          "externalUrl": "https://bitcoinpunks.com/",
+          "twitterUsername": "Bitcoin_Punks_"
+        }
+        break;
+    }
   }
 
   return {
