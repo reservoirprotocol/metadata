@@ -24,6 +24,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
           externalUrl: data.collection.external_url,
           twitterUsername: data.collection.twitter_username,
         };
+        metadata.royalties = data.collection.royalties.filter(({ bps }) => bps !== 0);
       }
     })
     .catch(() => {
