@@ -1,52 +1,60 @@
-import * as hashToSlug from "./hash-to-slug.json";
-import * as tokenIdToHash from "./token-id-to-hash.json";
+import axios from "axios";
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
-  let id = metadata.id;
-  let community = null;
+  metadata.community = null;
+  metadata.tokenIdRange = null;
+  metadata.tokenSetId = null;
 
-  const hash = tokenIdToHash[tokenId];
-  const slug = hash && hashToSlug[hash];
-  if (slug) {
-    community = "ordinals";
-    id = `${id}:ordinals-${slug}`;
-    switch(slug) {
-      case "bitcoin-punks":
-        metadata.name = "Bitcoin Punks"
+  await axios
+    .get(`https://metadata.ordinals.market/emblem?token_id=${tokenId}`, {
+      headers: {
+        "X-Api-Key": process.env.ORDINALS_API_KEY,
+      },
+    })
+    .then((response) => {
+      const data = response.data;
+      if (data.collection) {
+        metadata.id = `${metadata.id}:ordinals-${data.collection.id}`;
+        metadata.community = "ordinals";
+        metadata.name = data.collection.name;
         metadata.metadata = {
-          "description":"Bitcoin Punks are the first byte-perfect uploads of the original Ethereum CryptoPunks onto the Bitcoin Blockchain using Ordinals.",
-          "imageUrl":"https://bitcoinpunks.com/punks/punk0205.png",
-          "discordUrl": "https://discord.gg/RzvY6UyEes",
-          "externalUrl": "https://bitcoinpunks.com/",
-          "twitterUsername": "Bitcoin_Punks_"
-        }
-        break;
-    }
-  }
+          description: data.collection.description,
+          imageUrl: data.collection.image_url,
+          discordUrl: data.collection.discord_url,
+          externalUrl: data.collection.external_url,
+          twitterUsername: data.collection.twitter_username,
+        };
+      }
+    })
+    .catch(() => {
+      // Skip errors
+    });
 
-  return {
-    ...metadata,
-    id,
-    community,
-    tokenIdRange: null,
-    tokenSetId: null,
-  };
+  return metadata;
 };
 
 export const extend = async (_chainId, metadata) => {
-  const contract = metadata.contract;
-  const tokenId = metadata.tokenId;
+  await axios
+    .get(`https://metadata.ordinals.market/emblem?token_id=${metadata.tokenId}`, {
+      headers: {
+        "X-Api-Key": process.env.ORDINALS_API_KEY,
+      },
+    })
+    .then((response) => {
+      const data = response.data;
+      if (data.collection && data.token) {
+        metadata.collection = `${metadata.collection}:ordinals-${data.collection.id}`;
+        metadata.name = data.token.name;
+        metadata.imageUrl = data.token.image_url;
+        metadata.attributes = data.token.attributes.map((trait) => ({
+          ...trait,
+          rank: 1,
+        }));
+      }
+    })
+    .catch(() => {
+      // Skip errors
+    });
 
-  let collection = contract;
-
-  const hash = tokenIdToHash[tokenId];
-  const slug = hash && hashToSlug[hash];
-  if (slug) {
-    collection = `${collection}:ordinals-${slug}`;
-  }
-
-  return {
-    ...metadata,
-    collection,
-  };
+  return metadata;
 };
