@@ -46,7 +46,7 @@ export const extend = async (_chainId, metadata) => {
       if (data.collection && data.token) {
         metadata.collection = `${metadata.collection}:ordinals-${data.collection.id}`;
         metadata.name = data.token.name;
-        metadata.imageUrl = data.token.image_url;
+        // metadata.imageUrl = data.token.image_url;
         metadata.attributes = data.token.attributes.map((trait) => ({
           ...trait,
           rank: 1,
