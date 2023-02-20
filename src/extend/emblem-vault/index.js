@@ -1,4 +1,5 @@
 import axios from "axios";
+import { logger } from "../../shared/logger";
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
   metadata.community = null;
@@ -28,6 +29,13 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
       }
     })
     .catch(() => {
+      logger.error(
+        "ordinals-fetcher",
+        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+          error.response?.status
+        }, data:${JSON.stringify(error.response?.data)}`
+      );
+
       // Skip errors
     });
 
@@ -54,6 +62,13 @@ export const extend = async (_chainId, metadata) => {
       }
     })
     .catch(() => {
+      logger.error(
+        "ordinals-fetcher",
+        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+          error.response?.status
+        }, data:${JSON.stringify(error.response?.data)}`
+      );
+
       // Skip errors
     });
 
