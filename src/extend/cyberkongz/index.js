@@ -1,3 +1,5 @@
+import { logger } from "../../shared/logger";
+
 export const extendCollection = async (_chainId, metadata, tokenId = null) => {
   let startTokenId;
   let endTokenId;
@@ -13,6 +15,8 @@ export const extendCollection = async (_chainId, metadata, tokenId = null) => {
   metadata.id = `${metadata.contract}:${startTokenId}:${endTokenId}`;
   metadata.tokenIdRange = [startTokenId, endTokenId];
   metadata.tokenSetId = `range:${metadata.contract}:${startTokenId}:${endTokenId}`;
+
+  logger.info("cyberkongz", `tokenId = ${tokenId} metadata ${ JSON.stringify(metadata) }`)
 
   return { ...metadata };
 };
