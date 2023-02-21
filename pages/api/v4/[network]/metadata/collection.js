@@ -60,6 +60,10 @@ const api = async (req, res) => {
       throw new Error(`Unknown contract ${contract}`);
     }
 
+    if (!tokenId) {
+      throw new Error(`Unknown tokenId ${tokenId}`);
+    }
+
     let collection = null;
     if (hasCustomCollectionHandler(chainId, contract)) {
       collection = await customHandleCollection(chainId, { contract, tokenId });
