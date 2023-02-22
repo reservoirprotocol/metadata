@@ -1,4 +1,4 @@
-import { getStakedAmountWei, stakedAmountWeiToAttributeBucket } from '../apecoin'
+import { getStakedAmountWei, stakedAmountWeiToAttributeBucket } from "../apecoin";
 
 const POOL_ID = 2;
 
@@ -17,10 +17,10 @@ export const extend = async (_chainId, metadata) => {
 
   let stakedAmountWei;
   try {
-    const { tokenId } = metadata
-    stakedAmountWei = await getStakedAmountWei({ poolId: POOL_ID, tokenId })
+    const { tokenId } = metadata;
+    stakedAmountWei = await getStakedAmountWei({ poolId: POOL_ID, tokenId });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 
   return {

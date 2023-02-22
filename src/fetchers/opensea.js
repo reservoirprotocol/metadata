@@ -181,6 +181,40 @@ export const fetchTokens = async (chainId, tokens) => {
   return data.assets.map(parse).filter(Boolean);
 };
 
+export const fetchToken = async (chainId, contract, tokenId) => {
+  const url = `${
+    chainId === 1
+      ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
+      : "https://testnets-api.opensea.io"
+  }/api/v1/asset/${contract}/${tokenId}`;
+
+  const data = axios
+    .get(url, {
+      headers:
+        chainId === 1
+          ? {
+              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
+              Accept: "application/json",
+            }
+          : {
+              Accept: "application/json",
+            },
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      logger.error(
+        "opensea-fetcher",
+        `fetchToken error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId} message:${
+          error.message
+        },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
+      );
+
+      handleError(error);
+    });
+
+  return parse(data);
+};
+
 export const fetchContractTokens = async (chainId, contract, continuation) => {
   const searchParams = new URLSearchParams();
   searchParams.append("asset_contract_address", contract);
@@ -234,7 +268,8 @@ export const fetchTokensByCollectionSlug = async (chainId, slug, continuation) =
       headers:
         chainId === 1
           ? {
-              [process.env.OPENSEA_SLUG_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_SLUG_API_KEY.trim(),
+              [process.env.OPENSEA_SLUG_API_HEADER ?? "X-API-KEY"]:
+                process.env.OPENSEA_SLUG_API_KEY.trim(),
               Accept: "application/json",
             }
           : {
