@@ -1,10 +1,11 @@
 import { logger } from "../../shared/logger";
+import _ from "lodash";
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
   let startTokenId;
   let endTokenId;
 
-  if (!tokenId) {
+  if (!tokenId || !_.isNumber(tokenId) || tokenId < 0 || tokenId > 5000) {
     throw new Error(`Unknown tokenId ${tokenId}`);
   }
 
