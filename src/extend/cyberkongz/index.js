@@ -1,8 +1,12 @@
 import { logger } from "../../shared/logger";
 
-export const extendCollection = async (_chainId, metadata, tokenId = null) => {
+export const extendCollection = async (_chainId, metadata, tokenId) => {
   let startTokenId;
   let endTokenId;
+
+  if (!tokenId) {
+    throw new Error(`Unknown tokenId ${tokenId}`);
+  }
 
   if (tokenId <= 1000) {
     startTokenId = 1;
