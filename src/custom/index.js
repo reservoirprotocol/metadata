@@ -56,6 +56,7 @@ customCollection["1,0xd10e3dee203579fcee90ed7d0bdd8086f7e53beb"] = artblocksEngi
 customCollection["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngine;
 customCollection["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
 customCollection["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
+customCollection["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
 
 // Sound XYZ
 soundxyz.SoundxyzArtistContracts.forEach(
@@ -93,6 +94,7 @@ custom["1,0xd10e3dee203579fcee90ed7d0bdd8086f7e53beb"] = artblocksEngine;
 custom["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngine;
 custom["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
 custom["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
+custom["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
 
 // Cryptokicks IRL
 custom["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
