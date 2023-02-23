@@ -10,6 +10,7 @@ import * as goldfinch from "./goldfinch";
 import * as loot from "./loot";
 import * as soundxyz from "./soundxyz";
 import * as asyncBlueprints from "./async-blueprints";
+import * as brainDrops from "./braindrops";
 
 export const hasCustomCollectionHandler = (chainId, contract) =>
   Boolean(customCollection[`${chainId},${contract}`]);
@@ -118,3 +119,6 @@ custom["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
 // Loot
 custom["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
 custom["4,0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78"] = loot;
+
+// BrainDrops
+custom["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;

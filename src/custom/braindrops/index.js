@@ -1,6 +1,7 @@
 import * as opensea from "../../fetchers/opensea";
 import { logger } from "../../shared/logger";
 import _ from "lodash";
+import axios from "axios";
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
   logger.info(
@@ -35,22 +36,29 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 };
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
+  const url = `https://token.artblocks.io/${tokenId}`;
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
-  let data;
+  let response;
   try {
-    data = await opensea.fetchToken(chainId, contract, tokenId);
+    response = await axios.get(url);
   } catch (e) {
-    logger.error("custom-braindrops", `Opensea fetchCollection failed: ${JSON.stringify(e)}`);
+    logger.error("custom-braindrops", `Braindrops fetchToken failed: ${JSON.stringify(e)}`);
   }
+  const { data } = response;
+
+  console.log(data);
 
   return {
     contract,
     tokenId,
     collection: _.toLower(`${contract}:${startTokenId}:${endTokenId}`),
     name: data.name,
-    imageUrl: data.imageUrl,
-    flagged: false,
-    attributes: data.attributes,
+    imageUrl: data.image,
+    attributes: data.traits.map((trait) => ({
+      key: trait.trait_type,
+      value: trait.value,
+      kind: isNaN(trait.value) ? "string" : "number",
+    })),
   };
 };
