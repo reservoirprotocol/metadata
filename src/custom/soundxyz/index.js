@@ -119,15 +119,17 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     });
   }
 
-  const { slug, openseaRoyalties } = await opensea
+  const { slug, openseaRoyalties, openseaFees } = await opensea
     .fetchCollection(chainId, { contract, tokenId })
     .then((m) => ({
       slug: m.slug,
       openseaRoyalties: m.openseaRoyalties,
+      openseaFees: m.openseaFees,
     }))
     .catch(() => ({
       slug: slugify(releaseFromToken.titleSlug, { lower: true }),
       openseaRoyalties: [],
+      openseaFees: [],
     }));
 
   return {
@@ -142,6 +144,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     },
     royalties,
     openseaRoyalties,
+    openseaFees,
     contract,
     tokenIdRange: null,
     tokenSetId: null,

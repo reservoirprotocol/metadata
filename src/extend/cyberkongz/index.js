@@ -1,6 +1,13 @@
-export const extendCollection = async (_chainId, metadata, tokenId = null) => {
+import { logger } from "../../shared/logger";
+import _ from "lodash";
+
+export const extendCollection = async (_chainId, metadata, tokenId) => {
   let startTokenId;
   let endTokenId;
+
+  if (!tokenId || !_.isNumber(tokenId) || tokenId < 0 || tokenId > 5000) {
+    throw new Error(`Unknown tokenId ${tokenId}`);
+  }
 
   if (tokenId <= 1000) {
     startTokenId = 1;
@@ -13,6 +20,8 @@ export const extendCollection = async (_chainId, metadata, tokenId = null) => {
   metadata.id = `${metadata.contract}:${startTokenId}:${endTokenId}`;
   metadata.tokenIdRange = [startTokenId, endTokenId];
   metadata.tokenSetId = `range:${metadata.contract}:${startTokenId}:${endTokenId}`;
+
+  logger.info("cyberkongz", `tokenId = ${tokenId} metadata ${JSON.stringify(metadata)}`);
 
   return { ...metadata };
 };
