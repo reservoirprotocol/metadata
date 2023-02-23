@@ -108,9 +108,7 @@ extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyzExtend;
 extend["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
 
 // tfoust
-tfoust.CollectiblesCollections.forEach(
-  (c) => (extend[`137,${c}`] = tfoust)
-);
+tfoust.CollectiblesCollections.forEach((c) => (extend[`137,${c}`] = tfoust));
 
 // Emblem Vault
 extend["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
