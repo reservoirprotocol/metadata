@@ -116,3 +116,6 @@ tfoust.CollectiblesCollections.forEach((c) => (extend[`137,${c}`] = tfoust));
 
 // Emblem Vault
 extend["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
+
+// BrainDrops
+extend["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;

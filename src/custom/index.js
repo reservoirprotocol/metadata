@@ -70,6 +70,9 @@ customCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 // Async Blueprints
 customCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
 
+// BrainDrops
+customCollection["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;
+
 ////////////////
 // Custom Tokens
 ////////////////
