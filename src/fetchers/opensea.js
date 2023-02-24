@@ -234,7 +234,8 @@ export const fetchTokensByCollectionSlug = async (chainId, slug, continuation) =
       headers:
         chainId === 1
           ? {
-              [process.env.OPENSEA_SLUG_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_SLUG_API_KEY.trim(),
+              [process.env.OPENSEA_SLUG_API_HEADER ?? "X-API-KEY"]:
+                process.env.OPENSEA_SLUG_API_KEY.trim(),
               Accept: "application/json",
             }
           : {
