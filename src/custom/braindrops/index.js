@@ -36,7 +36,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 };
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
-  const url = `https://token.artblocks.io/${tokenId}`;
+  const url = `https://braindrops.cloud/v1/nfts/${tokenId}`;
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
   let response;
@@ -45,17 +45,15 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   } catch (e) {
     logger.error("custom-braindrops", `Braindrops fetchToken failed: ${JSON.stringify(e)}`);
   }
-  const { data } = response;
-
-  console.log(data);
+  const data = response.data.nft;
 
   return {
     contract,
     tokenId,
     collection: _.toLower(`${contract}:${startTokenId}:${endTokenId}`),
     name: data.name,
-    imageUrl: data.image,
-    attributes: data.traits.map((trait) => ({
+    imageUrl: data.image_url,
+    attributes: data.metadata_attributes.map((trait) => ({
       key: trait.trait_type,
       value: trait.value,
       kind: isNaN(trait.value) ? "string" : "number",
