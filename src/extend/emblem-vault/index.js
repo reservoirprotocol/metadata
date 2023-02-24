@@ -35,8 +35,6 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
           error.response?.status
         }, data:${JSON.stringify(error.response?.data)}`
       );
-
-      throw error;
     });
 
   return metadata;
@@ -68,8 +66,6 @@ export const extend = async (_chainId, metadata) => {
           error.response?.status
         }, data:${JSON.stringify(error.response?.data)}`
       );
-
-      throw error;
     });
 
   return metadata;
