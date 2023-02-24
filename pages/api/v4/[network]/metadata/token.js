@@ -13,6 +13,7 @@ import * as soundxyz from "../../../../../src/fetchers/soundxyz";
 
 import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 import { ValidationError } from "../../../../../src/shared/errors";
+import { parse } from "../../../../../src/parsers/opensea";
 
 const api = async (req, res) => {
   try {
@@ -36,6 +37,18 @@ const api = async (req, res) => {
       case "polygon":
         chainId = 137;
         break;
+    }
+
+    if (req.method === "POST") {
+      const body = JSON.parse(JSON.stringify(req.body));
+      let metadata = parse(body);
+      if (hasCustomHandler(chainId, metadata.contract)) {
+        return res
+          .status(400)
+          .json({ message: `The contract ${metadata.contract} has a custom handler.` });
+      }
+      metadata = await extendMetadata(chainId, metadata);
+      return res.status(200).json(metadata);
     }
 
     // Validate indexing method and set up provider
