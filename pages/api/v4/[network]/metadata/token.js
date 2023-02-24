@@ -39,7 +39,16 @@ const api = async (req, res) => {
         break;
     }
 
+    // Validate indexing method and set up provider
+    const method = req.query.method;
+    if (!["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(method)) {
+      throw new Error("Unknown method");
+    }
+
     if (req.method === "POST") {
+      if (method !== "opensea") {
+        throw new Error("Unknown method for this endpoint.");
+      }
       const body = JSON.parse(JSON.stringify(req.body));
       let metadata = parse(body);
       if (hasCustomHandler(chainId, metadata.contract)) {
@@ -49,12 +58,6 @@ const api = async (req, res) => {
       }
       metadata = await extendMetadata(chainId, metadata);
       return res.status(200).json(metadata);
-    }
-
-    // Validate indexing method and set up provider
-    const method = req.query.method;
-    if (!["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(method)) {
-      throw new Error("Unknown method");
     }
 
     let provider = opensea;
