@@ -10,7 +10,6 @@ import * as goldfinch from "./goldfinch";
 import * as loot from "./loot";
 import * as soundxyz from "./soundxyz";
 import * as asyncBlueprints from "./async-blueprints";
-import * as quantumArt from "./quantum-art";
 
 export const hasCustomCollectionHandler = (chainId, contract) =>
   Boolean(customCollection[`${chainId},${contract}`]);
@@ -70,9 +69,6 @@ customCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 
 // Async Blueprints
 customCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
-
-// Quantum Art
-customCollection["1,0x46ac8540d698167fcbb9e846511beb8cf8af9bd8"] = quantumArt;
 
 ////////////////
 // Custom Tokens
