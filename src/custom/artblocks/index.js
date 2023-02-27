@@ -17,12 +17,13 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
-  const { slug, openseaRoyalties, openseaFees } = await opensea
+  const { slug, openseaRoyalties, openseaFees, safelistRequestStatus } = await opensea
     .fetchCollection(chainId, { contract, tokenId })
     .then((m) => ({
       slug: m.slug,
       openseaRoyalties: m.openseaRoyalties,
       openseaFees: m.openseaFees,
+      safelistRequestStatus: m.metadata?.safelistRequestStatus,
     }))
     .catch(() => ({
       slug: slugify(data.collection_name, { lower: true }),
@@ -39,6 +40,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       imageUrl: `https://media.artblocks.io/${startTokenId}.png`,
       description: data.description,
       externalUrl: data.website,
+      safelistRequestStatus
     },
     openseaRoyalties,
     openseaFees,

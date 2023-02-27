@@ -119,12 +119,13 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     });
   }
 
-  const { slug, openseaRoyalties, openseaFees } = await opensea
+  const { slug, openseaRoyalties, openseaFees, safelistRequestStatus } = await opensea
     .fetchCollection(chainId, { contract, tokenId })
     .then((m) => ({
       slug: m.slug,
       openseaRoyalties: m.openseaRoyalties,
       openseaFees: m.openseaFees,
+      safelistRequestStatus: m.metadata?.safelistRequestStatus,
     }))
     .catch(() => ({
       slug: slugify(releaseFromToken.titleSlug, { lower: true }),
@@ -141,6 +142,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       imageUrl: releaseFromToken.coverImage.url,
       description: releaseFromToken.description,
       externalUrl: `https://sound.xyz/${releaseFromToken.artist.soundHandle}/${releaseFromToken.titleSlug}`,
+      safelistRequestStatus,
     },
     royalties,
     openseaRoyalties,
