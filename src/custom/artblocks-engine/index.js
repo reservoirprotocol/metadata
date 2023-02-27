@@ -10,12 +10,13 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
-  const { slug, openseaRoyalties, openseaFees } = await opensea
+  const { slug, openseaRoyalties, openseaFees, safelistRequestStatus } = await opensea
     .fetchCollection(_chainId, { contract, tokenId })
     .then((m) => ({
       slug: m.slug,
       openseaRoyalties: m.openseaRoyalties,
       openseaFees: m.openseaFees,
+      safelistRequestStatus: m.metadata?.safelistRequestStatus,
     }))
     .catch(() => ({
       slug: slugify(data.collection_name, { lower: true }),
@@ -32,6 +33,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
       imageUrl: data.image,
       description: data.description,
       externalUrl: data.website,
+      safelistRequestStatus,
     },
     openseaRoyalties,
     openseaFees,
