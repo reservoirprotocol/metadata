@@ -14,6 +14,7 @@ import * as soundxyz from "../../../../../src/fetchers/soundxyz";
 import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 import { ValidationError } from "../../../../../src/shared/errors";
 import { parse } from "../../../../../src/parsers/opensea";
+import _ from "lodash";
 
 const api = async (req, res) => {
   try {
@@ -178,11 +179,14 @@ const api = async (req, res) => {
     let metadata = [];
     if (tokens.length) {
       try {
-        const newMetadata = await Promise.all(
+        let newMetadata = await Promise.allSettled(
           await provider
             .fetchTokens(chainId, tokens)
             .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
         );
+
+        // Filter all rejected promises and return the promise value
+        newMetadata = _.map(newMetadata.filter(m => m.status !== "rejected"), m => m.value);
 
         metadata = [...metadata, ...newMetadata];
       } catch (error) {
