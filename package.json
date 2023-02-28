@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "NODE_OPTIONS=--openssl-legacy-provider next build",
-    "start": "yarn build && next start",
+    "start": "next build && next start",
     "format-check": "prettier --check \"src/**/*.+(js|ts|json)\" \"pages/**/*.+(js|ts|json)\"",
     "format": "prettier --write \"src/**/*.+(js|ts|json)\" \"pages/**/*.+(js|ts|json)\""
   },
