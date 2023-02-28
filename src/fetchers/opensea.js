@@ -79,12 +79,22 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
     // Collect the fees
     const royalties = [];
+    const fees = [];
 
     for (const key in data.collection.fees.seller_fees) {
       if (data.collection.fees.seller_fees.hasOwnProperty(key)) {
         royalties.push({
           recipient: key,
           bps: data.collection.fees.seller_fees[key],
+        });
+      }
+    }
+
+    for (const key in data.collection.fees.opensea_fees) {
+      if (data.collection.fees.opensea_fees.hasOwnProperty(key)) {
+        fees.push({
+          recipient: key,
+          bps: data.collection.fees.opensea_fees[key],
         });
       }
     }
@@ -106,6 +116,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
           }
         : null,
       openseaRoyalties: royalties,
+      openseaFees: fees,
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
@@ -234,7 +245,8 @@ export const fetchTokensByCollectionSlug = async (chainId, slug, continuation) =
       headers:
         chainId === 1
           ? {
-              [process.env.OPENSEA_SLUG_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_SLUG_API_KEY.trim(),
+              [process.env.OPENSEA_SLUG_API_HEADER ?? "X-API-KEY"]:
+                process.env.OPENSEA_SLUG_API_KEY.trim(),
               Accept: "application/json",
             }
           : {
