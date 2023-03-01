@@ -4,14 +4,35 @@ import {fileTypeFromBuffer} from 'file-type'
 
 const FETCH_TIMEOUT = 30000;
 
-const Web3 = new web3(
-  process.env.MAINNET_RPC_URL
+let Web3Local = new web3(
+    web3.httpProvider(null)
 );
+
+let Web3Instances = [];
+let Web3InstanceMax = 10;
+for (let i = 0; i < Web3InstanceMax; i++) {
+    Web3Instances.push(new web3(process.env.MAINNET_RPC_URL));
+}
+
+
+const getWeb3 = () => {
+    const instance = Web3Instances.shift();
+    Web3Instances.push(instance);
+    return instance;
+};
+
+setInterval(() => {
+    // Every 10 minutes, we refresh the web3 instances to bring old memory out of scope to avoid memory leaks
+    Web3Instances = [];
+    for (let i = 0; i < Web3InstanceMax; i++) {
+        Web3Instances.push(new web3(process.env.MAINNET_RPC_URL));
+    }
+}, 60 * 1000);
 
 const encodeTokenID = tokenId => {
     return {
         id: tokenId,
-        encodedTokenID: Web3.eth.abi.encodeFunctionCall(
+        encodedTokenID: Web3Local.eth.abi.encodeFunctionCall(
             {
                 name: 'tokenURI',
                 type: 'function',
@@ -169,12 +190,81 @@ export const getTokenMetadata = async (tokenIds, contractAddress, chainId) => {
 };
 
 
-// TODO: Implement this
+// TODO: Implement this, maybe we just use the OpenSea API for this, not sure
 export const getCollectionMetadata = async (contractAddress, chainId) => {
 
 }
 
 export const fetchContractTokens = async (contractAddress, chainId) => {
-    // Implement this by fetching the contract's events and filtering for Transfer events where the from address is 0x0, and the to address is the contract address
-    // Then, parse the tokenIds from the event data and build the array of all tokenIds that belong to the contract
+    if (chainId !== 1) throw new Error('Only mainnet is supported');
+    // TODO: Add support for other chains
+
+
+    // TODO: Add support for ERC-1155 and other standards, this is just ERC-721
+    const transferABI = [
+        {
+            anonymous: false,
+            inputs: [
+                {
+                    indexed: true,
+                    internalType: 'address',
+                    name: 'from',
+                    type: 'address',
+                },
+                {
+                    indexed: true,
+                    internalType: 'address',
+                    name: 'to',
+                    type: 'address',
+                },
+                {
+                    indexed: true,
+                    internalType: 'uint256',
+                    name: 'tokenId',
+                    type: 'uint256',
+                },
+            ],
+            name: 'Transfer',
+            type: 'event',
+        },
+    ];
+
+    const contract = new (getWeb3()).eth.Contract(
+        transferABI,
+        contractAddress,
+    );
+
+
+    const tokenIds = [];
+    const start = 0;
+    
+    // current block number + 3 to make sure we get all the events
+    const end = await (getWeb3()).eth.getBlockNumber() + 3;
+    const tokens = await getTokenIds(contract, start, end, tokenIds);
+
+    return new Set(tokens);        
 }
+
+// Recursive function to fetch all the events, in case the contract has too many events (> 10000)
+const getTokenIds = async (contract, start, end, tokenIds) => {
+    try {
+        const results = await contract.getPastEvents('Transfer', {
+            filter: { from: '0x0000000000000000000000000000000000000000' },
+            fromBlock: start,
+            toBlock: end,
+        });
+
+        if (results.length > 0) {
+            tokenIds = tokenIds.concat(
+                results.map(event => event.returnValues.tokenId),
+            );
+        }
+        return tokenIds;
+    } catch (e) {
+        const middle = Math.round((start + end) / 2);
+        return [
+            ...(await getTokenIds(contract, start, middle + 1, tokenIds)),
+            ...(await getTokenIds(contract, middle + 1, end, tokenIds)),
+        ];
+    }
+};
