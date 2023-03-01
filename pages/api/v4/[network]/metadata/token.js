@@ -10,6 +10,7 @@ import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
+import * as onchain from "../../../../../src/fetchers/onchain";
 
 import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 import { ValidationError } from "../../../../../src/shared/errors";
@@ -40,7 +41,9 @@ const api = async (req, res) => {
 
     // Validate indexing method and set up provider
     const method = req.query.method;
-    if (!["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(method)) {
+    if (
+      !["opensea", "rarible", "simplehash", "centerdev", "soundxyz", "onchain"].includes(method)
+    ) {
       throw new Error("Unknown method");
     }
 
@@ -53,6 +56,8 @@ const api = async (req, res) => {
       provider = centerdev;
     } else if (method === "soundxyz") {
       provider = soundxyz;
+    } else if (method === "onchain") {
+      provider = onchain;
     }
 
     // Case 1: fetch all tokens within the given contract and slug via pagination
@@ -96,7 +101,7 @@ const api = async (req, res) => {
     }
     // Case 2: fetch all tokens within the given contract via pagination
     const contract = req.query.contract?.toLowerCase();
-    if (contract) {
+    if (contract && !method === "onchain") {
       if (hasCustomHandler(chainId, contract)) {
         const result = await customHandleContractTokens(chainId, contract, continuation);
         return res.status(200).json(result);
@@ -115,6 +120,33 @@ const api = async (req, res) => {
           }
           throw error;
         }
+      }
+    } else if (contract && method === "onchain") {
+      try {
+        if (!req.query.from || !req.query.to) {
+          throw new Error("Missing from or to");
+        }
+
+        if (req.query.from > req.query.to) {
+          throw new Error("From must be less than to");
+        }
+
+        if (req.query.to - req.query.from > 1000) {
+          throw new Error("Range must be less than 200");
+        }
+
+        const result = await Promise.all(
+          await provider
+            .fetchContractTokens(chainId, contract, req.query.from, req.query.to)
+            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+        );
+
+        return res.status(200).json(result);
+      } catch (error) {
+        if (error instanceof RequestWasThrottledError) {
+          return res.status(429).json({ error: error.message, expires_in: error.delay });
+        }
+        throw error;
       }
     }
 
