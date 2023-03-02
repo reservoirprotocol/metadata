@@ -15,6 +15,7 @@ import * as tfoust from "./tfoust";
 import * as sharedContracts from "./shared-contracts";
 import * as cyberkongz from "./cyberkongz";
 import * as emblemVault from "./emblem-vault";
+import * as brainDrops from "./braindrops";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
@@ -72,6 +73,9 @@ extendCollection["1,0xabefbc9fd2f806065b4f3c237d4b59d9a97bcac7"] = sharedContrac
 // Emblem Vault
 extendCollection["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
 
+// BrainDrops
+extendCollection["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;
+
 const extend = {};
 
 // CyberKongz
@@ -112,3 +116,6 @@ tfoust.CollectiblesCollections.forEach((c) => (extend[`137,${c}`] = tfoust));
 
 // Emblem Vault
 extend["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
+
+// BrainDrops
+extend["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;
