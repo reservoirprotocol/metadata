@@ -80,7 +80,6 @@ const sendBatch = async (encodedTokens, RPC_URL) => {
 
 const getTokenMetadataFromURI = async (uri) => {
   try {
-    console.log("uri", uri);
     if (uri.includes("ipfs://")) {
       uri = uri.replace("ipfs://", "https://ipfs.io/ipfs/");
     }
@@ -114,8 +113,8 @@ export const fetchTokens = async (chainId, tokens) => {
   // TODO: Add support for ERC-1155 and other standards
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
+  // TODO: Add support for more than 20 tokens
   //   if (tokens.length > 20) throw new Error("Too many tokenIds (max 20)");
-  //   console.log("fetching tokens", tokens, chainId);
   if (chainId !== 1) throw new Error("Only mainnet is supported");
 
   // We need to have some type of hash map to map the tokenid + contract to the tokenURI
@@ -128,15 +127,12 @@ export const fetchTokens = async (chainId, tokens) => {
 
   const RPC_URL = process.env.MAINNET_RPC_URL;
   const encodedTokens = tokens.map(encodeToken);
-  console.log("encodedTokens", encodedTokens);
   const batch = await sendBatch(encodedTokens, RPC_URL);
 
   const resolvedMetadata = await Promise.all(
     batch.map(async (token) => {
-      console.log("token", token);
       const uri = Web3Local.eth.abi.decodeParameter("string", token.result);
       const metadata = await getTokenMetadataFromURI(uri);
-      console.log("metadata", metadata);
       if (metadata[1]) {
         return {
           contract: idToToken[token.id].contract,
@@ -153,8 +149,6 @@ export const fetchTokens = async (chainId, tokens) => {
       };
     })
   );
-
-  console.log("resolvedMetadata", resolvedMetadata);
 
   return resolvedMetadata.map((token) => {
     return parse(token);
