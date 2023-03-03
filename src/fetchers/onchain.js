@@ -163,21 +163,29 @@ export const fetchTokens = async (chainId, tokens, standard = "ERC721") => {
 
   const resolvedMetadata = await Promise.all(
     batch.map(async (token) => {
-      const uri = Web3Local.eth.abi.decodeParameter("string", token.result);
-      const [metadata, error] = await getTokenMetadataFromURI(uri);
-      if (error) {
+      try {
+        const uri = Web3Local.eth.abi.decodeParameter("string", token.result);
+        const [metadata, error] = await getTokenMetadataFromURI(uri);
+        if (error) {
+          return {
+            contract: idToToken[token.id].contract,
+            token_id: idToToken[token.id].tokenId,
+            error: "Unable to fetch metadata from URI",
+          };
+        }
+
+        return {
+          ...metadata,
+          contract: idToToken[token.id].contract,
+          token_id: idToToken[token.id].tokenId,
+        };
+      } catch (e) {
         return {
           contract: idToToken[token.id].contract,
           token_id: idToToken[token.id].tokenId,
-          error: "Unable to fetch metadata from URI",
+          error: "Unable to decode metadata from URI",
         };
       }
-
-      return {
-        ...metadata,
-        contract: idToToken[token.id].contract,
-        token_id: idToToken[token.id].tokenId,
-      };
     })
   );
 
