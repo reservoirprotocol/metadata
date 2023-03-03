@@ -169,7 +169,7 @@ const api = async (req, res) => {
       try {
         const newMetadata = await Promise.all(
           await provider
-            .fetchTokens(chainId, tokens)
+            .fetchTokens(chainId, tokens, query?.standard)
             .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
         );
 

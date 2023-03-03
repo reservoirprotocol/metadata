@@ -26,12 +26,32 @@ setInterval(() => {
   }
 }, 60 * 1000);
 
-const encodeToken = (token) => {
+const encodeTokenERC721 = (token) => {
   return {
     id: token.requestId,
     encodedTokenID: Web3Local.eth.abi.encodeFunctionCall(
       {
         name: "tokenURI",
+        type: "function",
+        inputs: [
+          {
+            type: "uint256",
+            name: "tokenId",
+          },
+        ],
+      },
+      [token.tokenId]
+    ),
+    contract: token.contract,
+  };
+};
+
+const encodeTokenERC1155 = (token) => {
+  return {
+    id: token.requestId,
+    encodedTokenID: Web3Local.eth.abi.encodeFunctionCall(
+      {
+        name: "uri",
         type: "function",
         inputs: [
           {
@@ -108,7 +128,7 @@ const getTokenMetadataFromURI = async (uri) => {
   }
 };
 
-export const fetchTokens = async (chainId, tokens) => {
+export const fetchTokens = async (chainId, tokens, standard = "ERC721") => {
   // TODO: Add support for other chains
   // TODO: Add support for ERC-1155 and other standards
   if (tokens.length === 0) return [];
@@ -126,7 +146,8 @@ export const fetchTokens = async (chainId, tokens) => {
   });
 
   const RPC_URL = process.env.MAINNET_RPC_URL;
-  const encodedTokens = tokens.map(encodeToken);
+  const encodeTokenFunction = standard === "ERC721" ? encodeTokenERC721 : encodeTokenERC1155;
+  const encodedTokens = tokens.map(encodeTokenFunction);
   const batch = await sendBatch(encodedTokens, RPC_URL);
 
   const resolvedMetadata = await Promise.all(
