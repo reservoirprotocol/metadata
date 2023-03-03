@@ -28,15 +28,13 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
         metadata.royalties = data.collection.royalties.filter(({ bps }) => bps !== 0);
       }
     })
-    .catch(() => {
+    .catch((error) => {
       logger.error(
-        "ordinals-fetcher",
+        "ordinals-fetcher-collection",
         `fetchTokens error. chainId:${_chainId}, message:${error.message},  status:${
           error.response?.status
         }, data:${JSON.stringify(error.response?.data)}`
       );
-
-      throw error;
     });
 
   return metadata;
@@ -61,9 +59,9 @@ export const extend = async (_chainId, metadata) => {
         }));
       }
     })
-    .catch(() => {
+    .catch((error) => {
       logger.error(
-        "ordinals-fetcher",
+        "ordinals-fetcher-token",
         `fetchTokens error. chainId:${_chainId}, message:${error.message},  status:${
           error.response?.status
         }, data:${JSON.stringify(error.response?.data)}`
