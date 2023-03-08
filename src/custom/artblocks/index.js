@@ -40,7 +40,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       imageUrl: `https://media.artblocks.io/${startTokenId}.png`,
       description: data.description,
       externalUrl: data.website,
-      safelistRequestStatus
+      safelistRequestStatus,
     },
     openseaRoyalties,
     openseaFees,

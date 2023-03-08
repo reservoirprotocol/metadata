@@ -34,6 +34,13 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
       data = assetResponse.data;
     } catch (error) {
+      logger.error(
+        "opensea-fetcher",
+        `fetchCollection retrieve asset error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
+          error.message
+        },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
+      );
+
       // Try to get the collection only based on the contract.
       if (error.response?.status === 404) {
         const url = `${

@@ -189,7 +189,10 @@ const api = async (req, res) => {
         );
 
         // Filter all rejected promises and return the promise value
-        newMetadata = _.map(newMetadata.filter(m => m.status !== "rejected"), m => m.value);
+        newMetadata = _.map(
+          newMetadata.filter((m) => m.status !== "rejected"),
+          (m) => m.value
+        );
 
         metadata = [...metadata, ...newMetadata];
       } catch (error) {
