@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/reservoirprotocol/metadata/compare/v1.0.0...v1.0.1) (2023-03-09)
+
+
+### Bug Fixes
+
+* setup github workflows ([adecbc7](https://github.com/reservoirprotocol/metadata/commit/adecbc70515cdec7f460b8aa5de59a2fedffaec3))
+
 # 1.0.0 (2023-03-09)
 
 
