@@ -27,7 +27,7 @@ jobs:
           cache: "yarn"
 
       - name: Install dependencies
-        run: yarn ci
+        run: yarn install
 
       - name: Get Release Versions
         uses: cycjimmy/semantic-release-action@v3
