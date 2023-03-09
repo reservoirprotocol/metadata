@@ -38,17 +38,35 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     extURL = "https://miragegallery.ai/curated"
   }
 
+  const { slug, openseaRoyalties, openseaFees, safelistRequestStatus } = await opensea
+  .fetchCollection(_chainId, { contract, tokenId })
+  .then((m) => ({
+    slug: m.slug,
+    openseaRoyalties: m.openseaRoyalties,
+    openseaFees: m.openseaFees,
+    safelistRequestStatus: m.metadata?.safelistRequestStatus,
+  }))
+  .catch(() => ({
+    slug: slugify(releaseFromToken.titleSlug, { lower: true }),
+    openseaRoyalties: [],
+    openseaFees: [],
+  }));
+
+
   return {
     id: `${contract}:${startTokenId}:${endTokenId}`,
-    slug: slugify(projectDetails.name, { lower: true }),
+    slug,
     name: projectDetails.dropName,
     metadata: {
       imageUrl: projectDetails.image,
-      bannerUrl: projectDetails.banner,
+      bannerImageUrl: projectDetails.banner,
       description: projectDetails.description,
       externalUrl: extURL,
+      safelistRequestStatus,
     },
     royalties,
+    openseaRoyalties,
+    openseaFees,
     contract,
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${contract}:${startTokenId}:${endTokenId}`,
@@ -91,7 +109,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     collection: `${contract}:${startTokenId}:${endTokenId}`,
     name: projectDetails.dropName,
     imageUrl: projectDetails.image,
-    bannerUrl: projectDetails.banner,
+    bannerImageUrl: projectDetails.banner,
     flagged: false,
     attributes,
   };
