@@ -64,20 +64,20 @@ jobs:
         if: steps.semantic.outputs.new_release_version != ''
         uses: cycjimmy/semantic-release-action@v3
 
-  # deploy-dev:
-  #   name: Deploy Dev Env
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 15
-  #   needs: [build]
-  #   environment: dev
-  #   if: needs.build.outputs.version != ''
-  #   steps:
-  #     - name: Checkout repository k8s-configs
-  #       uses: actions/checkout@v3
-  #       with:
-  #         repository: unevenlabs/k8s-configs
-  #         token: ${{ secrets.publish_token }}
-  #         path: k8s-configs
+  deploy-dev:
+    name: Deploy Dev Env
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [build]
+    environment: dev
+    if: needs.build.outputs.version != ''
+    steps:
+      - name: Checkout repository k8s-configs
+        uses: actions/checkout@v3
+        with:
+          repository: unevenlabs/k8s-configs
+          token: ${{ secrets.publish_token }}
+          path: k8s-configs
 
   #     - name: Deploy to Dev Environment
   #       working-directory: k8s-configs
