@@ -109,7 +109,6 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     collection: `${contract}:${startTokenId}:${endTokenId}`,
     name: projectDetails.dropName,
     imageUrl: projectDetails.image,
-    bannerImageUrl: projectDetails.banner,
     flagged: false,
     attributes,
   };
