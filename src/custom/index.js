@@ -71,6 +71,9 @@ customCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 // Async Blueprints
 customCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
 
+// Mirage Gallery Curated
+customCollection["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
+
 ////////////////
 // Custom Tokens
 ////////////////
