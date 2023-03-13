@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/reservoirprotocol/metadata/compare/v1.0.1...v1.0.2) (2023-03-13)
+
+
+### Bug Fixes
+
+* build from arm64 ([25a3f23](https://github.com/reservoirprotocol/metadata/commit/25a3f23ebbbd3d707a2351178f29d62b52fcc384))
+
 ## [1.0.1](https://github.com/reservoirprotocol/metadata/compare/v1.0.0...v1.0.1) (2023-03-09)
 
 
