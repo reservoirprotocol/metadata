@@ -1,6 +1,8 @@
 import axios from "axios";
 import slugify from "slugify";
 
+import * as opensea from "../../fetchers/opensea";
+
 function getProjectID(tokenId) {
   let tokenStr = tokenId.toString();
   if (tokenStr.length === 5) {
