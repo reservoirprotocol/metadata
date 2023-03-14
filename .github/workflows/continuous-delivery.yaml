@@ -52,8 +52,6 @@ jobs:
         if: steps.semantic.outputs.new_release_version != ''
         uses: docker/build-push-action@v3
         with:
-          arch: aarch64
-          distro: ubuntu-latest
           push: true
           tags: |
             ghcr.io/reservoirprotocol/metadata:latest
