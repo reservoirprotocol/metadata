@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/reservoirprotocol/metadata/compare/v1.0.5...v1.0.6) (2023-03-14)
+
+
+### Bug Fixes
+
+* arch amd64 ([239c4aa](https://github.com/reservoirprotocol/metadata/commit/239c4aa2016da6de5137a2c8471ad7add03bfb24))
+
 ## [1.0.5](https://github.com/reservoirprotocol/metadata/compare/v1.0.4...v1.0.5) (2023-03-13)
 
 
