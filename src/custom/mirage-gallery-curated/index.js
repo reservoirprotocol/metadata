@@ -114,7 +114,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   } catch (error) {
     logger.error(
       "mirage-gallery-curated-fetcher",
-      `fetchTokens get json error. chainId:${_chainId}, metadataURL=${metadataURL}, message:${
+      `fetchTokens get metadataURL error. chainId:${_chainId}, metadataURL=${metadataURL}, message:${
         error.message
       }, status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
     );
