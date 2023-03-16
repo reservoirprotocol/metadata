@@ -1,3 +1,10 @@
+## [1.0.9](https://github.com/reservoirprotocol/metadata/compare/v1.0.8...v1.0.9) (2023-03-16)
+
+
+### Bug Fixes
+
+* clean test ([e85285a](https://github.com/reservoirprotocol/metadata/commit/e85285a4636d19b742634de860c7d67bd01496df))
+
 ## [1.0.8](https://github.com/reservoirprotocol/metadata/compare/v1.0.7...v1.0.8) (2023-03-16)
 
 
