@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
-
+         
       - name: Get Release Versions
         uses: cycjimmy/semantic-release-action@v3
         id: semantic
