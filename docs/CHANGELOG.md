@@ -1,3 +1,11 @@
+## [1.0.8](https://github.com/reservoirprotocol/metadata/compare/v1.0.7...v1.0.8) (2023-03-16)
+
+
+### Bug Fixes
+
+* configure devopsbot ([7da23a2](https://github.com/reservoirprotocol/metadata/commit/7da23a2c367dde33ba60a70873d7bb91eaabe720))
+* semantic version ([7eac0af](https://github.com/reservoirprotocol/metadata/commit/7eac0afbbc797cec829c8324e3129beeaedbaa73))
+
 ## [1.0.7](https://github.com/reservoirprotocol/metadata/compare/v1.0.6...v1.0.7) (2023-03-16)
 
 
