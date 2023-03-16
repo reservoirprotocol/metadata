@@ -1,3 +1,14 @@
+## [1.0.7](https://github.com/reservoirprotocol/metadata/compare/v1.0.6...v1.0.7) (2023-03-16)
+
+
+### Bug Fixes
+
+* added missing import ([288b8b0](https://github.com/reservoirprotocol/metadata/commit/288b8b04c0661c09b110f73d8c626bb9ed18518f))
+* added missing logic ([d6fbbc0](https://github.com/reservoirprotocol/metadata/commit/d6fbbc0ecf7597bce4738415b17e38d2879054bc))
+* release ([f4c1eaf](https://github.com/reservoirprotocol/metadata/commit/f4c1eafc47c291891411b71dba1c4c8286e57c2c))
+* release ([07c9de2](https://github.com/reservoirprotocol/metadata/commit/07c9de22074baee140936f9ad2fce132a3af5641))
+* setup semantic-version correct branch ([521d025](https://github.com/reservoirprotocol/metadata/commit/521d025a9c05aa522f802b0e6dfd92afbc8fa02e))
+
 ## [1.0.6](https://github.com/reservoirprotocol/metadata/compare/v1.0.5...v1.0.6) (2023-03-14)
 
 
