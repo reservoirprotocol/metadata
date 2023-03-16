@@ -31,6 +31,11 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: semantic-release
+        run: npx semantic-release --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.DEVOPSBOT_TOKEN }}
+          
       - name: Get Release Versions
         uses: cycjimmy/semantic-release-action@v3
         id: semantic
