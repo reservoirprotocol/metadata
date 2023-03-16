@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/reservoirprotocol/metadata/compare/v1.0.9...v1.1.0) (2023-03-16)
+
+
+### Features
+
+* update log ([0f0bfe3](https://github.com/reservoirprotocol/metadata/commit/0f0bfe3fd22e77d4328c38ffdc8aa3dd4f5250f3))
+
 ## [1.0.9](https://github.com/reservoirprotocol/metadata/compare/v1.0.8...v1.0.9) (2023-03-16)
 
 
