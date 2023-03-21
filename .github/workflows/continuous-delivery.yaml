@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
-         
+
       - name: Get Release Versions
         uses: cycjimmy/semantic-release-action@v3
         id: semantic
@@ -72,13 +72,13 @@ jobs:
   #   timeout-minutes: 15
   #   needs: [build]
   #   environment: dev
-  #   if: needs.build.outputs.version != ''
+  #   if: github.ref == 'refs/heads/staging' && needs.build.outputs.version != ''
   #   steps:
   #     - name: Checkout repository k8s-configs
   #       uses: actions/checkout@v3
   #       with:
   #         repository: unevenlabs/k8s-configs
-  #         token: ${{ secrets.publish_token }}
+  #         token: ${{ secrets.DEVOPSBOT_TOKEN }}
   #         path: k8s-configs
 
   #     - name: Deploy to Dev Environment
@@ -89,25 +89,25 @@ jobs:
   #           ${{ needs.build.outputs.version }} \
   #           metadata
 
-  # deploy-prod:
-  #   name: Deploy Prod Env
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 15
-  #   needs: [build]
-  #   environment: prod
-  #   if: needs.build.outputs.version != ''
-  #   steps:
-  #     - name: Checkout repository k8s-configs
-  #       uses: actions/checkout@v3
-  #       with:
-  #         repository: unevenlabs/k8s-configs
-  #         token: ${{ secrets.publish_token }}
-  #         path: k8s-configs
+  deploy-prod:
+    name: Deploy Prod Env
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [build]
+    environment: prod
+    if: github.ref == 'refs/heads/main' && needs.build.outputs.version != ''
+    steps:
+      - name: Checkout repository k8s-configs
+        uses: actions/checkout@v3
+        with:
+          repository: unevenlabs/k8s-configs
+          token: ${{ secrets.DEVOPSBOT_TOKEN }}
+          path: k8s-configs
 
-  #     - name: Deploy to Prod Environment
-  #       working-directory: k8s-configs
-  #       run: |
-  #         ./utils/version_update.sh \
-  #           ./prod/platform/metadata.yaml \
-  #           ${{ needs.build.outputs.version }} \
-  #           metadata
+      - name: Deploy to Prod Environment
+        working-directory: k8s-configs
+        run: |
+          ./utils/version_update.sh \
+            ./prod/platform/metadata.yaml \
+            ${{ needs.build.outputs.version }} \
+            metadata
