@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/reservoirprotocol/metadata/compare/v1.1.0...v1.2.0) (2023-03-21)
+
+
+### Features
+
+* automate deployments ([3bed44b](https://github.com/reservoirprotocol/metadata/commit/3bed44b24452d4dfee3e909a0ac47fc4fc84e69b))
+
 # [1.1.0](https://github.com/reservoirprotocol/metadata/compare/v1.0.9...v1.1.0) (2023-03-16)
 
 
