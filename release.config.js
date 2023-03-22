@@ -24,7 +24,7 @@ module.exports = {
           "docs/CHANGELOG.md",
           "package.json",
         ],
-        "message": "chore(release): update changelogs for ${nextRelease.version} [skip release][skip ci]"
+        "message": "ci(release): update changelogs for ${nextRelease.version} [skip release][skip ci]"
       }
     ]
   ]
