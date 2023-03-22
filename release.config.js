@@ -1,6 +1,9 @@
 module.exports = {
   "dryRun": false,
-  "branches": ["main", "staging"],
+  "branches": [
+    "main",
+    { name: "staging", channel: "dev", prerelease: "dev" },
+  ],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",

@@ -66,31 +66,31 @@ jobs:
         if: steps.semantic.outputs.new_release_version != ''
         uses: cycjimmy/semantic-release-action@v3
 
-  # deploy-dev:
-  #   name: Deploy Dev Env
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 15
-  #   needs: [build]
-  #   environment: dev
-  #   if: github.ref == 'refs/heads/staging' && needs.build.outputs.version != ''
-  #   steps:
-  #     - name: Checkout repository k8s-configs
-  #       uses: actions/checkout@v3
-  #       with:
-  #         repository: unevenlabs/k8s-configs
-  #         token: ${{ secrets.DEVOPSBOT_TOKEN }}
-  #         path: k8s-configs
+  deploy-dev:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [build]
+    environment: dev
+    if: github.ref == 'refs/heads/staging' && needs.build.outputs.version != ''
+    steps:
+      - name: Checkout repository k8s-configs
+        uses: actions/checkout@v3
+        with:
+          repository: unevenlabs/k8s-configs
+          token: ${{ secrets.DEVOPSBOT_TOKEN }}
+          path: k8s-configs
 
-  #     - name: Deploy to Dev Environment
-  #       working-directory: k8s-configs
-  #       run: |
-  #         ./utils/version_update.sh \
-  #           ./dev/platform/metadata.yaml \
-  #           ${{ needs.build.outputs.version }} \
-  #           metadata
+      - name: Deploy to Dev Environment
+        working-directory: k8s-configs
+        run: |
+          ./utils/version_update.sh \
+            ./dev/platform/metadata.yaml \
+            ${{ needs.build.outputs.version }} \
+            metadata
 
   deploy-prod:
-    name: Deploy Prod Env
+    name: Deploy to Production
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [build]
