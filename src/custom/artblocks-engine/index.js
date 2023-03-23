@@ -51,7 +51,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   // Try to fetch image from opensea, fallback to artblocks image on failure
   try {
     const osData = await opensea.fetchTokens(_chainId, [{ contract, tokenId }]);
-    imageUrl = osData[0].imageUrl;
+    imageUrl = osData[0].imageUrl ?? data.image;
   } catch (e) {
     imageUrl = data.image;
   }
