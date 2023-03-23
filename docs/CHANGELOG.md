@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/reservoirprotocol/metadata/compare/v1.3.1...v1.3.2) (2023-03-23)
+
+
+### Bug Fixes
+
+* trigger pipeline ([e2b68b5](https://github.com/reservoirprotocol/metadata/commit/e2b68b550564668b1d46d4a12586edcab51d2015))
+
 ## [1.3.1](https://github.com/reservoirprotocol/metadata/compare/v1.3.0...v1.3.1) (2023-03-22)
 
 
