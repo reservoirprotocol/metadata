@@ -46,6 +46,15 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
   const url = `https://token.artblocks.io/${contract}/${tokenId}`;
   const { data } = await axios.get(url);
+  let imageUrl;
+
+  // Try to fetch image from opensea, fallback to artblocks image on failure
+  try {
+    const osData = await opensea.fetchTokens(_chainId, [{ contract, tokenId }]);
+    imageUrl = osData[0].imageUrl;
+  } catch (e) {
+    imageUrl = data.image;
+  }
 
   const attributes = [];
   // Add None value for core traits
@@ -66,7 +75,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     tokenId,
     collection: `${contract}:${startTokenId}:${endTokenId}`,
     name: data.name,
-    imageUrl: data.image,
+    imageUrl,
     flagged: false,
     attributes,
   };
