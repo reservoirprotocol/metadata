@@ -18,6 +18,7 @@ import * as emblemVault from "./emblem-vault";
 import * as brainDrops from "./braindrops";
 import * as quantumArt from "./quantum-art";
 import * as openseaSharedContract from "./opensea-shared-contract";
+import * as shreddingSassy from "./shredding-sassy";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
@@ -50,6 +51,9 @@ extendCollection["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaShared
 
 // CyberKongz
 extendCollection["1,0x57a204aa1042f6e66dd7730813f4024114d74f37"] = cyberkongz;
+
+// ShreddingSassy
+extendCollection["1,0x165BD6E2ae984D9C13D94808e9A6ba2b7348c800"] = shreddingSassy;
 
 // Admit One
 extendCollection["1,0xd2a077ec359d94e0a0b7e84435eacb40a67a817c"] = admitOne;
@@ -91,6 +95,9 @@ extend["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
 
 // CyberKongz
 extend["1,0x57a204aa1042f6e66dd7730813f4024114d74f37"] = cyberkongz;
+
+// CyberKongz
+extend["1,0x165BD6E2ae984D9C13D94808e9A6ba2b7348c800"] = shreddingSassy;
 
 // Adidas Originals
 extend["1,0x28472a58a490c5e09a238847f66a68a47cc76f0f"] = adidasOriginals;
