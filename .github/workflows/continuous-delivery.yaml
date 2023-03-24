@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
-    outputs:
-      version: ${{ steps.semantic.outputs.new_release_version }}
+    # outputs:
+    #   version: ${{ steps.semantic.outputs.new_release_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,19 +31,19 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Get Release Versions
-        uses: cycjimmy/semantic-release-action@v3
-        id: semantic
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEVOPSBOT_TOKEN }}
+      # - name: Get Release Versions
+      #   uses: cycjimmy/semantic-release-action@v3
+      #   id: semantic
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.DEVOPSBOT_TOKEN }}
 
       - name: Set up Docker Buildx
-        if: steps.semantic.outputs.new_release_version != ''
+        # if: steps.semantic.outputs.new_release_version != ''
         id: buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Login to GitHub Container Registry
-        if: steps.semantic.outputs.new_release_version != ''
+        # if: steps.semantic.outputs.new_release_version != ''
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -51,20 +51,20 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        if: steps.semantic.outputs.new_release_version != ''
+        # if: steps.semantic.outputs.new_release_version != ''
         uses: docker/build-push-action@v3
         with:
           push: true
           tags: |
             ghcr.io/reservoirprotocol/metadata:latest
-            ghcr.io/reservoirprotocol/metadata:${{ steps.semantic.outputs.new_release_version }}
             ghcr.io/reservoirprotocol/metadata:${{ github.sha }}
-          build-args: |
-            VERSION=${{ steps.semantic.outputs.new_release_version }}
+          #   ghcr.io/reservoirprotocol/metadata:${{ steps.semantic.outputs.new_release_version }}
+          # build-args: |
+          #   VERSION=${{ steps.semantic.outputs.new_release_version }}
 
-      - name: Publish github release
-        if: steps.semantic.outputs.new_release_version != ''
-        uses: cycjimmy/semantic-release-action@v3
+      # - name: Publish github release
+      #   if: steps.semantic.outputs.new_release_version != ''
+      #   uses: cycjimmy/semantic-release-action@v3
 
   deploy-dev:
     name: Deploy to Development
@@ -72,7 +72,8 @@ jobs:
     timeout-minutes: 15
     needs: [build]
     environment: dev
-    if: github.ref == 'refs/heads/staging' && needs.build.outputs.version != ''
+    # if: github.ref == 'refs/heads/staging' && needs.build.outputs.version != ''
+    if: github.ref == 'refs/heads/staging'
     steps:
       - name: Checkout repository k8s-configs
         uses: actions/checkout@v3
@@ -86,7 +87,7 @@ jobs:
         run: |
           ./utils/version_update.sh \
             ./dev/platform/metadata.yaml \
-            ${{ needs.build.outputs.version }} \
+            ${{ github.sha }} \
             metadata
 
   deploy-prod:
@@ -95,7 +96,8 @@ jobs:
     timeout-minutes: 15
     needs: [build]
     environment: prod
-    if: github.ref == 'refs/heads/main' && needs.build.outputs.version != ''
+    # if: github.ref == 'refs/heads/main' && needs.build.outputs.version != ''
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout repository k8s-configs
         uses: actions/checkout@v3
@@ -109,5 +111,5 @@ jobs:
         run: |
           ./utils/version_update.sh \
             ./prod/platform/metadata.yaml \
-            ${{ needs.build.outputs.version }} \
+            ${{ github.sha }} \
             metadata
