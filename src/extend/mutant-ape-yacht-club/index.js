@@ -3,6 +3,7 @@ import { getStakedAmountWei, stakedAmountWeiToAttributeBucket } from "../apecoin
 const POOL_ID = 2;
 
 export const extend = async (_chainId, metadata) => {
+  const traitCount = metadata.attributes.length;
   let serumType;
   let name;
 
@@ -37,6 +38,11 @@ export const extend = async (_chainId, metadata) => {
       {
         key: "ApeCoin Staked",
         value: stakedAmountWeiToAttributeBucket({ stakedAmountWei }),
+        kind: "string",
+      },
+      {
+        key: "Trait Count",
+        value: traitCount,
         kind: "string",
       },
     ],

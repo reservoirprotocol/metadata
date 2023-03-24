@@ -5,6 +5,7 @@ export const parse = (asset) => {
     contract: asset.asset_contract.address,
     tokenId: asset.token_id,
     collection: _.toLower(asset.asset_contract.address),
+    slug: asset.collection.slug,
     name: asset.name,
     flagged: asset.supports_wyvern != null ? !asset.supports_wyvern : undefined,
     // Token descriptions are a waste of space for most collections we deal with

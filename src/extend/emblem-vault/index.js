@@ -64,7 +64,9 @@ export const extend = async (_chainId, metadata) => {
         "ordinals-fetcher-token",
         `fetchTokens error. chainId:${_chainId}, message:${error.message},  status:${
           error.response?.status
-        }, data:${JSON.stringify(error.response?.data)}`
+        }, data:${JSON.stringify(error.response?.data)} contract:${metadata.collection} tokenId:${
+          metadata.tokenId
+        }`
       );
 
       throw error;
