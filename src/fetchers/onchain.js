@@ -1,67 +1,52 @@
-import web3 from "web3";
+import { defaultAbiCoder, solidityPack } from "ethers/lib/utils";
+import { ethers } from "ethers";
 import fetch from "node-fetch";
 import { parse } from "../parsers/onchain";
+import { RequestWasThrottledError } from "./errors";
 
 const FETCH_TIMEOUT = 30000;
-
-let Web3Local = new web3(web3.givenProvider || process.env.MAINNET_RPC_URL);
-
-let Web3Instances = [];
-let Web3InstanceMax = 10;
-for (let i = 0; i < Web3InstanceMax; i++) {
-  Web3Instances.push(new web3(process.env.MAINNET_RPC_URL));
-}
-
-const getWeb3 = () => {
-  const instance = Web3Instances.shift();
-  Web3Instances.push(instance);
-  return instance;
-};
-
-setInterval(() => {
-  // Every 10 minutes, we refresh the web3 instances to bring old memory out of scope to avoid memory leaks
-  Web3Instances = [];
-  for (let i = 0; i < Web3InstanceMax; i++) {
-    Web3Instances.push(new web3(process.env.MAINNET_RPC_URL));
-  }
-}, 60 * 1000);
+const ALLOWED_CHAIN_IDS = [1, 5, 10, 137, 42161];
 
 const encodeTokenERC721 = (token) => {
+  const iface = new ethers.utils.Interface([
+    {
+      name: "tokenURI",
+      type: "function",
+      stateMutability: "view",
+      inputs: [
+        {
+          type: "uint256",
+          name: "tokenId",
+        },
+      ],
+    },
+  ]);
+
   return {
     id: token.requestId,
-    encodedTokenID: Web3Local.eth.abi.encodeFunctionCall(
-      {
-        name: "tokenURI",
-        type: "function",
-        inputs: [
-          {
-            type: "uint256",
-            name: "tokenId",
-          },
-        ],
-      },
-      [token.tokenId]
-    ),
+    encodedTokenID: iface.encodeFunctionData("tokenURI", [token.tokenId]),
     contract: token.contract,
   };
 };
 
 const encodeTokenERC1155 = (token) => {
+  const iface = new ethers.utils.Interface([
+    {
+      name: "uri",
+      type: "function",
+      stateMutability: "view",
+      inputs: [
+        {
+          type: "uint256",
+          name: "tokenId",
+        },
+      ],
+    },
+  ]);
+
   return {
     id: token.requestId,
-    encodedTokenID: Web3Local.eth.abi.encodeFunctionCall(
-      {
-        name: "uri",
-        type: "function",
-        inputs: [
-          {
-            type: "uint256",
-            name: "tokenId",
-          },
-        ],
-      },
-      [token.tokenId]
-    ),
+    encodedTokenID: iface.encodeFunctionData("uri", [token.tokenId]),
     contract: token.contract,
   };
 };
@@ -84,8 +69,10 @@ const createBatch = (encodedTokens) => {
 };
 
 const sendBatch = async (encodedTokens, RPC_URL) => {
+  let response;
   try {
-    const response = await fetch(RPC_URL, {
+    console.log("Sending batch", encodedTokens, RPC_URL);
+    response = await fetch(RPC_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -95,10 +82,26 @@ const sendBatch = async (encodedTokens, RPC_URL) => {
       // TODO: add proxy support to avoid rate limiting
       // agent:
     });
-    const json = await response.json();
+    const body = await response.text();
+    if (!response.ok) {
+      return [
+        null,
+        {
+          body: body,
+          status: response.status,
+        },
+      ];
+    }
+    const json = JSON.parse(body);
     return [json, null];
   } catch (e) {
-    return [null, e.message];
+    return [
+      null,
+      {
+        message: e.message,
+        status: response?.status,
+      },
+    ];
   }
 };
 
@@ -136,8 +139,7 @@ export const fetchTokens = async (chainId, tokens, standard = "ERC721") => {
   // TODO: Add support for other chains via RPC_URL
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
-  //   if (tokens.length > 20) throw new Error("Too many tokenIds (max 20)");
-  if (chainId !== 1) throw new Error("Only mainnet is supported");
+  if (!ALLOWED_CHAIN_IDS.includes(chainId)) throw new Error("Invalid chainId");
 
   // We need to have some type of hash map to map the tokenid + contract to the tokenURI
   const idToToken = {};
@@ -147,11 +149,14 @@ export const fetchTokens = async (chainId, tokens, standard = "ERC721") => {
     token.requestId = randomInt;
   });
 
-  const RPC_URL = process.env.MAINNET_RPC_URL;
+  const RPC_URL = process.env[`RPC_URL_${chainId}`];
   const encodeTokenFunction = standard === "ERC721" ? encodeTokenERC721 : encodeTokenERC1155;
   const encodedTokens = tokens.map(encodeTokenFunction);
   const [batch, error] = await sendBatch(encodedTokens, RPC_URL);
   if (error) {
+    if (error.status === 429) {
+      throw new RequestWasThrottledError(error.message, 10);
+    }
     return tokens.map((token) => {
       return {
         contract: token.contract,
@@ -164,7 +169,7 @@ export const fetchTokens = async (chainId, tokens, standard = "ERC721") => {
   const resolvedMetadata = await Promise.all(
     batch.map(async (token) => {
       try {
-        const uri = Web3Local.eth.abi.decodeParameter("string", token.result);
+        const uri = defaultAbiCoder.decode(["string"], token.result)[0];
         const [metadata, error] = await getTokenMetadataFromURI(uri);
         if (error) {
           return {
