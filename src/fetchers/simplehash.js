@@ -16,6 +16,8 @@ const getNetworkName = (chainId) => {
     network = "optimism";
   } else if (chainId === 137) {
     network = "polygon";
+  } else if (chainId === 42161) {
+    network = "arbitrum";
   } else {
     throw new Error("Unsupported chain id");
   }

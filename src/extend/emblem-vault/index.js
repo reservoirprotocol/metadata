@@ -30,7 +30,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
     })
     .catch((error) => {
       logger.error(
-        "ordinals-fetcher",
+        "ordinals-fetcher-collection",
         `fetchTokens error. chainId:${_chainId}, message:${error.message},  status:${
           error.response?.status
         }, data:${JSON.stringify(error.response?.data)}`
@@ -61,11 +61,15 @@ export const extend = async (_chainId, metadata) => {
     })
     .catch((error) => {
       logger.error(
-        "ordinals-fetcher",
+        "ordinals-fetcher-token",
         `fetchTokens error. chainId:${_chainId}, message:${error.message},  status:${
           error.response?.status
-        }, data:${JSON.stringify(error.response?.data)}`
+        }, data:${JSON.stringify(error.response?.data)} contract:${metadata.collection} tokenId:${
+          metadata.tokenId
+        }`
       );
+
+      throw error;
     });
 
   return metadata;

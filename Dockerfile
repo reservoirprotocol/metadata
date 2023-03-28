@@ -1,9 +1,9 @@
-FROM node:18.5-slim as dependencies
+FROM node:18.15-slim as dependencies
 WORKDIR /metadata
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
-FROM node:18.5-slim as builder
+FROM node:18.15-slim as builder
 WORKDIR /metadata
 COPY . .
 COPY --from=dependencies /metadata/node_modules ./node_modules

@@ -34,6 +34,13 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
       data = assetResponse.data;
     } catch (error) {
+      logger.error(
+        "opensea-fetcher",
+        `fetchCollection retrieve asset error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
+          error.message
+        },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
+      );
+
       // Try to get the collection only based on the contract.
       if (error.response?.status === 404) {
         const url = `${
@@ -79,12 +86,22 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
     // Collect the fees
     const royalties = [];
+    const fees = [];
 
     for (const key in data.collection.fees.seller_fees) {
       if (data.collection.fees.seller_fees.hasOwnProperty(key)) {
         royalties.push({
           recipient: key,
           bps: data.collection.fees.seller_fees[key],
+        });
+      }
+    }
+
+    for (const key in data.collection.fees.opensea_fees) {
+      if (data.collection.fees.opensea_fees.hasOwnProperty(key)) {
+        fees.push({
+          recipient: key,
+          bps: data.collection.fees.opensea_fees[key],
         });
       }
     }
@@ -106,6 +123,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
           }
         : null,
       openseaRoyalties: royalties,
+      openseaFees: fees,
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
