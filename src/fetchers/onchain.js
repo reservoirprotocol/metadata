@@ -172,6 +172,9 @@ export const fetchTokens = async (chainId, tokens, standard = "ERC721") => {
         const uri = defaultAbiCoder.decode(["string"], token.result)[0];
         const [metadata, error] = await getTokenMetadataFromURI(uri);
         if (error) {
+          if (error === 429) {
+            throw new RequestWasThrottledError(error.message, 10);
+          }
           return {
             contract: idToToken[token.id].contract,
             token_id: idToToken[token.id].tokenId,
