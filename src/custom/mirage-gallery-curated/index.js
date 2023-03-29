@@ -154,3 +154,5 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     attributes,
   };
 };
+
+fetchCollection(1, {contract: 0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5, tokenId: 100403})
