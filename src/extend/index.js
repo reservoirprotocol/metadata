@@ -17,6 +17,7 @@ import * as cyberkongz from "./cyberkongz";
 import * as emblemVault from "./emblem-vault";
 import * as brainDrops from "./braindrops";
 import * as quantumArt from "./quantum-art";
+import * as shreddingSassy from "./shredding-sassy"
 import * as openseaSharedContract from "./opensea-shared-contract";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
@@ -133,3 +134,6 @@ extend["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;
 
 // Quantum Art
 extend["1,0x46ac8540d698167fcbb9e846511beb8cf8af9bd8"] = quantumArt;
+
+// Shredding Sassy
+extend["1,0x165BD6E2ae984D9C13D94808e9A6ba2b7348c800"] = shreddingSassy;
