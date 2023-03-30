@@ -14,12 +14,14 @@ import * as onchain from "../../../../../src/fetchers/onchain";
 
 import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 import { ValidationError } from "../../../../../src/shared/errors";
+import { parse } from "../../../../../src/parsers/opensea";
+import _ from "lodash";
 
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon"].includes(network)) {
+    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon", "arbitrum"].includes(network)) {
       throw new Error("Unknown network");
     }
 
@@ -37,6 +39,9 @@ const api = async (req, res) => {
       case "polygon":
         chainId = 137;
         break;
+      case "arbitrum":
+        chainId = 42161;
+        break;
     }
 
     // Validate indexing method and set up provider
@@ -45,6 +50,21 @@ const api = async (req, res) => {
       !["opensea", "rarible", "simplehash", "centerdev", "soundxyz", "onchain"].includes(method)
     ) {
       throw new Error("Unknown method");
+    }
+
+    if (req.method === "POST") {
+      if (method !== "opensea") {
+        throw new Error("Unknown method for this endpoint.");
+      }
+      const body = JSON.parse(JSON.stringify(req.body));
+      let metadata = parse(body);
+      if (hasCustomHandler(chainId, metadata.contract)) {
+        return res
+          .status(400)
+          .json({ message: `The contract ${metadata.contract} has a custom handler.` });
+      }
+      metadata = await extendMetadata(chainId, metadata);
+      return res.status(200).json(metadata);
     }
 
     let provider = opensea;
@@ -167,10 +187,16 @@ const api = async (req, res) => {
     let metadata = [];
     if (tokens.length) {
       try {
-        const newMetadata = await Promise.all(
+        let newMetadata = await Promise.allSettled(
           await provider
             .fetchTokens(chainId, tokens, req?.query?.standard)
             .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+        );
+
+        // Filter all rejected promises and return the promise value
+        newMetadata = _.map(
+          newMetadata.filter((m) => m.status !== "rejected"),
+          (m) => m.value
         );
 
         metadata = [...metadata, ...newMetadata];

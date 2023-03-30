@@ -15,6 +15,9 @@ import * as tfoust from "./tfoust";
 import * as sharedContracts from "./shared-contracts";
 import * as cyberkongz from "./cyberkongz";
 import * as emblemVault from "./emblem-vault";
+import * as brainDrops from "./braindrops";
+import * as quantumArt from "./quantum-art";
+import * as openseaSharedContract from "./opensea-shared-contract";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
@@ -41,6 +44,9 @@ export const extendMetadata = async (chainId, metadata) => {
 };
 
 const extendCollection = {};
+
+// Opensea Shared Contract
+extendCollection["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
 
 // CyberKongz
 extendCollection["1,0x57a204aa1042f6e66dd7730813f4024114d74f37"] = cyberkongz;
@@ -72,7 +78,16 @@ extendCollection["1,0xabefbc9fd2f806065b4f3c237d4b59d9a97bcac7"] = sharedContrac
 // Emblem Vault
 extendCollection["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
 
+// BrainDrops
+extendCollection["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;
+
+// Quantum Art
+extendCollection["1,0x46ac8540d698167fcbb9e846511beb8cf8af9bd8"] = quantumArt;
+
 const extend = {};
+
+// Opensea Shared Contract
+extend["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
 
 // CyberKongz
 extend["1,0x57a204aa1042f6e66dd7730813f4024114d74f37"] = cyberkongz;
@@ -108,9 +123,13 @@ extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyzExtend;
 extend["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
 
 // tfoust
-tfoust.CollectiblesCollections.forEach(
-  (c) => (extend[`137,${c}`] = tfoust)
-);
+tfoust.CollectiblesCollections.forEach((c) => (extend[`137,${c}`] = tfoust));
 
 // Emblem Vault
 extend["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
+
+// BrainDrops
+extend["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;
+
+// Quantum Art
+extend["1,0x46ac8540d698167fcbb9e846511beb8cf8af9bd8"] = quantumArt;
