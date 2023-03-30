@@ -189,7 +189,7 @@ const api = async (req, res) => {
       try {
         let newMetadata = await Promise.allSettled(
           await provider
-            .fetchTokens(chainId, tokens, req?.query?.standard)
+            .fetchTokens(chainId, tokens)
             .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
         );
 
