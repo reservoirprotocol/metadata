@@ -7,6 +7,44 @@ import { RequestWasThrottledError } from "./errors";
 const FETCH_TIMEOUT = 30000;
 const ALLOWED_CHAIN_IDS = [1, 5, 10, 137, 42161];
 
+const erc721Interface = new ethers.utils.Interface([
+  "function supportsInterface(bytes4 interfaceId) view returns (bool)",
+  "function balanceOf(address owner) view returns (uint256)",
+  "function tokenOfOwnerByIndex(address owner, uint256 index) view returns (uint256)",
+]);
+
+const erc1155Interface = new ethers.utils.Interface([
+  "function supportsInterface(bytes4 interfaceId) view returns (bool)",
+  "function balanceOf(address account, uint256 id) view returns (uint256)",
+]);
+
+async function detectTokenStandard(contractAddress, rpcURL) {
+  const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+  const contract = new ethers.Contract(
+    contractAddress,
+    [...erc721Interface.fragments, ...erc1155Interface.fragments],
+    provider
+  );
+
+  try {
+    const erc721Supported = await contract.supportsInterface("0x80ac58cd");
+    const erc1155Supported = await contract.supportsInterface("0xd9b67a26");
+
+    if (erc721Supported && !erc1155Supported) {
+      return "ERC721";
+    } else if (!erc721Supported && erc1155Supported) {
+      return "ERC1155";
+    } else if (erc721Supported && erc1155Supported) {
+      return "Both";
+    } else {
+      return "Unknown";
+    }
+  } catch (error) {
+    console.error("Error detecting token standard:", error);
+    return "Unknown";
+  }
+}
+
 const encodeTokenERC721 = (token) => {
   const iface = new ethers.utils.Interface([
     {
@@ -71,7 +109,6 @@ const createBatch = (encodedTokens) => {
 const sendBatch = async (encodedTokens, RPC_URL) => {
   let response;
   try {
-    console.log("Sending batch", encodedTokens, RPC_URL);
     response = await fetch(RPC_URL, {
       method: "POST",
       headers: {
@@ -135,11 +172,35 @@ const getTokenMetadataFromURI = async (uri) => {
   }
 };
 
-export const fetchTokens = async (chainId, tokens, standard = "ERC721") => {
+export const fetchTokens = async (chainId, tokens) => {
   // TODO: Add support for other chains via RPC_URL
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
   if (!ALLOWED_CHAIN_IDS.includes(chainId)) throw new Error("Invalid chainId");
+
+  // Detect token standard, batch contract addresses together to call once per contract
+  const contracts = [];
+  tokens.forEach((token) => {
+    if (!contracts.includes(token.contract)) {
+      contracts.push(token.contract);
+    }
+  });
+
+  const standards = await Promise.all(
+    contracts.map(async (contract) => {
+      const standard = await detectTokenStandard(contract, process.env[`RPC_URL_${chainId}`]);
+      return {
+        contract,
+        standard,
+      };
+    })
+  );
+
+  // Map the token to the standard
+  tokens.forEach((token) => {
+    const standard = standards.find((standard) => standard.contract === token.contract);
+    token.standard = standard.standard;
+  });
 
   // We need to have some type of hash map to map the tokenid + contract to the tokenURI
   const idToToken = {};
@@ -150,8 +211,15 @@ export const fetchTokens = async (chainId, tokens, standard = "ERC721") => {
   });
 
   const RPC_URL = process.env[`RPC_URL_${chainId}`];
-  const encodeTokenFunction = standard === "ERC721" ? encodeTokenERC721 : encodeTokenERC1155;
-  const encodedTokens = tokens.map(encodeTokenFunction);
+  const encodedTokens = tokens.map((token) => {
+    if (token.standard === "ERC721") {
+      return encodeTokenERC721(token);
+    } else if (token.standard === "ERC1155") {
+      return encodeTokenERC1155(token);
+    } else {
+      return null;
+    }
+  });
   const [batch, error] = await sendBatch(encodedTokens, RPC_URL);
   if (error) {
     if (error.status === 429) {
