@@ -65,6 +65,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     id: `${contract}:${startTokenId}:${endTokenId}`,
     slug,
     name: projectDetails.dropName,
+    community: "mirage-gallery-curated",
     metadata: {
       imageUrl: projectDetails.image,
       bannerImageUrl: projectDetails.banner,
