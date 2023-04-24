@@ -5,7 +5,7 @@ import { parse } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
 
 const FETCH_TIMEOUT = 30000;
-const ALLOWED_CHAIN_IDS = [1, 5, 10, 137, 42161];
+const ALLOWED_CHAIN_IDS = [1, 5, 10, 137, 42161, 534353];
 
 const erc721Interface = new ethers.utils.Interface([
   "function supportsInterface(bytes4 interfaceId) view returns (bool)",
