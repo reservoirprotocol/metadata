@@ -47,13 +47,16 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   const url = `https://token.artblocks.io/${contract}/${tokenId}`;
   const { data } = await axios.get(url);
   let imageUrl;
+  let mediaUrl;
 
   // Try to fetch image from opensea, fallback to artblocks image on failure
   try {
     const osData = await opensea.fetchTokens(_chainId, [{ contract, tokenId }]);
     imageUrl = osData[0].imageUrl ?? data.image;
+    mediaUrl = osData[0].mediaUrl ?? data.animation_url;
   } catch (e) {
     imageUrl = data.image;
+    mediaUrl = data.animation_url;
   }
 
   const attributes = [];
@@ -76,6 +79,7 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     collection: `${contract}:${startTokenId}:${endTokenId}`,
     name: data.name,
     imageUrl,
+    mediaUrl,
     flagged: false,
     attributes,
   };
