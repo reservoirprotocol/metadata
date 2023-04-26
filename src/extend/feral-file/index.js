@@ -14,14 +14,15 @@ const getCollectionTokenIdRange = (contract, tokenId) => {
 };
 
 export const extendCollection = async (chainId, metadata, tokenId) => {
-  const collection = getCollectionTokenIdRange(metadata.contract, metadata.tokenId);
+  console.log(metadata);
+  const collection = getCollectionTokenIdRange(metadata.contract, tokenId);
 
   if (collection) {
     const [collectionName, startTokenId, endTokenId] = collection;
     metadata.name = collectionName;
     metadata.id = `${metadata.contract.toLowerCase()}:${startTokenId}:${endTokenId}`;
-    metadata.tokenIdRange = [start, end];
-    metadata.tokenSetId = `range:${contract.toLowerCase()}:${startTokenId}:${endTokenId}`;
+    metadata.tokenIdRange = [startTokenId, endTokenId];
+    metadata.tokenSetId = `range:${metadata.contract.toLowerCase()}:${startTokenId}:${endTokenId}`;
   }
   return metadata;
 };
