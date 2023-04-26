@@ -1,47 +1,90 @@
-import web3 from "web3";
+import { defaultAbiCoder, solidityPack } from "ethers/lib/utils";
+import { ethers } from "ethers";
 import fetch from "node-fetch";
 import { parse } from "../parsers/onchain";
+import { RequestWasThrottledError } from "./errors";
 
 const FETCH_TIMEOUT = 30000;
+const ALLOWED_CHAIN_IDS = [1, 5, 10, 137, 42161, 534353];
 
-let Web3Local = new web3(web3.givenProvider || process.env.MAINNET_RPC_URL);
+const erc721Interface = new ethers.utils.Interface([
+  "function supportsInterface(bytes4 interfaceId) view returns (bool)",
+  "function balanceOf(address owner) view returns (uint256)",
+  "function tokenOfOwnerByIndex(address owner, uint256 index) view returns (uint256)",
+]);
 
-let Web3Instances = [];
-let Web3InstanceMax = 10;
-for (let i = 0; i < Web3InstanceMax; i++) {
-  Web3Instances.push(new web3(process.env.MAINNET_RPC_URL));
+const erc1155Interface = new ethers.utils.Interface([
+  "function supportsInterface(bytes4 interfaceId) view returns (bool)",
+  "function balanceOf(address account, uint256 id) view returns (uint256)",
+]);
+
+async function detectTokenStandard(contractAddress, rpcURL) {
+  const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+  const contract = new ethers.Contract(
+    contractAddress,
+    [...erc721Interface.fragments, ...erc1155Interface.fragments],
+    provider
+  );
+
+  try {
+    const erc721Supported = await contract.supportsInterface("0x80ac58cd");
+    const erc1155Supported = await contract.supportsInterface("0xd9b67a26");
+
+    if (erc721Supported && !erc1155Supported) {
+      return "ERC721";
+    } else if (!erc721Supported && erc1155Supported) {
+      return "ERC1155";
+    } else if (erc721Supported && erc1155Supported) {
+      return "Both";
+    } else {
+      return "Unknown";
+    }
+  } catch (error) {
+    console.error("Error detecting token standard:", error);
+    return "Unknown";
+  }
 }
 
-const getWeb3 = () => {
-  const instance = Web3Instances.shift();
-  Web3Instances.push(instance);
-  return instance;
-};
+const encodeTokenERC721 = (token) => {
+  const iface = new ethers.utils.Interface([
+    {
+      name: "tokenURI",
+      type: "function",
+      stateMutability: "view",
+      inputs: [
+        {
+          type: "uint256",
+          name: "tokenId",
+        },
+      ],
+    },
+  ]);
 
-setInterval(() => {
-  // Every 10 minutes, we refresh the web3 instances to bring old memory out of scope to avoid memory leaks
-  Web3Instances = [];
-  for (let i = 0; i < Web3InstanceMax; i++) {
-    Web3Instances.push(new web3(process.env.MAINNET_RPC_URL));
-  }
-}, 60 * 1000);
-
-const encodeToken = (token) => {
   return {
     id: token.requestId,
-    encodedTokenID: Web3Local.eth.abi.encodeFunctionCall(
-      {
-        name: "tokenURI",
-        type: "function",
-        inputs: [
-          {
-            type: "uint256",
-            name: "tokenId",
-          },
-        ],
-      },
-      [token.tokenId]
-    ),
+    encodedTokenID: iface.encodeFunctionData("tokenURI", [token.tokenId]),
+    contract: token.contract,
+  };
+};
+
+const encodeTokenERC1155 = (token) => {
+  const iface = new ethers.utils.Interface([
+    {
+      name: "uri",
+      type: "function",
+      stateMutability: "view",
+      inputs: [
+        {
+          type: "uint256",
+          name: "tokenId",
+        },
+      ],
+    },
+  ]);
+
+  return {
+    id: token.requestId,
+    encodedTokenID: iface.encodeFunctionData("uri", [token.tokenId]),
     contract: token.contract,
   };
 };
@@ -64,23 +107,43 @@ const createBatch = (encodedTokens) => {
 };
 
 const sendBatch = async (encodedTokens, RPC_URL) => {
-  const response = await fetch(RPC_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(createBatch(encodedTokens)),
-    timeout: FETCH_TIMEOUT,
-    // TODO: add proxy support to avoid rate limiting
-    // agent:
-  });
-  const json = await response.json();
-  return json;
+  let response;
+  try {
+    response = await fetch(RPC_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(createBatch(encodedTokens)),
+      timeout: FETCH_TIMEOUT,
+      // TODO: add proxy support to avoid rate limiting
+      // agent:
+    });
+    const body = await response.text();
+    if (!response.ok) {
+      return [
+        null,
+        {
+          body: body,
+          status: response.status,
+        },
+      ];
+    }
+    const json = JSON.parse(body);
+    return [json, null];
+  } catch (e) {
+    return [
+      null,
+      {
+        message: e.message,
+        status: response?.status,
+      },
+    ];
+  }
 };
 
 const getTokenMetadataFromURI = async (uri) => {
   try {
-    console.log("uri", uri);
     if (uri.includes("ipfs://")) {
       uri = uri.replace("ipfs://", "https://ipfs.io/ipfs/");
     }
@@ -110,13 +173,34 @@ const getTokenMetadataFromURI = async (uri) => {
 };
 
 export const fetchTokens = async (chainId, tokens) => {
-  // TODO: Add support for other chains
-  // TODO: Add support for ERC-1155 and other standards
+  // TODO: Add support for other chains via RPC_URL
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
-  //   if (tokens.length > 20) throw new Error("Too many tokenIds (max 20)");
-  //   console.log("fetching tokens", tokens, chainId);
-  if (chainId !== 1) throw new Error("Only mainnet is supported");
+  if (!ALLOWED_CHAIN_IDS.includes(chainId)) throw new Error("Invalid chainId");
+
+  // Detect token standard, batch contract addresses together to call once per contract
+  const contracts = [];
+  tokens.forEach((token) => {
+    if (!contracts.includes(token.contract)) {
+      contracts.push(token.contract);
+    }
+  });
+
+  const standards = await Promise.all(
+    contracts.map(async (contract) => {
+      const standard = await detectTokenStandard(contract, process.env[`RPC_URL_${chainId}`]);
+      return {
+        contract,
+        standard,
+      };
+    })
+  );
+
+  // Map the token to the standard
+  tokens.forEach((token) => {
+    const standard = standards.find((standard) => standard.contract === token.contract);
+    token.standard = standard.standard;
+  });
 
   // We need to have some type of hash map to map the tokenid + contract to the tokenURI
   const idToToken = {};
@@ -126,123 +210,66 @@ export const fetchTokens = async (chainId, tokens) => {
     token.requestId = randomInt;
   });
 
-  const RPC_URL = process.env.MAINNET_RPC_URL;
-  const encodedTokens = tokens.map(encodeToken);
-  console.log("encodedTokens", encodedTokens);
-  const batch = await sendBatch(encodedTokens, RPC_URL);
+  const RPC_URL = process.env[`RPC_URL_${chainId}`];
+  const encodedTokens = tokens.map((token) => {
+    if (token.standard === "ERC721") {
+      return encodeTokenERC721(token);
+    } else if (token.standard === "ERC1155") {
+      return encodeTokenERC1155(token);
+    } else {
+      return null;
+    }
+  });
+  const [batch, error] = await sendBatch(encodedTokens, RPC_URL);
+  if (error) {
+    if (error.status === 429) {
+      throw new RequestWasThrottledError(error.message, 10);
+    }
+    return tokens.map((token) => {
+      return {
+        contract: token.contract,
+        token_id: token.tokenId,
+        error: "Unable to fetch tokenURI from contract",
+      };
+    });
+  }
 
   const resolvedMetadata = await Promise.all(
     batch.map(async (token) => {
-      console.log("token", token);
-      const uri = Web3Local.eth.abi.decodeParameter("string", token.result);
-      const metadata = await getTokenMetadataFromURI(uri);
-      console.log("metadata", metadata);
-      if (metadata[1]) {
+      try {
+        const uri = defaultAbiCoder.decode(["string"], token.result)[0];
+        const [metadata, error] = await getTokenMetadataFromURI(uri);
+        if (error) {
+          if (error === 429) {
+            throw new RequestWasThrottledError(error.message, 10);
+          }
+          return {
+            contract: idToToken[token.id].contract,
+            token_id: idToToken[token.id].tokenId,
+            error: "Unable to fetch metadata from URI",
+          };
+        }
+
+        return {
+          ...metadata,
+          contract: idToToken[token.id].contract,
+          token_id: idToToken[token.id].tokenId,
+        };
+      } catch (e) {
         return {
           contract: idToToken[token.id].contract,
           token_id: idToToken[token.id].tokenId,
-          error: metadata[1],
+          error: "Unable to decode metadata from URI",
         };
       }
-
-      return {
-        ...metadata[0],
-        //   image: image ? image[0] : null,
-        contract: idToToken[token.id].contract,
-        token_id: idToToken[token.id].tokenId,
-      };
     })
   );
-
-  console.log("resolvedMetadata", resolvedMetadata);
 
   return resolvedMetadata.map((token) => {
     return parse(token);
   });
 };
 
-// TODO: Implement this, maybe we just use the OpenSea API for this, not sure
 export const getCollectionMetadata = async (contractAddress, chainId) => {};
 
-export const fetchContractTokens = async (chainId, contract, from, to) => {
-  if (chainId !== 1) throw new Error("Only mainnet is supported");
-  // TODO: Add support for other chains
-
-  // create token array from from to to
-  const tokens = [];
-  for (let i = from; i <= to; i++) {
-    tokens.push({
-      contract: contract,
-      tokenId: i,
-    });
-  }
-
-  return fetchTokens(chainId, tokens);
-};
-
-const getAllTokenIds = async (chainId, contractAddress) => {
-  if (chainId !== 1) throw new Error("Only mainnet is supported");
-  // TODO: Add support for other chains
-
-  // TODO: Add support for ERC-1155 and other standards, this is just ERC-721
-  const transferABI = [
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: true,
-          internalType: "address",
-          name: "from",
-          type: "address",
-        },
-        {
-          indexed: true,
-          internalType: "address",
-          name: "to",
-          type: "address",
-        },
-        {
-          indexed: true,
-          internalType: "uint256",
-          name: "tokenId",
-          type: "uint256",
-        },
-      ],
-      name: "Transfer",
-      type: "event",
-    },
-  ];
-
-  const contract = new (getWeb3().eth.Contract)(transferABI, contractAddress);
-
-  const tokenIds = [];
-  const start = 0;
-
-  // current block number + 3 to make sure we get all the events
-  const end = (await getWeb3().eth.getBlockNumber()) + 3;
-  const tokens = await getTokenIds(contract, start, end, tokenIds);
-
-  return new Set(tokens);
-};
-
-// Recursive function to fetch all the events, in case the contract has too many events (> 10000)
-const getTokenIds = async (contract, start, end, tokenIds) => {
-  try {
-    const results = await contract.getPastEvents("Transfer", {
-      filter: { from: "0x0000000000000000000000000000000000000000" },
-      fromBlock: start,
-      toBlock: end,
-    });
-
-    if (results.length > 0) {
-      tokenIds = tokenIds.concat(results.map((event) => event.returnValues.tokenId));
-    }
-    return tokenIds;
-  } catch (e) {
-    const middle = Math.round((start + end) / 2);
-    return [
-      ...(await getTokenIds(contract, start, middle + 1, tokenIds)),
-      ...(await getTokenIds(contract, middle + 1, end, tokenIds)),
-    ];
-  }
-};
+export const fetchContractTokens = async (chainId, contract, from, to) => {};

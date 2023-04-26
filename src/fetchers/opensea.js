@@ -196,7 +196,6 @@ export const fetchTokens = async (chainId, tokens) => {
       handleError(error);
     });
 
-  console.log(data.assets.map(parse).filter(Boolean));
   return data.assets.map(parse).filter(Boolean);
 };
 

@@ -65,6 +65,7 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     id: `${contract}:${startTokenId}:${endTokenId}`,
     slug,
     name: projectDetails.dropName,
+    community: "mirage-gallery-curated",
     metadata: {
       imageUrl: projectDetails.image,
       bannerImageUrl: projectDetails.banner,
@@ -83,7 +84,6 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
 
 export const fetchToken = async (_chainId, { contract, tokenId }) => {
   let data;
-
   try {
     const response = await axios.get(`https://account.miragegallery.ai/curated-details.json`);
     data = response.data;
@@ -97,7 +97,6 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
 
     throw error;
   }
-
   const projectID = getProjectID(tokenId);
   const projectDetails = data.data.find((item) => item.projectId === projectID);
 
@@ -136,12 +135,22 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   const startTokenId = tokenId - (tokenId % 10000);
   const endTokenId = startTokenId + 10000 - 1;
 
+  let imageUrl;
+
+  // Try to fetch image from opensea, fallback to ipfs image on failure
+  try {
+    const osData = await opensea.fetchTokens(_chainId, [{ contract, tokenId }]);
+    imageUrl = osData[0].imageUrl ?? data.data.image;
+  } catch (e) {
+    imageUrl = data.data.image;
+  }
+
   return {
     contract,
     tokenId,
     collection: `${contract}:${startTokenId}:${endTokenId}`,
-    name: projectDetails.dropName,
-    imageUrl: projectDetails.image,
+    name: data.data.name,
+    imageUrl,
     flagged: false,
     attributes,
   };

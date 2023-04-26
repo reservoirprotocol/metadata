@@ -21,7 +21,11 @@ const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon", "arbitrum"].includes(network)) {
+    if (
+      !["mainnet", "rinkeby", "goerli", "optimism", "polygon", "arbitrum", "scroll-alpha"].includes(
+        network
+      )
+    ) {
       throw new Error("Unknown network");
     }
 
@@ -41,6 +45,9 @@ const api = async (req, res) => {
         break;
       case "arbitrum":
         chainId = 42161;
+        break;
+      case "scroll-alpha":
+        chainId = 534353;
         break;
     }
 
@@ -140,33 +147,6 @@ const api = async (req, res) => {
           }
           throw error;
         }
-      }
-    } else if (contract && method === "onchain") {
-      try {
-        if (!req.query.from || !req.query.to) {
-          throw new Error("Missing from or to");
-        }
-
-        if (req.query.from > req.query.to) {
-          throw new Error("From must be less than to");
-        }
-
-        if (req.query.to - req.query.from > 1000) {
-          throw new Error("Range must be less than 200");
-        }
-
-        const result = await Promise.all(
-          await provider
-            .fetchContractTokens(chainId, contract, req.query.from, req.query.to)
-            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
-        );
-
-        return res.status(200).json(result);
-      } catch (error) {
-        if (error instanceof RequestWasThrottledError) {
-          return res.status(429).json({ error: error.message, expires_in: error.delay });
-        }
-        throw error;
       }
     }
 
