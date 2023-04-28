@@ -40,6 +40,9 @@ const api = async (req, res) => {
       case "goerli":
         chainId = 5;
         break;
+      case "bsc":
+        chainId = 56;
+        break;
       case "polygon":
         chainId = 137;
         break;

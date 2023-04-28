@@ -14,6 +14,8 @@ const getNetworkName = (chainId) => {
     network = "ethereum";
   } else if (chainId === 10) {
     network = "optimism";
+  } else if (chainId === 56) {
+    network = "bsc";
   } else if (chainId === 137) {
     network = "polygon";
   } else if (chainId === 42161) {
