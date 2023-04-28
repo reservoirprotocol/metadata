@@ -1,6 +1,7 @@
 import { defaultAbiCoder, solidityPack } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import fetch from "node-fetch";
+import slugify from "slugify";
 import { parse } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
 
@@ -270,6 +271,20 @@ export const fetchTokens = async (chainId, tokens) => {
   });
 };
 
-export const getCollectionMetadata = async (contractAddress, chainId) => {};
-
 export const fetchContractTokens = async (chainId, contract, from, to) => {};
+
+export const fetchCollection = async (chainId, { contract, tokenId }) => {
+  const [tokenMetadata] = await fetchTokens(chainId, { contract, tokenId });
+  const collectionName = tokenMetadata.name ? tokenMetadata.name.split(" ")[0].trim() : "";
+  return {
+    id: contract,
+    slug: slugify(collectionName, { lower: true }),
+    name: collectionName,
+    metadata: {
+      description: tokenMetadata.description,
+      imageUrl: tokenMetadata.imageUrl,
+    },
+    contract,
+    tokenSetId: `contract:${contract}`,
+  };
+};
