@@ -60,10 +60,10 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   try {
     const osData = await opensea.fetchTokens(_chainId, [{ contract, tokenId }]);
     imageUrl = osData[0].imageUrl ?? data.image;
-    mediaUrl = osData[0].mediaUrl ?? data.animation_url;
+    mediaUrl = osData[0].mediaUrl ?? data.animation_url ?? data.generator_url;
   } catch (e) {
     imageUrl = data.image;
-    mediaUrl = data.animation_url;
+    mediaUrl = data.generator_url;
   }
 
   const attributes = [];
