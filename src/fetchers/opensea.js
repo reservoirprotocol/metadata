@@ -15,14 +15,14 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
     try {
       const url = `${
-        chainId === 1
+        ![4, 5].includes(chainId)
           ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
           : "https://testnets-api.opensea.io"
-      }/api/v1/asset/${contract}/${tokenId}`;
+      }/api/v1/events?token_id=${tokenId}&asset_contract_address=${contract}`;
 
       const assetResponse = await axios.get(url, {
         headers:
-          chainId === 1
+          ![4, 5].includes(chainId)
             ? {
                 [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
                 Accept: "application/json",
@@ -32,29 +32,30 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
               },
       });
 
-      data = assetResponse.data;
+      data = assetResponse.data.asset_events[0].asset;
     } catch (error) {
-      logger.error(
+      logger.warn(
         "opensea-fetcher",
-        `fetchCollection retrieve asset error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
+        `fetchCollection retrieve event error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
           error.message
         },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
-      );
+      )
+    }
 
-      // Try to get the collection only based on the contract.
-      if (error.response?.status === 404) {
+    if (!data) {
+      // Fall back to the asset endpoint if events response fails
+      try {
         const url = `${
           chainId === 1
             ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
             : "https://testnets-api.opensea.io"
-        }/api/v1/asset_contract/${contract}`;
+        }/api/v1/asset/${contract}/${tokenId}`;
 
-        const assetContractResponse = await axios.get(url, {
+        const assetResponse = await axios.get(url, {
           headers:
             chainId === 1
               ? {
-                  [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]:
-                    process.env.OPENSEA_API_KEY.trim(),
+                  [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
                   Accept: "application/json",
                 }
               : {
@@ -62,9 +63,40 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
                 },
         });
 
-        data = assetContractResponse.data;
-      } else {
-        throw error;
+        data = assetResponse.data;
+      } catch (error) {
+        logger.error(
+          "opensea-fetcher",
+          `fetchCollection retrieve asset error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
+            error.message
+          },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
+        );
+
+        // Try to get the collection only based on the contract.
+        if (error.response?.status === 404) {
+          const url = `${
+            chainId === 1
+              ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
+              : "https://testnets-api.opensea.io"
+          }/api/v1/asset_contract/${contract}`;
+
+          const assetContractResponse = await axios.get(url, {
+            headers:
+              chainId === 1
+                ? {
+                    [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]:
+                      process.env.OPENSEA_API_KEY.trim(),
+                    Accept: "application/json",
+                  }
+                : {
+                    Accept: "application/json",
+                  },
+          });
+
+          data = assetContractResponse.data;
+        } else {
+          throw error;
+        }
       }
     }
 
