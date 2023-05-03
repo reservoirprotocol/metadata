@@ -30,7 +30,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
           },
     });
 
-    data = assetResponse.data.asset_events && assetResponse.data.asset_events[0].asset;
+    data = assetResponse.data.asset_events[0]?.asset;
 
     if (!data) {
       // Fall back to the asset endpoint if events response fails
@@ -64,14 +64,14 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         // Try to get the collection only based on the contract.
         if (error.response?.status === 404) {
           const url = `${
-            chainId === 1
+            ![4, 5].includes(chainId)
               ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
               : "https://testnets-api.opensea.io"
           }/api/v1/asset_contract/${contract}`;
 
           const assetContractResponse = await axios.get(url, {
             headers:
-              chainId === 1
+              ![4, 5].includes(chainId)
                 ? {
                     [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]:
                       process.env.OPENSEA_API_KEY.trim(),
