@@ -123,7 +123,10 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
 
   const attributes = [];
 
-  for (const [key, value] of Object.entries(data.data.attributes)) {
+  for (const item of data.data.attributes) {
+    const key = item.trait_type ? item.trait_type : 'Property';
+    const value = item.value;
+  
     attributes.push({
       key,
       rank: 1,
@@ -155,17 +158,3 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     attributes,
   };
 };
-
-let chainId = 1; // replace with your actual chainId
-let tokenData = {
-  contract: "0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5", // replace with your actual contract
-  tokenId: "100001"  // replace with your actual tokenId
-};
-
-fetchToken(chainId, tokenData)
-  .then(response => {
-    console.log(response);  // Handle the response as needed
-  })
-  .catch(error => {
-    console.error(error);  // Handle the error as needed
-  });
