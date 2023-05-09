@@ -123,7 +123,10 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
 
   const attributes = [];
 
-  for (const [key, value] of Object.entries(data.data.attributes)) {
+  for (const item of data.data.attributes) {
+    const key = item.trait_type ? item.trait_type : 'Property';
+    const value = item.value;
+  
     attributes.push({
       key,
       rank: 1,
