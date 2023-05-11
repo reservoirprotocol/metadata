@@ -7,7 +7,6 @@ import * as forgottenSouls from "./forgotten-souls";
 import * as goldfinch from "./goldfinch";
 import * as loot from "./loot";
 import * as soundxyz from "./soundxyz";
-import * as mirageGalleryCurated from "./mirage-gallery-curated";
 
 export const hasCustomCollectionHandler = (chainId, contract) =>
   Boolean(customCollection[`${chainId},${contract}`]);
@@ -45,9 +44,6 @@ soundxyz.SoundxyzReleaseContracts.forEach(
 );
 customCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 
-// Mirage Gallery Curated
-customCollection["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
-
 ////////////////
 // Custom Tokens
 ////////////////
@@ -79,5 +75,3 @@ custom["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
 custom["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
 custom["4,0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78"] = loot;
 
-// Mirage Gallery Curated
-custom["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;

@@ -22,6 +22,7 @@ import * as shreddingSassy from "./shredding-sassy"
 import * as openseaSharedContract from "./opensea-shared-contract";
 import * as artblocks from "./artblocks";
 import * as artblocksEngine from "./artblocks-engine";
+import * as mirageGalleryCurated from "./mirage-gallery-curated";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
@@ -115,6 +116,9 @@ extendCollection["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngi
 // Async Blueprints
 extendCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
 
+// Mirage Gallery Curated
+extendCollection["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
+
 const extend = {};
 
 // Opensea Shared Contract
@@ -191,3 +195,6 @@ extend["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngine;
 extend["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
 extend["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 extend["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
+
+// Mirage Gallery Curated
+extend["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
