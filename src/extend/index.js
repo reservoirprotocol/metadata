@@ -112,6 +112,9 @@ extendCollection["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngi
 extendCollection["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 extendCollection["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
 
+// Async Blueprints
+extendCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
+
 const extend = {};
 
 // Opensea Shared Contract

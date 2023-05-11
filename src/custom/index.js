@@ -1,5 +1,3 @@
-import * as artblocks from "./artblocks";
-import * as artblocksEngine from "./artblocks-engine";
 import * as cryptokicksIrl from "./cryptokicks-irl";
 import * as forgottenPonies from "./forgotten-ponies";
 import * as forgottenRunes from "./forgotten-runes";
@@ -9,7 +7,6 @@ import * as forgottenSouls from "./forgotten-souls";
 import * as goldfinch from "./goldfinch";
 import * as loot from "./loot";
 import * as soundxyz from "./soundxyz";
-import * as asyncBlueprints from "./async-blueprints";
 import * as mirageGalleryCurated from "./mirage-gallery-curated";
 
 export const hasCustomCollectionHandler = (chainId, contract) =>
@@ -47,9 +44,6 @@ soundxyz.SoundxyzReleaseContracts.forEach(
   (address) => (customCollection[`1,${address}`] = soundxyz)
 );
 customCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
-
-// Async Blueprints
-customCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
 
 // Mirage Gallery Curated
 customCollection["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
