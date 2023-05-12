@@ -18,7 +18,7 @@ import * as cyberkongz from "./cyberkongz";
 import * as emblemVault from "./emblem-vault";
 import * as brainDrops from "./braindrops";
 import * as quantumArt from "./quantum-art";
-import * as shreddingSassy from "./shredding-sassy"
+import * as shreddingSassy from "./shredding-sassy";
 import * as openseaSharedContract from "./opensea-shared-contract";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
