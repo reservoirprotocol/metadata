@@ -70,16 +70,15 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
           }/api/v1/asset_contract/${contract}`;
 
           const assetContractResponse = await axios.get(url, {
-            headers:
-              ![4, 5].includes(chainId)
-                ? {
-                    [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]:
-                      process.env.OPENSEA_API_KEY.trim(),
-                    Accept: "application/json",
-                  }
-                : {
-                    Accept: "application/json",
-                  },
+            headers: ![4, 5].includes(chainId)
+              ? {
+                  [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]:
+                    process.env.OPENSEA_API_KEY.trim(),
+                  Accept: "application/json",
+                }
+              : {
+                  Accept: "application/json",
+                },
           });
 
           data = assetContractResponse.data;
