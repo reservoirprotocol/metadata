@@ -4,8 +4,6 @@ export const extend = async (_chainId, metadata) => {
         attribute.kind = "string";
     });
 
-    return {
-      ...metadata,
-    };
+    return metadata;
   };
   
