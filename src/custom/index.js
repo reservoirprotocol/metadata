@@ -1,5 +1,4 @@
 import * as cryptokicksIrl from "./cryptokicks-irl";
-import * as goldfinch from "./goldfinch";
 import * as soundxyz from "./soundxyz";
 
 export const hasCustomCollectionHandler = (chainId, contract) =>
@@ -46,6 +45,3 @@ const custom = {};
 
 // Cryptokicks IRL
 custom["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
-
-// Goldfinch
-custom["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;

@@ -29,6 +29,7 @@ import * as forgottenSouls from "./forgotten-souls";
 import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 import * as forgottenRunesAthenaeum from "./forgotten-runes-athenaeum";
 import * as loot from "./loot";
+import * as goldfinch from "./goldfinch";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
@@ -223,3 +224,6 @@ extend["1,0x7c104b4db94494688027cced1e2ebfb89642c80f"] = forgottenRunesAthenaeum
 // Loot
 extend["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
 extend["4,0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78"] = loot;
+
+// Goldfinch
+extend["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
