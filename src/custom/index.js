@@ -53,9 +53,6 @@ const custom = {};
 // Cryptokicks IRL
 custom["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
 
-// Forgotten Ponies
-custom["1,0xf55b615b479482440135ebf1b907fd4c37ed9420"] = forgottenPonies;
-
 // Forgotten Runes
 custom["1,0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42"] = forgottenRunes;
 
