@@ -1,4 +1,3 @@
-import * as cryptokicksIrl from "./cryptokicks-irl";
 import * as soundxyz from "./soundxyz";
 
 export const hasCustomCollectionHandler = (chainId, contract) =>
@@ -43,5 +42,4 @@ customCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 
 const custom = {};
 
-// Cryptokicks IRL
-custom["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
+

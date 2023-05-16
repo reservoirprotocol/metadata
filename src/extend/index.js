@@ -30,6 +30,7 @@ import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 import * as forgottenRunesAthenaeum from "./forgotten-runes-athenaeum";
 import * as loot from "./loot";
 import * as goldfinch from "./goldfinch";
+import * as cryptokicksIrl from "./cryptokicks-irl";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
@@ -227,3 +228,6 @@ extend["4,0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78"] = loot;
 
 // Goldfinch
 extend["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
+
+// Cryptokicks IRL
+extend["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
