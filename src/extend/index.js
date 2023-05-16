@@ -26,6 +26,7 @@ import * as mirageGalleryCurated from "./mirage-gallery-curated";
 import * as forgottenPonies from "./forgotten-ponies";
 import * as forgottenRunes from "./forgotten-runes";
 import * as forgottenSouls from "./forgotten-souls";
+import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
@@ -204,6 +205,9 @@ extend["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
 
 // Forgotten Runes
 extend["1,0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42"] = forgottenRunes;
+
+// Forgotten Runes Warriors
+extend["1,0x9690b63eb85467be5267a3603f770589ab12dc95"] = forgottenRunesWarriors;
 
 // Forgotten Souls
 extend["1,0x251b5f14a825c537ff788604ea1b58e49b70726f"] = forgottenSouls;
