@@ -49,9 +49,6 @@ const custom = {};
 // Cryptokicks IRL
 custom["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
 
-// Forgotten Runes Athenaeum
-custom["1,0x7c104b4db94494688027cced1e2ebfb89642c80f"] = forgottenRunesAthenaeum;
-
 // Goldfinch
 custom["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
 
