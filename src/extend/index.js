@@ -7,8 +7,7 @@ import * as nouns from "./nouns";
 import * as lilnouns from "./lilnouns";
 import * as chimpers from "./chimpers";
 import * as moonbirds from "./moonbirds";
-import * as soundxyz from "../custom/soundxyz";
-import * as soundxyzExtend from "./soundxyz";
+import * as soundxyz from "./soundxyz";
 import * as bayc from "./bayc";
 import * as asyncBlueprints from "./async-blueprints";
 import * as feralFile from "./feral-file";
@@ -127,6 +126,15 @@ extendCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprin
 // Mirage Gallery Curated
 extendCollection["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
 
+// Sound XYZ
+soundxyz.SoundxyzArtistContracts.forEach(
+  (address) => (extendCollection[`1,${address}`] = soundxyz)
+);
+soundxyz.SoundxyzReleaseContracts.forEach(
+  (address) => (extendCollection[`1,${address}`] = soundxyz)
+);
+extendCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
+
 const extend = {};
 
 // Opensea Shared Contract
@@ -159,9 +167,9 @@ extend["1,0x80336ad7a747236ef41f47ed2c7641828a480baa"] = chimpers;
 extend["1,0x23581767a106ae21c074b2276d25e5c3e136a68b"] = moonbirds;
 
 // Sound XYZ
-soundxyz.SoundxyzArtistContracts.forEach((address) => (extend[`1,${address}`] = soundxyzExtend));
-soundxyz.SoundxyzReleaseContracts.forEach((address) => (extend[`1,${address}`] = soundxyzExtend));
-extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyzExtend;
+soundxyz.SoundxyzArtistContracts.forEach((address) => (extend[`1,${address}`] = soundxyz));
+soundxyz.SoundxyzReleaseContracts.forEach((address) => (extend[`1,${address}`] = soundxyz));
+extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 
 // Async Blueprints
 extend["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
