@@ -1,5 +1,4 @@
 import * as cryptokicksIrl from "./cryptokicks-irl";
-import * as forgottenRunesAthenaeum from "./forgotten-runes-athenaeum";
 import * as goldfinch from "./goldfinch";
 import * as loot from "./loot";
 import * as soundxyz from "./soundxyz";
