@@ -1,9 +1,4 @@
 import * as cryptokicksIrl from "./cryptokicks-irl";
-import * as forgottenPonies from "./forgotten-ponies";
-import * as forgottenRunes from "./forgotten-runes";
-import * as forgottenRunesAthenaeum from "./forgotten-runes-athenaeum";
-import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
-import * as forgottenSouls from "./forgotten-souls";
 import * as goldfinch from "./goldfinch";
 import * as loot from "./loot";
 import * as soundxyz from "./soundxyz";
@@ -52,21 +47,6 @@ const custom = {};
 
 // Cryptokicks IRL
 custom["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
-
-// Forgotten Ponies
-custom["1,0xf55b615b479482440135ebf1b907fd4c37ed9420"] = forgottenPonies;
-
-// Forgotten Runes
-custom["1,0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42"] = forgottenRunes;
-
-// Forgotten Runes Warriors
-custom["1,0x9690b63eb85467be5267a3603f770589ab12dc95"] = forgottenRunesWarriors;
-
-// Forgotten Runes Athenaeum
-custom["1,0x7c104b4db94494688027cced1e2ebfb89642c80f"] = forgottenRunesAthenaeum;
-
-// Forgotten Souls
-custom["1,0x251b5f14a825c537ff788604ea1b58e49b70726f"] = forgottenSouls;
 
 // Goldfinch
 custom["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
