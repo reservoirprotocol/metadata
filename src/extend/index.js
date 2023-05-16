@@ -24,6 +24,7 @@ import * as artblocks from "./artblocks";
 import * as artblocksEngine from "./artblocks-engine";
 import * as mirageGalleryCurated from "./mirage-gallery-curated";
 import * as forgottenPonies from "./forgotten-ponies";
+import * as forgottenRunes from "./forgotten-runes";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
@@ -199,6 +200,9 @@ extend["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
 
 // Mirage Gallery Curated
 extend["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
+
+// Forgotten Runes
+extend["1,0x521f9c7505005cfa19a8e5786a9c3c9c9f5e6f42"] = forgottenRunes;
 
 // Forgotten Ponies
 extend["1,0xf55b615b479482440135ebf1b907fd4c37ed9420"] = forgottenPonies;
