@@ -57,6 +57,7 @@ const extendCollection = {};
 
 // Opensea Shared Contract
 extendCollection["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
+extendCollection["1,0x503a3039e9ce236e9a12e4008aecbb1fd8b384a3"] = openseaSharedContract;
 // extendCollection["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // CyberKongz
