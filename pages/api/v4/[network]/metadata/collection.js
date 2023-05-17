@@ -15,9 +15,16 @@ const api = async (req, res) => {
     // Validate network and detect chain id
     const network = req.query.network;
     if (
-      !["mainnet", "rinkeby", "goerli", "optimism", "polygon", "arbitrum", "scroll-alpha", "bsc"].includes(
-        network
-      )
+      ![
+        "mainnet",
+        "rinkeby",
+        "goerli",
+        "optimism",
+        "polygon",
+        "arbitrum",
+        "scroll-alpha",
+        "bsc",
+      ].includes(network)
     ) {
       throw new Error("Unknown network");
     }

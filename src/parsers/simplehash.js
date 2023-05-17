@@ -10,6 +10,7 @@ export const parse = (asset) => {
     // so by default we ignore them (this behaviour can be overridden if needed).
     description: asset.description,
     imageUrl: asset.image_url,
+    originalImageUrl: asset.image_original_url,
     mediaUrl: asset.video_url,
     attributes: (asset.extra_metadata.attributes || []).map((trait) => ({
       key: trait.trait_type,
