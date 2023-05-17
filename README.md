@@ -36,8 +36,7 @@ An update is also required in [src/extend/index.js](src/extend/index.js):
 ```
 import * as myContract from "./my-contract";
 
-extend["1,${YOUR_CONTRACT}"] = myContract;
-
+extend["${CHAIN_ID},${YOUR_CONTRACT}"] = myContract;
 ```
 
 ### Testing
