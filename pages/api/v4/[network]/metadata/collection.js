@@ -24,6 +24,8 @@ const api = async (req, res) => {
         "arbitrum",
         "scroll-alpha",
         "bsc",
+        "mantle-testnet",
+        "linea-testnet",
       ].includes(network)
     ) {
       throw new Error("Unknown network");
@@ -51,6 +53,12 @@ const api = async (req, res) => {
         break;
       case "scroll-alpha":
         chainId = 534353;
+        break;
+      case "mantle-testnet":
+        chainId = 5001;
+        break;
+      case "linea-testnet":
+        chainId = 59140;
         break;
     }
 

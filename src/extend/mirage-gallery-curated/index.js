@@ -1,7 +1,4 @@
 import axios from "axios";
-import slugify from "slugify";
-
-import * as opensea from "../../fetchers/opensea";
 import { logger } from "../../shared/logger";
 
 function getProjectID(tokenId) {
@@ -13,7 +10,7 @@ function getProjectID(tokenId) {
   }
 }
 
-export const fetchCollection = async (_chainId, { contract, tokenId }) => {
+export const extendCollection = async (_chainId, metadata, tokenId) => {
   const projectID = getProjectID(tokenId);
 
   const url = `https://account.miragegallery.ai/curated-details.json`;
@@ -47,42 +44,23 @@ export const fetchCollection = async (_chainId, { contract, tokenId }) => {
     extURL = "https://miragegallery.ai/curated";
   }
 
-  const { slug, openseaRoyalties, openseaFees, safelistRequestStatus } = await opensea
-    .fetchCollection(_chainId, { contract, tokenId })
-    .then((m) => ({
-      slug: m.slug,
-      openseaRoyalties: m.openseaRoyalties,
-      openseaFees: m.openseaFees,
-      safelistRequestStatus: m.metadata?.safelistRequestStatus,
-    }))
-    .catch(() => ({
-      slug: slugify(releaseFromToken.titleSlug, { lower: true }),
-      openseaRoyalties: [],
-      openseaFees: [],
-    }));
-
   return {
-    id: `${contract}:${startTokenId}:${endTokenId}`,
-    slug,
-    name: projectDetails.dropName,
+    ...metadata,
     community: "mirage-gallery-curated",
+    id: `${metadata.contract}:${startTokenId}:${endTokenId}`,
     metadata: {
+      ...metadata.metadata,
       imageUrl: projectDetails.image,
       bannerImageUrl: projectDetails.banner,
       description: projectDetails.description,
-      externalUrl: extURL,
-      safelistRequestStatus,
     },
     royalties,
-    openseaRoyalties,
-    openseaFees,
-    contract,
     tokenIdRange: [startTokenId, endTokenId],
-    tokenSetId: `range:${contract}:${startTokenId}:${endTokenId}`,
+    tokenSetId: `range:${metadata.contract}:${startTokenId}:${endTokenId}`,
   };
 };
 
-export const fetchToken = async (_chainId, { contract, tokenId }) => {
+export const extend = async (_chainId, metadata) => {
   let data;
   try {
     const response = await axios.get(`https://account.miragegallery.ai/curated-details.json`);
@@ -97,15 +75,15 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
 
     throw error;
   }
-  const projectID = getProjectID(tokenId);
+  const projectID = getProjectID(metadata.tokenId);
   const projectDetails = data.data.find((item) => item.projectId === projectID);
 
   let metadataURL = projectDetails.metadata;
 
   if (metadataURL.startsWith("ipfs://")) {
-    metadataURL = metadataURL.replace("ipfs://", "https://ipfs.io/ipfs/") + "/" + tokenId;
+    metadataURL = metadataURL.replace("ipfs://", "https://ipfs.io/ipfs/") + "/" + metadata.tokenId;
   } else {
-    metadataURL = metadataURL + "/" + tokenId;
+    metadataURL = metadataURL + "/" + metadata.tokenId;
   }
 
   try {
@@ -124,9 +102,9 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
   const attributes = [];
 
   for (const item of data.data.attributes) {
-    const key = item.trait_type ? item.trait_type : 'Property';
+    const key = item.trait_type ? item.trait_type : "Property";
     const value = item.value;
-  
+
     attributes.push({
       key,
       rank: 1,
@@ -135,26 +113,12 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     });
   }
 
-  const startTokenId = tokenId - (tokenId % 10000);
+  const startTokenId = metadata.tokenId - (metadata.tokenId % 10000);
   const endTokenId = startTokenId + 10000 - 1;
 
-  let imageUrl;
-
-  // Try to fetch image from opensea, fallback to ipfs image on failure
-  try {
-    const osData = await opensea.fetchTokens(_chainId, [{ contract, tokenId }]);
-    imageUrl = osData[0].imageUrl ?? data.data.image;
-  } catch (e) {
-    imageUrl = data.data.image;
-  }
-
   return {
-    contract,
-    tokenId,
-    collection: `${contract}:${startTokenId}:${endTokenId}`,
-    name: data.data.name,
-    imageUrl,
-    flagged: false,
+    ...metadata,
     attributes,
+    collection: `${metadata.contract}:${startTokenId}:${endTokenId}`,
   };
 };
