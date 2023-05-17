@@ -20,6 +20,16 @@ const getNetworkName = (chainId) => {
     network = "polygon";
   } else if (chainId === 42161) {
     network = "arbitrum";
+  } else if (chainId === 11155111) {
+    network = "sepolia";
+  } else if (chainId === 80001) {
+    network = "mumbai";
+  } else if (chainId === 84531) {
+    network = "base-goerli";
+  } else if (chainId === 534353) {
+    network = "scroll-alpha";
+  } else if (chainId === 42170) {
+    network = "arbitrum-nova";
   } else {
     throw new Error("Unsupported chain id");
   }
