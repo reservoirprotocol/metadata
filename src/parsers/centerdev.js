@@ -32,7 +32,7 @@ export const parse = (asset) => {
     name: asset.name,
     description: asset.metadata?.description,
     imageUrl,
-    originalImageUrl: asset.metadata?.image || null,
+    imageOriginalUrl: asset.metadata?.image || null,
     mediaUrl: asset.metadata?.animation_url,
     attributes,
   };
