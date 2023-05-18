@@ -67,6 +67,7 @@ extendCollection["1,0x2d820afb710681580a55ca8077b57fba6dd9fd72"] = openseaShared
 extendCollection["1,0x0faed6ddef3773f3ee5828383aaeeaca2a94564a"] = openseaSharedContract;
 extendCollection["1,0x13927739076014913a3a7c207ef84c5be4780014"] = openseaSharedContract;
 extendCollection["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
+extendCollection["1,0xb39b20ec770848288a847879f6bc48a4d5e95a0d"] = openseaSharedContract;
 // extendCollection["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // CyberKongz
@@ -155,6 +156,7 @@ extend["1,0x2d820afb710681580a55ca8077b57fba6dd9fd72"] = openseaSharedContract;
 extend["1,0x0faed6ddef3773f3ee5828383aaeeaca2a94564a"] = openseaSharedContract;
 extend["1,0x13927739076014913a3a7c207ef84c5be4780014"] = openseaSharedContract;
 extend["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
+extend["1,0xb39b20ec770848288a847879f6bc48a4d5e95a0d"] = openseaSharedContract;
 // extend["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // CyberKongz
