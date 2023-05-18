@@ -58,6 +58,13 @@ const extendCollection = {};
 // Opensea Shared Contract
 extendCollection["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
 extendCollection["1,0x503a3039e9ce236e9a12e4008aecbb1fd8b384a3"] = openseaSharedContract;
+extendCollection["1,0xd78afb925a21f87fa0e35abae2aead3f70ced96b"] = openseaSharedContract;
+extendCollection["1,0xb6329bd2741c4e5e91e26c4e653db643e74b2b19"] = openseaSharedContract;
+extendCollection["1,0xd8b7cc75e22031a72d7b8393113ef2536e17bde6"] = openseaSharedContract;
+extendCollection["1,0x2d820afb710681580a55ca8077b57fba6dd9fd72"] = openseaSharedContract;
+extendCollection["1,0x0faed6ddef3773f3ee5828383aaeeaca2a94564a"] = openseaSharedContract;
+extendCollection["1,0x13927739076014913a3a7c207ef84c5be4780014"] = openseaSharedContract;
+extendCollection["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
 // extendCollection["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // CyberKongz
@@ -130,6 +137,13 @@ const extend = {};
 // Opensea Shared Contract
 extend["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
 extend["1,0x503a3039e9ce236e9a12e4008aecbb1fd8b384a3"] = openseaSharedContract;
+extend["1,0xd78afb925a21f87fa0e35abae2aead3f70ced96b"] = openseaSharedContract;
+extend["1,0xb6329bd2741c4e5e91e26c4e653db643e74b2b19"] = openseaSharedContract;
+extend["1,0xd8b7cc75e22031a72d7b8393113ef2536e17bde6"] = openseaSharedContract;
+extend["1,0x2d820afb710681580a55ca8077b57fba6dd9fd72"] = openseaSharedContract;
+extend["1,0x0faed6ddef3773f3ee5828383aaeeaca2a94564a"] = openseaSharedContract;
+extend["1,0x13927739076014913a3a7c207ef84c5be4780014"] = openseaSharedContract;
+extend["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
 // extend["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // CyberKongz
