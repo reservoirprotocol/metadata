@@ -20,24 +20,23 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ## Adding custom metadata
 
-To add custom metadata for a collection, create a directory in `src/custom` containing an `index.js` file (See [src/custom/forgotten-ponies/index.js](src/custom/forgotten-ponies/index.js) for example). Example directory structure:
+To add custom metadata and/or extend the default metadata for a collection, create a directory in `src/extend` containing an `index.js` file (See [src/extend/forgotten-ponies/index.js](src/extend/forgotten-ponies/index.js) for example). Example directory structure:
 
 ```
-src/custom
+src/extend
 .
-├── my-custom-contract                    # Directory for your collection with custom metadata
-│   ├── index.js                               # Implement required functions and customize metadata
-│   ├── ...                                    # If needed, data files or other helpers can also go in this directory
+├── my-contract                   # Directory for your collection with custom metadata
+│   ├── index.js                  # Implement required functions and customize metadata
+│   ├── ...                       # If needed, data files or other helpers can also go in this directory
 └── ...
 ```
 
-An update is also required in [src/custom/index.js](src/custom/index.js):
+An update is also required in [src/extend/index.js](src/extend/index.js):
 
 ```
-import * as myCustomContract from "./my-custom-contract";
+import * as myContract from "./my-contract";
 
-custom["1,${YOUR_CONTRACT}"] = myCustomContract;
-
+extend["${CHAIN_ID},${YOUR_CONTRACT}"] = myContract;
 ```
 
 ### Testing

@@ -4,25 +4,25 @@ import axios from "axios";
 
 import { getProvider } from "../../shared/utils";
 
-export const fetchToken = async (chainId, { contract, tokenId }) => {
-  const provider = getProvider(chainId);
+export const extend = async (_chainId, metadata) => {
+  const provider = getProvider(_chainId);
 
   const nft = new Contract(
-    contract,
+    metadata.contract,
     new Interface(["function tokenURI(uint256 tokenId) view returns (string)"]),
     provider
   );
 
-  const tokenUri = await nft.tokenURI(tokenId).then((uri) =>
+  const tokenUri = await nft.tokenURI(metadata.tokenId).then((uri) =>
     // Get rid of the initial `ipfs://`
     uri.slice(7)
   );
-  const metadata = await axios
+  const newMetadata = await axios
     .get(`https://cf-ipfs.com/ipfs/${tokenUri}`)
     .then((response) => response.data);
 
   const attributesMap = {};
-  const attributes = metadata.attributes.map((a) => {
+  const attributes = newMetadata.attributes.map((a) => {
     attributesMap[a.trait_type] = a.value;
     return {
       key: a.trait_type,
@@ -92,14 +92,10 @@ export const fetchToken = async (chainId, { contract, tokenId }) => {
     }
   }
 
-  return {
-    contract,
-    tokenId,
-    collection: contract.toLowerCase(),
-    name: metadata.name,
-    imageUrl,
-    mediaUrl,
-    flagged: false,
-    attributes,
-  };
+    return {
+        ...metadata,
+        attributes,
+        imageUrl,
+        mediaUrl,
+    };
 };

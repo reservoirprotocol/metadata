@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 const { BigNumber } = require("@ethersproject/bignumber");
 const { id } = require("@ethersproject/hash");
 const { lootRarity, rarityDescription } = require("loot-rarity");
@@ -237,7 +235,8 @@ const random = (input) => BigNumber.from(id(input));
 
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.toLowerCase().slice(1);
 
-export const fetchToken = (_chainId, { contract, tokenId }) => {
+export const extend = async (_chainId, metadata) => {
+  let attributes = [];
   const scores = {
     greatness: 0,
     orders: 0,
@@ -248,27 +247,17 @@ export const fetchToken = (_chainId, { contract, tokenId }) => {
     dragons: 0,
   };
 
-  const result = {
-    contract,
-    tokenId,
-    collection: _.toLower(contract),
-    name: `Bag #${tokenId}`,
-    imageUrl: `https://www.loot.exchange/api/image/${tokenId}`,
-    flagged: false,
-    attributes: [],
-  };
-
   const bagItems = [];
   for (const keyPrefix in items) {
     const sourceArray = items[keyPrefix];
-    const rand = random(keyPrefix + tokenId);
+    const rand = random(keyPrefix + metadata.tokenId);
 
     let output = sourceArray[rand.mod(sourceArray.length).toNumber()];
 
     const greatness = rand.mod(21);
     scores.greatness += greatness.toNumber();
 
-    result.attributes.push({
+    attributes.push({
       key: `Item`,
       value: output,
     });
@@ -277,7 +266,7 @@ export const fetchToken = (_chainId, { contract, tokenId }) => {
       scores.orders++;
 
       const order = suffixes[rand.mod(suffixes.length).toNumber()];
-      result.attributes.push({
+      attributes.push({
         key: `${capitalize(keyPrefix)} Order`,
         value: order.slice(3),
       });
@@ -313,40 +302,40 @@ export const fetchToken = (_chainId, { contract, tokenId }) => {
     }
   }
 
-  result.attributes.push({
+  attributes.push({
     key: "Greatness",
     value: scores.greatness,
   });
-  result.attributes.push({
+  attributes.push({
     key: "Orders",
     value: scores.orders,
   });
-  result.attributes.push({
+  attributes.push({
     key: "Names",
     value: scores.names,
   });
-  result.attributes.push({
+  attributes.push({
     key: "Plus Ones",
     value: scores.plusones,
   });
-  result.attributes.push({
+  attributes.push({
     key: "Rarity",
     value: rarityDescription(lootRarity(bagItems.map((i) => i))),
   });
-  result.attributes.push({
+  attributes.push({
     key: `Dragons`,
     value: scores.dragons,
   });
-  result.attributes.push({
+  attributes.push({
     key: `Demons`,
     value: scores.demons,
   });
-  result.attributes.push({
+  attributes.push({
     key: `Divines`,
     value: scores.divines,
   });
 
-  for (const attribute of result.attributes) {
+  for (const attribute of attributes) {
     if (isNaN(attribute.value)) {
       attribute.kind = "string";
     } else {
@@ -355,25 +344,10 @@ export const fetchToken = (_chainId, { contract, tokenId }) => {
     attribute.rank = 1;
   }
 
-  return result;
-};
-
-export const fetchContractTokens = (_chainId, contract, continuation) => {
-  const pageSize = 1000;
-  const tokenIdRange = [1, 7881];
-
-  const minTokenId = continuation ? Math.max(continuation, tokenIdRange[0]) : tokenIdRange[0];
-  const maxTokenId = continuation
-    ? Math.min(continuation + pageSize, tokenIdRange[1])
-    : tokenIdRange[1];
-
-  const assets = [];
-  for (let tokenId = minTokenId; tokenId <= maxTokenId; tokenId++) {
-    assets.push(fetchToken(_chainId, { contract, tokenId }));
-  }
-
   return {
-    continuation: maxTokenId === tokenIdRange[1] ? undefined : maxTokenId + 1,
-    metadata,
+    ...metadata,
+    attributes,
+    name: `Bag #${metadata.tokenId}`,
+    imageUrl: `https://www.loot.exchange/api/image/${metadata.tokenId}`,
   };
 };

@@ -1,8 +1,7 @@
-import axios from "axios";
 import _ from "lodash";
 import slugify from "slugify";
 
-import * as soundxyz from "../custom/soundxyz";
+import * as soundxyz from "../extend/soundxyz";
 import { logger } from "../shared/logger";
 import { parse } from "../parsers/soundxyz";
 import { RequestWasThrottledError } from "./errors";
