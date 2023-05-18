@@ -8,15 +8,25 @@ import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
+import * as onchain from "../../../../../src/fetchers/onchain";
 
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
     if (
-      !["mainnet", "rinkeby", "goerli", "optimism", "polygon", "arbitrum", "scroll-alpha"].includes(
-        network
-      )
+      ![
+        "mainnet",
+        "rinkeby",
+        "goerli",
+        "optimism",
+        "polygon",
+        "arbitrum",
+        "scroll-alpha",
+        "bsc",
+        "mantle-testnet",
+        "linea-testnet",
+      ].includes(network)
     ) {
       throw new Error("Unknown network");
     }
@@ -32,6 +42,9 @@ const api = async (req, res) => {
       case "goerli":
         chainId = 5;
         break;
+      case "bsc":
+        chainId = 56;
+        break;
       case "polygon":
         chainId = 137;
         break;
@@ -41,11 +54,19 @@ const api = async (req, res) => {
       case "scroll-alpha":
         chainId = 534353;
         break;
+      case "mantle-testnet":
+        chainId = 5001;
+        break;
+      case "linea-testnet":
+        chainId = 59140;
+        break;
     }
 
     // Validate indexing method and set up provider
     const method = req.query.method;
-    if (!["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(method)) {
+    if (
+      !["opensea", "rarible", "simplehash", "centerdev", "soundxyz", "onchain"].includes(method)
+    ) {
       throw new Error("Unknown method");
     }
 
@@ -58,6 +79,8 @@ const api = async (req, res) => {
       provider = centerdev;
     } else if (method === "soundxyz") {
       provider = soundxyz;
+    } else if (method === "onchain") {
+      provider = onchain;
     }
 
     const token = req.query.token?.toLowerCase();
