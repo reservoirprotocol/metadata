@@ -4,36 +4,15 @@ import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
-import { getProvider } from "../shared/utils";
+import { simplehash_chains, getProvider } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
 
 const getNetworkName = (chainId) => {
-  let network;
-  if (chainId === 1) {
-    network = "ethereum";
-  } else if (chainId === 10) {
-    network = "optimism";
-  } else if (chainId === 56) {
-    network = "bsc";
-  } else if (chainId === 137) {
-    network = "polygon";
-  } else if (chainId === 42161) {
-    network = "arbitrum";
-  } else if (chainId === 11155111) {
-    network = "sepolia";
-  } else if (chainId === 80001) {
-    network = "mumbai";
-  } else if (chainId === 84531) {
-    network = "base-goerli";
-  } else if (chainId === 534353) {
-    network = "scroll-alpha";
-  } else if (chainId === 42170) {
-    network = "arbitrum-nova";
-  } else {
+  const network = Object.keys(simplehash_chains).find(key => simplehash_chains[key] === chainId);
+  if (!network) {
     throw new Error("Unsupported chain id");
   }
-
   return network;
 };
 
