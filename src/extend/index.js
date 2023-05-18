@@ -7,8 +7,7 @@ import * as nouns from "./nouns";
 import * as lilnouns from "./lilnouns";
 import * as chimpers from "./chimpers";
 import * as moonbirds from "./moonbirds";
-import * as soundxyz from "../custom/soundxyz";
-import * as soundxyzExtend from "./soundxyz";
+import * as soundxyz from "./soundxyz";
 import * as bayc from "./bayc";
 import * as asyncBlueprints from "./async-blueprints";
 import * as feralFile from "./feral-file";
@@ -28,6 +27,9 @@ import * as forgottenRunes from "./forgotten-runes";
 import * as forgottenSouls from "./forgotten-souls";
 import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 import * as forgottenRunesAthenaeum from "./forgotten-runes-athenaeum";
+import * as loot from "./loot";
+import * as goldfinch from "./goldfinch";
+import * as cryptokicksIrl from "./cryptokicks-irl";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
@@ -58,6 +60,13 @@ const extendCollection = {};
 // Opensea Shared Contract
 extendCollection["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
 extendCollection["1,0x503a3039e9ce236e9a12e4008aecbb1fd8b384a3"] = openseaSharedContract;
+extendCollection["1,0xd78afb925a21f87fa0e35abae2aead3f70ced96b"] = openseaSharedContract;
+extendCollection["1,0xb6329bd2741c4e5e91e26c4e653db643e74b2b19"] = openseaSharedContract;
+extendCollection["1,0xd8b7cc75e22031a72d7b8393113ef2536e17bde6"] = openseaSharedContract;
+extendCollection["1,0x2d820afb710681580a55ca8077b57fba6dd9fd72"] = openseaSharedContract;
+extendCollection["1,0x0faed6ddef3773f3ee5828383aaeeaca2a94564a"] = openseaSharedContract;
+extendCollection["1,0x13927739076014913a3a7c207ef84c5be4780014"] = openseaSharedContract;
+extendCollection["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
 // extendCollection["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // CyberKongz
@@ -125,10 +134,27 @@ extendCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprin
 // Mirage Gallery Curated
 extendCollection["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
 
+// Sound XYZ
+soundxyz.SoundxyzArtistContracts.forEach(
+  (address) => (extendCollection[`1,${address}`] = soundxyz)
+);
+soundxyz.SoundxyzReleaseContracts.forEach(
+  (address) => (extendCollection[`1,${address}`] = soundxyz)
+);
+extendCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
+
 const extend = {};
 
 // Opensea Shared Contract
 extend["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
+extend["1,0x503a3039e9ce236e9a12e4008aecbb1fd8b384a3"] = openseaSharedContract;
+extend["1,0xd78afb925a21f87fa0e35abae2aead3f70ced96b"] = openseaSharedContract;
+extend["1,0xb6329bd2741c4e5e91e26c4e653db643e74b2b19"] = openseaSharedContract;
+extend["1,0xd8b7cc75e22031a72d7b8393113ef2536e17bde6"] = openseaSharedContract;
+extend["1,0x2d820afb710681580a55ca8077b57fba6dd9fd72"] = openseaSharedContract;
+extend["1,0x0faed6ddef3773f3ee5828383aaeeaca2a94564a"] = openseaSharedContract;
+extend["1,0x13927739076014913a3a7c207ef84c5be4780014"] = openseaSharedContract;
+extend["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
 // extend["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // CyberKongz
@@ -157,9 +183,9 @@ extend["1,0x80336ad7a747236ef41f47ed2c7641828a480baa"] = chimpers;
 extend["1,0x23581767a106ae21c074b2276d25e5c3e136a68b"] = moonbirds;
 
 // Sound XYZ
-soundxyz.SoundxyzArtistContracts.forEach((address) => (extend[`1,${address}`] = soundxyzExtend));
-soundxyz.SoundxyzReleaseContracts.forEach((address) => (extend[`1,${address}`] = soundxyzExtend));
-extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyzExtend;
+soundxyz.SoundxyzArtistContracts.forEach((address) => (extend[`1,${address}`] = soundxyz));
+soundxyz.SoundxyzReleaseContracts.forEach((address) => (extend[`1,${address}`] = soundxyz));
+extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 
 // Async Blueprints
 extend["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
@@ -219,3 +245,13 @@ extend["1,0xf55b615b479482440135ebf1b907fd4c37ed9420"] = forgottenPonies;
 
 // Forgotten Runes Athenaeum
 extend["1,0x7c104b4db94494688027cced1e2ebfb89642c80f"] = forgottenRunesAthenaeum;
+
+// Loot
+extend["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
+extend["4,0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78"] = loot;
+
+// Goldfinch
+extend["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
+
+// Cryptokicks IRL
+extend["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;

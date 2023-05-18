@@ -1,6 +1,5 @@
 import _ from "lodash";
 
-import { customHandleCollection, hasCustomCollectionHandler } from "../../../../../src/custom";
 import { extendCollectionMetadata } from "../../../../../src/extend";
 
 import * as opensea from "../../../../../src/fetchers/opensea";
@@ -114,14 +113,10 @@ const api = async (req, res) => {
     }
 
     let collection = null;
-    if (hasCustomCollectionHandler(chainId, contract)) {
-      collection = await customHandleCollection(chainId, { contract, tokenId });
-    } else {
-      collection = await provider.fetchCollection(chainId, {
-        contract,
-        tokenId,
-      });
-    }
+    collection = await provider.fetchCollection(chainId, {
+      contract,
+      tokenId,
+    });
 
     if (!collection || _.isEmpty(collection)) {
       throw new Error("No collection found");
