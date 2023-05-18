@@ -7,8 +7,7 @@ import * as nouns from "./nouns";
 import * as lilnouns from "./lilnouns";
 import * as chimpers from "./chimpers";
 import * as moonbirds from "./moonbirds";
-import * as soundxyz from "../custom/soundxyz";
-import * as soundxyzExtend from "./soundxyz";
+import * as soundxyz from "./soundxyz";
 import * as bayc from "./bayc";
 import * as asyncBlueprints from "./async-blueprints";
 import * as feralFile from "./feral-file";
@@ -28,6 +27,9 @@ import * as forgottenRunes from "./forgotten-runes";
 import * as forgottenSouls from "./forgotten-souls";
 import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 import * as forgottenRunesAthenaeum from "./forgotten-runes-athenaeum";
+import * as loot from "./loot";
+import * as goldfinch from "./goldfinch";
+import * as cryptokicksIrl from "./cryptokicks-irl";
 
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
@@ -132,6 +134,15 @@ extendCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprin
 // Mirage Gallery Curated
 extendCollection["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
 
+// Sound XYZ
+soundxyz.SoundxyzArtistContracts.forEach(
+  (address) => (extendCollection[`1,${address}`] = soundxyz)
+);
+soundxyz.SoundxyzReleaseContracts.forEach(
+  (address) => (extendCollection[`1,${address}`] = soundxyz)
+);
+extendCollection["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
+
 const extend = {};
 
 // Opensea Shared Contract
@@ -172,9 +183,9 @@ extend["1,0x80336ad7a747236ef41f47ed2c7641828a480baa"] = chimpers;
 extend["1,0x23581767a106ae21c074b2276d25e5c3e136a68b"] = moonbirds;
 
 // Sound XYZ
-soundxyz.SoundxyzArtistContracts.forEach((address) => (extend[`1,${address}`] = soundxyzExtend));
-soundxyz.SoundxyzReleaseContracts.forEach((address) => (extend[`1,${address}`] = soundxyzExtend));
-extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyzExtend;
+soundxyz.SoundxyzArtistContracts.forEach((address) => (extend[`1,${address}`] = soundxyz));
+soundxyz.SoundxyzReleaseContracts.forEach((address) => (extend[`1,${address}`] = soundxyz));
+extend["5,0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b"] = soundxyz;
 
 // Async Blueprints
 extend["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
@@ -234,3 +245,13 @@ extend["1,0xf55b615b479482440135ebf1b907fd4c37ed9420"] = forgottenPonies;
 
 // Forgotten Runes Athenaeum
 extend["1,0x7c104b4db94494688027cced1e2ebfb89642c80f"] = forgottenRunesAthenaeum;
+
+// Loot
+extend["1,0xff9c1b15b16263c61d017ee9f65c50e4ae0113d7"] = loot;
+extend["4,0x79e2d470f950f2cf78eef41720e8ff2cf4b3cd78"] = loot;
+
+// Goldfinch
+extend["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
+
+// Cryptokicks IRL
+extend["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
