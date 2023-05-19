@@ -28,6 +28,11 @@ const api = async (req, res) => {
         "bsc",
         "mantle-testnet",
         "linea-testnet",
+        "sepolia",
+        "mumbai",
+        "base-goerli",
+        "arbitrum-nova",
+        "misc-testnet",
       ].includes(network)
     ) {
       throw new Error("Unknown network");
