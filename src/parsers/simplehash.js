@@ -11,9 +11,6 @@ export const parse = (asset) => {
     description: asset.description,
     imageUrl: asset.image_url,
     imageOriginalUrl: asset.extra_metadata.image_original_url,
-    imageSmallUrl: asset.previews.image_small_url,
-    imageMediumUrl: asset.previews.image_medium_url,
-    imageLargeUrl: asset.previews.image_large_url,
     mediaUrl: asset.video_url,
     attributes: (asset.extra_metadata.attributes || []).map((trait) => ({
       key: trait.trait_type,

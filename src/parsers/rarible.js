@@ -41,7 +41,6 @@ export const parse = (asset) => {
       collection: _.toLower(asset.contract),
       name: asset.meta.name,
       imageUrl,
-      imageOriginalUrl: asset.meta?.image?.url?.["ORIGINAL"] || null,
       mediaUrl,
       attributes,
     };

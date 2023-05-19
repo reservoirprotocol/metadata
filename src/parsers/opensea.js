@@ -12,10 +12,8 @@ export const parse = (asset) => {
     // so by default we ignore them (this behaviour can be overridden if needed).
     description: asset.description,
     imageUrl: asset.image_url,
+    asset: asset,
     imageOriginalUrl: asset.image_original_url,
-    imageSmallUrl: asset.image_preview_url.replace(/w=\d+/, `w=${250}`) || null,
-    imageMediumUrl: asset.image_preview_url.replace(/w=\d+/, `w=${512}`) || null,
-    imageLargeUrl: asset.image_preview_url.replace(/w=\d+/, `w=${1000}`) || null,
     mediaUrl: asset.animation_url,
     attributes: (asset.traits || []).map((trait) => ({
       key: trait.trait_type,
