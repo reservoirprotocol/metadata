@@ -11,9 +11,11 @@ export const parse = (asset) => {
     // Token descriptions are a waste of space for most collections we deal with
     // so by default we ignore them (this behaviour can be overridden if needed).
     description: asset.description,
+    originalMetadata: JSON.stringify(asset),
     imageUrl: asset.image_url,
-    asset: asset,
     imageOriginalUrl: asset.image_original_url,
+    animationOriginalUrl: asset.animation_original_url,
+    metadataOriginalUrl: asset.token_metadata,
     mediaUrl: asset.animation_url,
     attributes: (asset.traits || []).map((trait) => ({
       key: trait.trait_type,
