@@ -11,14 +11,29 @@ import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 import { ValidationError } from "../../../../../src/shared/errors";
 import { parse } from "../../../../../src/parsers/opensea";
 import _ from "lodash";
-import { chains } from "../../../../../src/shared/utils";
 
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
     if (
-      !(network in chains)
+      ![
+        "mainnet",
+        "rinkeby",
+        "goerli",
+        "optimism",
+        "polygon",
+        "arbitrum",
+        "scroll-alpha",
+        "bsc",
+        "mantle-testnet",
+        "linea-testnet",
+        "sepolia",
+        "mumbai",
+        "base-goerli",
+        "arbitrum-nova",
+        "misc-testnet",
+      ].includes(network)
     ) {
       throw new Error("Unknown network");
     }

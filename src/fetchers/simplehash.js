@@ -4,7 +4,7 @@ import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
-import { simplehash_chains, getProvider } from "../shared/utils";
+import { getProvider } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
 

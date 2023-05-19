@@ -4,10 +4,24 @@ import fetch from "node-fetch";
 import slugify from "slugify";
 import { parse } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
-import { onchain_chains } from "../shared/utils";
 
 const FETCH_TIMEOUT = 30000;
-const ALLOWED_CHAIN_IDS = Object.values(onchain_chains);
+const ALLOWED_CHAIN_IDS = [
+  1, 
+  5, 
+  10, 
+  56, 
+  137, 
+  42161, 
+  534353, 
+  5001, 
+  59140, 
+  11155111, 
+  80001, 
+  84531,
+  42170,
+  999,
+];
 
 const erc721Interface = new ethers.utils.Interface([
   "function supportsInterface(bytes4 interfaceId) view returns (bool)",
