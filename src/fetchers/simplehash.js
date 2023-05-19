@@ -9,10 +9,21 @@ import { logger } from "../shared/logger";
 import _ from "lodash";
 
 const getNetworkName = (chainId) => {
-  const network = Object.keys(simplehash_chains).find(key => simplehash_chains[key] === chainId);
-  if (!network) {
+  let network;
+  if (chainId === 1) {
+    network = "ethereum";
+  } else if (chainId === 10) {
+    network = "optimism";
+  } else if (chainId === 56) {
+    network = "bsc";
+  } else if (chainId === 137) {
+    network = "polygon";
+  } else if (chainId === 42161) {
+    network = "arbitrum";
+  } else {
     throw new Error("Unsupported chain id");
   }
+
   return network;
 };
 
