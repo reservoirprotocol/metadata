@@ -25,6 +25,11 @@ const api = async (req, res) => {
         "bsc",
         "mantle-testnet",
         "linea-testnet",
+        "sepolia",
+        "mumbai",
+        "base-goerli",
+        "arbitrum-nova",
+        "misc-testnet",
       ].includes(network)
     ) {
       throw new Error("Unknown network");
@@ -58,6 +63,21 @@ const api = async (req, res) => {
         break;
       case "linea-testnet":
         chainId = 59140;
+        break;
+      case "sepolia":
+        chainId = 11155111;
+        break;
+      case "mumbai":
+        chainId = 80001;
+        break;
+      case "base-goerli":
+        chainId = 84531;
+        break;
+      case "arbitrum-nova":
+        chainId = 42170;
+        break;
+      case "misc-testnet":
+        chainId = 999;
         break;
     }
 
