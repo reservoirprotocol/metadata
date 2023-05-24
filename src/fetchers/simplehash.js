@@ -20,6 +20,8 @@ const getNetworkName = (chainId) => {
     network = "polygon";
   } else if (chainId === 42161) {
     network = "arbitrum";
+  } else if (chainId === 5) {
+    network = "ethereum-goerli";
   } else {
     throw new Error("Unsupported chain id");
   }
