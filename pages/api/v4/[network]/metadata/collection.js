@@ -1,6 +1,5 @@
 import _ from "lodash";
 
-import { customHandleCollection, hasCustomCollectionHandler } from "../../../../../src/custom";
 import { extendCollectionMetadata } from "../../../../../src/extend";
 
 import * as opensea from "../../../../../src/fetchers/opensea";
@@ -8,12 +7,31 @@ import * as rarible from "../../../../../src/fetchers/rarible";
 import * as simplehash from "../../../../../src/fetchers/simplehash";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
+import * as onchain from "../../../../../src/fetchers/onchain";
 
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (!["mainnet", "rinkeby", "goerli", "optimism", "polygon", "arbitrum"].includes(network)) {
+    if (
+      ![
+        "mainnet",
+        "rinkeby",
+        "goerli",
+        "optimism",
+        "polygon",
+        "arbitrum",
+        "scroll-alpha",
+        "bsc",
+        "mantle-testnet",
+        "linea-testnet",
+        "sepolia",
+        "mumbai",
+        "base-goerli",
+        "arbitrum-nova",
+        "misc-testnet",
+      ].includes(network)
+    ) {
       throw new Error("Unknown network");
     }
 
@@ -28,17 +46,46 @@ const api = async (req, res) => {
       case "goerli":
         chainId = 5;
         break;
+      case "bsc":
+        chainId = 56;
+        break;
       case "polygon":
         chainId = 137;
         break;
       case "arbitrum":
         chainId = 42161;
         break;
+      case "scroll-alpha":
+        chainId = 534353;
+        break;
+      case "mantle-testnet":
+        chainId = 5001;
+        break;
+      case "linea-testnet":
+        chainId = 59140;
+        break;
+      case "sepolia":
+        chainId = 11155111;
+        break;
+      case "mumbai":
+        chainId = 80001;
+        break;
+      case "base-goerli":
+        chainId = 84531;
+        break;
+      case "arbitrum-nova":
+        chainId = 42170;
+        break;
+      case "misc-testnet":
+        chainId = 999;
+        break;
     }
 
     // Validate indexing method and set up provider
     const method = req.query.method;
-    if (!["opensea", "rarible", "simplehash", "centerdev", "soundxyz"].includes(method)) {
+    if (
+      !["opensea", "rarible", "simplehash", "centerdev", "soundxyz", "onchain"].includes(method)
+    ) {
       throw new Error("Unknown method");
     }
 
@@ -51,6 +98,8 @@ const api = async (req, res) => {
       provider = centerdev;
     } else if (method === "soundxyz") {
       provider = soundxyz;
+    } else if (method === "onchain") {
+      provider = onchain;
     }
 
     const token = req.query.token?.toLowerCase();
@@ -68,14 +117,10 @@ const api = async (req, res) => {
     }
 
     let collection = null;
-    if (hasCustomCollectionHandler(chainId, contract)) {
-      collection = await customHandleCollection(chainId, { contract, tokenId });
-    } else {
-      collection = await provider.fetchCollection(chainId, {
-        contract,
-        tokenId,
-      });
-    }
+    collection = await provider.fetchCollection(chainId, {
+      contract,
+      tokenId,
+    });
 
     if (!collection || _.isEmpty(collection)) {
       throw new Error("No collection found");

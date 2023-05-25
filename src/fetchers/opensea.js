@@ -13,16 +13,36 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
   try {
     let data;
 
-    try {
-      const url = `${
-        chainId === 1
-          ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
-          : "https://testnets-api.opensea.io"
-      }/api/v1/asset/${contract}/${tokenId}`;
+    const url = `${
+      ![4, 5].includes(chainId)
+        ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
+        : "https://testnets-api.opensea.io"
+    }/api/v1/events?token_id=${tokenId}&asset_contract_address=${contract}`;
 
-      const assetResponse = await axios.get(url, {
-        headers:
-          chainId === 1
+    const assetResponse = await axios.get(url, {
+      headers: ![4, 5].includes(chainId)
+        ? {
+            [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
+            Accept: "application/json",
+          }
+        : {
+            Accept: "application/json",
+          },
+    });
+
+    data = assetResponse.data.asset_events[0]?.asset;
+
+    if (!data) {
+      // Fall back to the asset endpoint if events response fails
+      try {
+        const url = `${
+          ![4, 5].includes(chainId)
+            ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
+            : "https://testnets-api.opensea.io"
+        }/api/v1/asset/${contract}/${tokenId}`;
+
+        const assetResponse = await axios.get(url, {
+          headers: ![4, 5].includes(chainId)
             ? {
                 [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
                 Accept: "application/json",
@@ -30,28 +50,27 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
             : {
                 Accept: "application/json",
               },
-      });
+        });
 
-      data = assetResponse.data;
-    } catch (error) {
-      logger.error(
-        "opensea-fetcher",
-        `fetchCollection retrieve asset error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
-      );
+        data = assetResponse.data;
+      } catch (error) {
+        logger.error(
+          "opensea-fetcher",
+          `fetchCollection retrieve asset error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
+            error.message
+          },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
+        );
 
-      // Try to get the collection only based on the contract.
-      if (error.response?.status === 404) {
-        const url = `${
-          chainId === 1
-            ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
-            : "https://testnets-api.opensea.io"
-        }/api/v1/asset_contract/${contract}`;
+        // Try to get the collection only based on the contract.
+        if (error.response?.status === 404) {
+          const url = `${
+            ![4, 5].includes(chainId)
+              ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
+              : "https://testnets-api.opensea.io"
+          }/api/v1/asset_contract/${contract}`;
 
-        const assetContractResponse = await axios.get(url, {
-          headers:
-            chainId === 1
+          const assetContractResponse = await axios.get(url, {
+            headers: ![4, 5].includes(chainId)
               ? {
                   [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]:
                     process.env.OPENSEA_API_KEY.trim(),
@@ -60,11 +79,12 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
               : {
                   Accept: "application/json",
                 },
-        });
+          });
 
-        data = assetContractResponse.data;
-      } else {
-        throw error;
+          data = assetContractResponse.data;
+        } else {
+          throw error;
+        }
       }
     }
 
@@ -130,10 +150,14 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     };
   } catch (error) {
     logger.error(
-      "opensea-fetcher",
-      `fetchCollection error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
-        error.message
-      },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
+        "opensea-fetcher",
+        JSON.stringify({
+          topic: "fetchCollectionError",
+          chainId,
+          contract,
+          tokenId,
+          error,
+        })
     );
 
     try {
