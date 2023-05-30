@@ -6,9 +6,6 @@ import { parse } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
 
 const FETCH_TIMEOUT = 30000;
-const ALLOWED_CHAIN_IDS = [
-  1, 5, 10, 56, 137, 42161, 534353, 5001, 59140, 11155111, 80001, 84531, 42170, 999,
-];
 
 const erc721Interface = new ethers.utils.Interface([
   "function supportsInterface(bytes4 interfaceId) view returns (bool)",
@@ -179,7 +176,7 @@ export const fetchTokens = async (chainId, tokens) => {
   // TODO: Add support for other chains via RPC_URL
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
-  if (!ALLOWED_CHAIN_IDS.includes(chainId)) throw new Error("Invalid chainId");
+  if (!process.env[`RPC_URL_${chainId}`]) throw new Error("Missing RPC_URL for chain");
 
   // Detect token standard, batch contract addresses together to call once per contract
   const contracts = [];
