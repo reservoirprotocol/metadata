@@ -13,8 +13,13 @@ const getNetworkName = (chainId) => {
   if (!network) {
     throw new Error("Unsupported chain id");
   }
+
   if (network == "mainnet") {
     return "ethereum";
+  }
+
+  if (network == "goerli") {
+    return "ethereum-goerli";
   }
 
   return network;
