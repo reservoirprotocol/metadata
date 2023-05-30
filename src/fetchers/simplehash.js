@@ -24,7 +24,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
   try {
     const network = getNetworkName(chainId);
 
-    const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}/${tokenId}`;    
+    const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}/${tokenId}`;
     const data = await axios
       .get(url, {
         headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
@@ -96,7 +96,7 @@ export const fetchTokens = async (chainId, tokens) => {
   const nftIds = tokens.map(({ contract, tokenId }) => `${network}.${contract}.${tokenId}`);
   searchParams.append("nft_ids", nftIds.join(","));
 
-  const url = `https://api.simplehash.com/api/v0/nfts/assets?${searchParams.toString()}`;  
+  const url = `https://api.simplehash.com/api/v0/nfts/assets?${searchParams.toString()}`;
   const data = await axios
     .get(url, {
       headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
