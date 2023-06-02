@@ -176,7 +176,7 @@ const getTokenMetadataFromURI = async (uri) => {
 
 export const fetchTokens = async (chainId, tokens) => {
   // TODO: Add support for other chains via RPC_URL
-  const network = _.upperCase(supportedChains[chainId]).replace(" ", "_");
+  const network = _.upperCase(supportedChains[chainId]);
 
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
