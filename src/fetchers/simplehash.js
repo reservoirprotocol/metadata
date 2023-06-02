@@ -4,12 +4,12 @@ import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
-import { chains, getProvider } from "../shared/utils";
+import { supportedChains, getProvider } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
 
 const getNetworkName = (chainId) => {
-  const network = Object.keys(chains).find(key => chains[key] === chainId);
+  const network = Object.keys(supportedChains).find(key => supportedChains[key] === chainId);
   if (!network) {
     throw new Error("Unsupported chain id");
   }

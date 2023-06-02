@@ -10,18 +10,18 @@ import * as onchain from "../../../../../src/fetchers/onchain";
 import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 import { ValidationError } from "../../../../../src/shared/errors";
 import { parse } from "../../../../../src/parsers/opensea";
-import { chains } from "../../../../../src/shared/utils";
+import { supportedChains } from "../../../../../src/shared/utils";
 import _ from "lodash";
 
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (!(network in chains)) {
+    if (!(network in supportedChains)) {
       throw new Error("Unknown network");
     }
 
-    const chainId = chains[network];
+    const chainId = supportedChains[network];
 
     // Validate indexing method and set up provider
     const method = req.query.method;
