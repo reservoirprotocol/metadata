@@ -150,37 +150,38 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     };
   } catch (error) {
     logger.error(
-        "opensea-fetcher",
-        JSON.stringify({
-          topic: "fetchCollectionError",
-          chainId,
-          contract,
-          tokenId,
-          error,
-        })
+      "opensea-fetcher",
+      JSON.stringify({
+        topic: "fetchCollectionError",
+        chainId,
+        contract,
+        tokenId,
+        error,
+      })
     );
 
+    let name = contract;
     try {
-      const name = await new Contract(
+      name = await new Contract(
         contract,
         new Interface(["function name() view returns (string)"]),
         getProvider(chainId)
       ).name();
-
-      return {
-        id: contract,
-        slug: slugify(name, { lower: true }),
-        name: name,
-        community: null,
-        metadata: null,
-        contract,
-        tokenIdRange: null,
-        tokenSetId: `contract:${contract}`,
-        isFallback: true,
-      };
     } catch {
-      return null;
+      // Skip errors
     }
+
+    return {
+      id: contract,
+      slug: slugify(name, { lower: true }),
+      name,
+      community: null,
+      metadata: null,
+      contract,
+      tokenIdRange: null,
+      tokenSetId: `contract:${contract}`,
+      isFallback: true,
+    };
   }
 };
 
