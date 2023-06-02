@@ -8,17 +8,17 @@ import * as simplehash from "../../../../../src/fetchers/simplehash";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
 import * as onchain from "../../../../../src/fetchers/onchain";
-import { supportedChains } from "../../../../../src/shared/utils";
+import { supportedNetworks } from "../../../../../src/shared/utils";
 
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (!(network in supportedChains)) {
+    if (!(network in supportedNetworks)) {
       throw new Error("Unknown network");
     }
 
-    const chainId = supportedChains[network];
+    const chainId = supportedNetworks[network];
 
     // Validate indexing method and set up provider
     const method = req.query.method;
