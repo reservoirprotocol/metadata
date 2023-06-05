@@ -47,6 +47,7 @@ const api = async (req, res) => {
         chainId = 4;
         break;
       case "goerli":
+      case "prod-goerli":
         chainId = 5;
         break;
       case "bsc":
