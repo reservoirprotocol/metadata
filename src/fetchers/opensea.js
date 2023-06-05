@@ -200,21 +200,20 @@ export const fetchTokens = async (chainId, tokens) => {
   }
 
   const url = `${
-    chainId === 1
-      ? process.env.OPENSEA_BASE_URL || "https://api.opensea.io"
-      : "https://rinkeby-api.opensea.io"
+    ![4, 5].includes(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
   }/api/v1/assets?${searchParams.toString()}`;
+
   const data = await axios
-    .get(url, {
-      headers:
-        chainId === 1
-          ? {
-              [process.env.OPENSEA_API_HEADER ?? "X-API-KEY"]: process.env.OPENSEA_API_KEY.trim(),
-              Accept: "application/json",
-            }
-          : {
-              Accept: "application/json",
-            },
+    .get(![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url, {
+      headers: ![4, 5].includes(chainId)
+        ? {
+            url,
+            "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
+            Accept: "application/json",
+          }
+        : {
+            Accept: "application/json",
+          },
     })
     .then((response) => response.data)
     .catch((error) => {
@@ -222,7 +221,9 @@ export const fetchTokens = async (chainId, tokens) => {
         "opensea-fetcher",
         `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
           error.response?.status
-        }, data:${JSON.stringify(error.response?.data)}`
+        }, data:${JSON.stringify(error.response?.data)}, url:${JSON.stringify(
+          error.config?.url
+        )}, headers:${JSON.stringify(error.config?.headers?.url)}`
       );
 
       handleError(error);

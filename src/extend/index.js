@@ -31,6 +31,8 @@ import * as loot from "./loot";
 import * as goldfinch from "./goldfinch";
 import * as cryptokicksIrl from "./cryptokicks-irl";
 
+export const hasExtendHandler = (chainId, contract) => Boolean(extend[`${chainId},${contract}`]);
+
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
     if (Boolean(extendCollection[`${chainId},${metadata.id}`])) {
