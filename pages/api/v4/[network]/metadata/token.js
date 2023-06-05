@@ -33,6 +33,7 @@ const api = async (req, res) => {
         "base-goerli",
         "arbitrum-nova",
         "zora-testnet",
+        "prod-goerli",
       ].includes(network)
     ) {
       throw new Error("Unknown network");
