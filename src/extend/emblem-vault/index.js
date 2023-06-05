@@ -41,6 +41,13 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
 };
 
 export const extend = async (_chainId, metadata) => {
+  logger.info(
+      "ordinals-fetcher-token",
+      `fetchTokens start. chainId:${_chainId}, contract:${metadata.collection} tokenId:${
+          metadata.tokenId
+      }`
+  );
+
   await axios
     .get(`https://metadata.ordinals.market/emblem?token_id=${metadata.tokenId}`, {
       headers: {
@@ -48,6 +55,13 @@ export const extend = async (_chainId, metadata) => {
       },
     })
     .then((response) => {
+      logger.info(
+          "ordinals-fetcher-token",
+          `fetchTokens response. chainId:${_chainId}, data:${JSON.stringify(response.data)} contract:${metadata.collection} tokenId:${
+              metadata.tokenId
+          }`
+      );
+
       const data = response.data;
       if (data.collection && data.token) {
         metadata.collection = `${metadata.collection}:ordinals-${data.collection.id}`;
