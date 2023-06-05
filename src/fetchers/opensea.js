@@ -305,7 +305,7 @@ export const fetchTokensByCollectionSlug = async (chainId, slug, continuation) =
 };
 
 const handleError = (error) => {
-  if (error.response?.status === 429) {
+  if (error.response?.status === 429 || error.response?.status === 503) {
     let delay = 1;
 
     if (error.response.data.detail?.startsWith("Request was throttled. Expected available in")) {
