@@ -1,4 +1,4 @@
-import { extendMetadata } from "../../../../../src/extend";
+import { extendMetadata, hasExtendHandler } from "../../../../../src/extend";
 
 import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
@@ -63,6 +63,10 @@ const api = async (req, res) => {
           throw new ValidationError("Collection slug is only valid on opensea.");
         }
         const [contract, slug] = collectionSlug.split(":");
+
+        if (hasExtendHandler(chainId, contract)) {
+          throw new ValidationError("Custom handler is not supported with collection slug.");
+        }
 
         let newContinuation, previousContinuation;
         const newMetadata = await Promise.all(
