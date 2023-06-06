@@ -93,14 +93,18 @@ const encodeTokenERC1155 = (token) => {
 };
 
 const getContractName = async (contractAddress, rpcURL) => {
-  const provider = new ethers.providers.JsonRpcProvider(rpcURL);
-  const contract = new ethers.Contract(
-    contractAddress,
-    ["function name() view returns (string)"],
-    provider
-  );
-  const name = await contract.name();
-  return name;
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+    const contract = new ethers.Contract(
+      contractAddress,
+      ["function name() view returns (string)"],
+      provider
+    );
+    const name = await contract.name();
+    return name;
+  } catch (e) {
+    return null;
+  }
 };
 
 const createBatch = (encodedTokens) => {
