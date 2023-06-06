@@ -92,6 +92,21 @@ const encodeTokenERC1155 = (token) => {
   };
 };
 
+const getContractName = async (contractAddress, rpcURL) => {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+    const contract = new ethers.Contract(
+      contractAddress,
+      ["function name() view returns (string)"],
+      provider
+    );
+    const name = await contract.name();
+    return name;
+  } catch (e) {
+    return null;
+  }
+};
+
 const createBatch = (encodedTokens) => {
   return encodedTokens.map((token) => {
     return {
@@ -275,16 +290,18 @@ export const fetchTokens = async (chainId, tokens) => {
 
 export const fetchContractTokens = async (chainId, contract, from, to) => {};
 
-export const fetchCollection = async (chainId, { contract, tokenId }) => {
-  const [tokenMetadata] = await fetchTokens(chainId, { contract, tokenId });
-  const collectionName = tokenMetadata.name ? tokenMetadata.name.split(" ")[0].trim() : "";
+export const fetchCollection = async (chainId, { contract }) => {
+  let collectionName = await getContractName(contract, process.env[`RPC_URL_${chainId}`]);
+  if (!collectionName) {
+    collectionName = contract;
+  }
   return {
     id: contract,
     slug: slugify(collectionName, { lower: true }),
     name: collectionName,
     metadata: {
-      description: tokenMetadata.description,
-      imageUrl: tokenMetadata.imageUrl,
+      description: null,
+      imageUrl: null,
     },
     contract,
     tokenSetId: `contract:${contract}`,
