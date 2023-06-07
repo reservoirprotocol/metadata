@@ -4,11 +4,10 @@ import fetch from "node-fetch";
 import slugify from "slugify";
 import { parse } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
+import { supportedChains } from "../shared/utils";
+import _ from "lodash";
 
 const FETCH_TIMEOUT = 30000;
-const ALLOWED_CHAIN_IDS = [
-  1, 5, 10, 56, 137, 42161, 534353, 5001, 59140, 11155111, 80001, 84531, 42170, 999,
-];
 
 const erc721Interface = new ethers.utils.Interface([
   "function supportsInterface(bytes4 interfaceId) view returns (bool)",
@@ -177,9 +176,11 @@ const getTokenMetadataFromURI = async (uri) => {
 
 export const fetchTokens = async (chainId, tokens) => {
   // TODO: Add support for other chains via RPC_URL
+  const network = _.upperCase(supportedChains[chainId]).replace(" ", "_");
+
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
-  if (!ALLOWED_CHAIN_IDS.includes(chainId)) throw new Error("Invalid chainId");
+  if (!process.env[`RPC_URL_${network}`]) throw new Error(`Missing RPC_URL for chain ${network}`);
 
   // Detect token standard, batch contract addresses together to call once per contract
   const contracts = [];
@@ -191,7 +192,7 @@ export const fetchTokens = async (chainId, tokens) => {
 
   const standards = await Promise.all(
     contracts.map(async (contract) => {
-      const standard = await detectTokenStandard(contract, process.env[`RPC_URL_${chainId}`]);
+      const standard = await detectTokenStandard(contract, process.env[`RPC_URL_${network}`]);
       return {
         contract,
         standard,
@@ -213,7 +214,7 @@ export const fetchTokens = async (chainId, tokens) => {
     token.requestId = randomInt;
   });
 
-  const RPC_URL = process.env[`RPC_URL_${chainId}`];
+  const RPC_URL = process.env[`RPC_URL_${network}`];
   const encodedTokens = tokens.map((token) => {
     if (token.standard === "ERC721") {
       return encodeTokenERC721(token);
