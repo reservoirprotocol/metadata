@@ -5,9 +5,9 @@ import {logger} from "../../shared/logger";
 export const extendCollection = async (_chainId, metadata, tokenId) => {
   if (isNaN(tokenId)) {
     logger.error(
-        "opensea-fetcher",
+        "artblocks-extendCollection",
         `Invalid tokenId: 
-          chainId:${chainId}, contract:${contract}, tokenId:${tokenId}`
+          chainId:${_chainId}, contract:${contract}, tokenId:${tokenId}`
     );
   }
 
