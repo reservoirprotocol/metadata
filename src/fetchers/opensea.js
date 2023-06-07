@@ -31,9 +31,8 @@ const getOSNetworkName = (chainId) => {
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
     if (isNaN(tokenId)) {
         logger.error(
-            "opensea-fetcher",
-            `Invalid tokenId: 
-          chainId:${chainId}, contract:${contract}, tokenId:${tokenId}`
+            "opensea-fetchCollection",
+            `Invalid tokenId. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}`
         );
     }
 
