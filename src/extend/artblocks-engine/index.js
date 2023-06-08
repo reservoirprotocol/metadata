@@ -5,9 +5,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
   const endTokenId = startTokenId + 1000000 - 1;
 
   const baseUrl = `${
-    ![4, 5].includes(_chainId)
-      ? "https://token.artblocks.io"
-      : "https://token.staging.artblocks.io"
+    ![4, 5].includes(_chainId) ? "https://token.artblocks.io" : "https://token.staging.artblocks.io"
   }`;
 
   const url = `${baseUrl}/${metadata.contract}/${tokenId}`;
@@ -34,9 +32,7 @@ export const extend = async (_chainId, metadata) => {
   const endTokenId = startTokenId + 1000000 - 1;
 
   const baseUrl = `${
-    ![4, 5].includes(_chainId)
-      ? "https://token.artblocks.io"
-      : "https://token.staging.artblocks.io"
+    ![4, 5].includes(_chainId) ? "https://token.artblocks.io" : "https://token.staging.artblocks.io"
   }`;
 
   const url = `${baseUrl}/${metadata.contract}/${metadata.tokenId}`;
