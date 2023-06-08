@@ -26,10 +26,10 @@ const getNetworkName = (chainId) => {
 };
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
-  try {
-    const network = getNetworkName(chainId);
+  const network = getNetworkName(chainId);
+  const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}/${tokenId}`;
 
-    const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}/${tokenId}`;
+  try {
     const data = await axios
       .get(url, {
         headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
@@ -66,7 +66,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     try {
       logger.error(
         "simplehash-fetcher",
-        `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
+        `fetchCollection error. url:${url}  chainId:${chainId}, contract:${contract}, message:${
           error.message
         },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
       );
@@ -110,7 +110,7 @@ export const fetchTokens = async (chainId, tokens) => {
     .catch((error) => {
       logger.error(
         "simplehash-fetcher",
-        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+        `fetchTokens error. url:${url} chainId:${chainId}, message:${error.message},  status:${
           error.response?.status
         }, data:${JSON.stringify(error.response?.data)}`
       );

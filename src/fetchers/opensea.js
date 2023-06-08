@@ -37,8 +37,9 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       ![4, 5].includes(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
     }`;
 
+    const url = `${baseUrl}/api/v1/events?token_id=${tokenId}&asset_contract_address=${contract}`;
+
     try {
-      const url = `${baseUrl}/api/v1/events?token_id=${tokenId}&asset_contract_address=${contract}`;
       const headers = ![4, 5].includes(chainId)
         ? {
             url,
@@ -81,14 +82,15 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       logger.info(
         "opensea-fetcher",
         `Falling back to asset API for collection: 
-          chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${error.message}, 
+          url:${url} chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${error.message}, 
           status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
       );
     }
 
     if (!data) {
+      const url = `${baseUrl}/api/v1/asset/${contract}/${tokenId}`;
+
       try {
-        const url = `${baseUrl}/api/v1/asset/${contract}/${tokenId}`;
         const headers = ![4, 5].includes(chainId)
           ? {
               url,
@@ -108,7 +110,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       } catch (error) {
         logger.error(
           "opensea-fetcher",
-          `fetchCollection retrieve asset error. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
+          `fetchCollection retrieve asset error.ur:${url} chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
             error.message
           },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
         );
@@ -271,7 +273,7 @@ export const fetchTokens = async (chainId, tokens) => {
     .catch((error) => {
       logger.error(
         "opensea-fetcher",
-        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+        `fetchTokens error. url:${url} chainId:${chainId}, message:${error.message},  status:${
           error.response?.status
         }, data:${JSON.stringify(error.response?.data)}, url:${JSON.stringify(
           error.config?.url
