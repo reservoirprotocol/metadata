@@ -3,7 +3,7 @@ import axios from "axios";
 import {logger} from "../../shared/logger";
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
-  if (isNaN(tokenId)) {
+  if (isNaN(Number(tokenId))) {
     logger.error(
         "artblocks-extendCollection",
         `Invalid tokenId. chainId:${_chainId}, metadata:${JSON.stringify(metadata)}, tokenId:${tokenId}`
