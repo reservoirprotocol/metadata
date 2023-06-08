@@ -29,36 +29,30 @@ const getOSNetworkName = (chainId) => {
 };
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
-    if (isNaN(tokenId)) {
-        logger.error(
-            "opensea-fetchCollection",
-            `Invalid tokenId. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}`
-        );
-    }
-
   try {
     let data;
     const network = getOSNetworkName(chainId);
 
     const baseUrl = `${
-      ![4, 5].includes(chainId)
-        ? "https://api.opensea.io"
-        : "https://testnets-api.opensea.io"
+      ![4, 5].includes(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
     }`;
 
     try {
       const url = `${baseUrl}/api/v1/events?token_id=${tokenId}&asset_contract_address=${contract}`;
       const headers = ![4, 5].includes(chainId)
-          ? {
+        ? {
             url,
             "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
             Accept: "application/json",
           }
-          : {
+        : {
             Accept: "application/json",
           };
 
-      const assetResponse = await axios.get(![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url, { headers });
+      const assetResponse = await axios.get(
+        ![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
+        { headers }
+      );
 
       // Verify chain matches in case of multiple networks with same contract address
       if (network == assetResponse.data.asset_events[0]?.asset.asset_contract.chain_identifier) {
@@ -67,16 +61,19 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         // Try offers API if we get a collection from the wrong chain
         const url = `${baseUrl}/v2/orders/${network}/seaport/offers?asset_contract_address=${contract}&token_ids=${tokenId}`;
         const headers = ![4, 5].includes(chainId)
-            ? {
+          ? {
               url,
               "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
               Accept: "application/json",
             }
-            : {
+          : {
               Accept: "application/json",
             };
 
-        const assetResponse = await axios.get(![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url, { headers });
+        const assetResponse = await axios.get(
+          ![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
+          { headers }
+        );
 
         data = assetResponse.data.orders[0]?.taker_asset_bundle.assets[0];
       }
@@ -93,16 +90,19 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       try {
         const url = `${baseUrl}/api/v1/asset/${contract}/${tokenId}`;
         const headers = ![4, 5].includes(chainId)
-            ? {
+          ? {
               url,
               "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
               Accept: "application/json",
             }
-            : {
+          : {
               Accept: "application/json",
             };
 
-        const assetResponse = await axios.get(![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url, { headers });
+        const assetResponse = await axios.get(
+          ![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
+          { headers }
+        );
 
         data = assetResponse.data;
       } catch (error) {
@@ -115,18 +115,30 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
         // Try to get the collection only based on the contract.
         if (error.response?.status === 404) {
+          if (isNaN(Number(tokenId))) {
+            logger.error(
+              "opensea-fetcher",
+              `fetchCollection retrieve asset contract - Invalid tokenId. chainId:${chainId}, contract:${contract}, tokenId:${tokenId}`
+            );
+
+            throw new Error(`Invalid tokenId.`);
+          }
+
           const url = `${baseUrl}/api/v1/asset_contract/${contract}`;
           const headers = ![4, 5].includes(chainId)
-              ? {
+            ? {
                 url,
                 "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
                 Accept: "application/json",
               }
-              : {
+            : {
                 Accept: "application/json",
               };
 
-          const assetContractResponse = await axios.get(![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url, { headers });
+          const assetContractResponse = await axios.get(
+            ![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
+            { headers }
+          );
 
           data = assetContractResponse.data;
         } else {
