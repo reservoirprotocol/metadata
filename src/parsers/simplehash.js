@@ -17,7 +17,7 @@ export const parse = (asset) => {
     // Token descriptions are a waste of space for most collections we deal with
     // so by default we ignore them (this behaviour can be overridden if needed).
     description: asset.description,
-    originalMetadata: original_metadata,
+    // originalMetadata: original_metadata,
     imageUrl: asset.previews?.image_medium_url ?? asset.image_url,
     imageOriginalUrl: image_original_url,
     animationOriginalUrl: animation_original_url,
