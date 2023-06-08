@@ -92,10 +92,10 @@ export const extend = async (_chainId, metadata) => {
     }
   }
 
-    return {
-        ...metadata,
-        attributes,
-        imageUrl,
-        mediaUrl,
-    };
+  return {
+    ...metadata,
+    attributes,
+    imageUrl,
+    mediaUrl,
+  };
 };

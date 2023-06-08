@@ -10,81 +10,18 @@ import * as onchain from "../../../../../src/fetchers/onchain";
 import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 import { ValidationError } from "../../../../../src/shared/errors";
 import { parse } from "../../../../../src/parsers/opensea";
+import { supportedNetworks } from "../../../../../src/shared/utils";
 import _ from "lodash";
 
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (
-      ![
-        "mainnet",
-        "rinkeby",
-        "goerli",
-        "optimism",
-        "polygon",
-        "arbitrum",
-        "scroll-alpha",
-        "bsc",
-        "mantle-testnet",
-        "linea-testnet",
-        "sepolia",
-        "mumbai",
-        "base-goerli",
-        "arbitrum-nova",
-        "zora-testnet",
-        "prod-goerli",
-      ].includes(network)
-    ) {
+    if (!(network in supportedNetworks)) {
       throw new Error("Unknown network");
     }
 
-    let chainId = 1;
-    switch (network) {
-      case "optimism":
-        chainId = 10;
-        break;
-      case "rinkeby":
-        chainId = 4;
-        break;
-      case "goerli":
-      case "prod-goerli":
-        chainId = 5;
-        break;
-      case "bsc":
-        chainId = 56;
-        break;
-      case "polygon":
-        chainId = 137;
-        break;
-      case "arbitrum":
-        chainId = 42161;
-        break;
-      case "scroll-alpha":
-        chainId = 534353;
-        break;
-      case "mantle-testnet":
-        chainId = 5001;
-        break;
-      case "linea-testnet":
-        chainId = 59140;
-        break;
-      case "sepolia":
-        chainId = 11155111;
-        break;
-      case "mumbai":
-        chainId = 80001;
-        break;
-      case "base-goerli":
-        chainId = 84531;
-        break;
-      case "arbitrum-nova":
-        chainId = 42170;
-        break;
-      case "zora-testnet":
-        chainId = 999;
-        break;
-    }
+    const chainId = supportedNetworks[network];
 
     // Validate indexing method and set up provider
     const method = req.query.method;
