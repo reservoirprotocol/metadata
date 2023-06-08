@@ -21,7 +21,7 @@ export const parse = (asset) => {
     imageUrl: asset.previews?.image_medium_url ?? asset.image_url,
     imageOriginalUrl: image_original_url,
     animationOriginalUrl: animation_original_url,
-    metadataOriginalUrl: metadata_original_url,
+    // metadataOriginalUrl: metadata_original_url,
     imageProperties: asset.image_properties,
     mediaUrl: asset.video_url,
     attributes: (attributes || []).map((trait) => ({
