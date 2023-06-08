@@ -110,7 +110,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       } catch (error) {
         logger.error(
           "opensea-fetcher",
-          `fetchCollection retrieve asset error.ur:${url} chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
+          `fetchCollection retrieve asset error. url:${url} chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
             error.message
           },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
         );
