@@ -38,12 +38,15 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     }`;
 
     const url = `${baseUrl}/api/v1/events?token_id=${tokenId}&asset_contract_address=${contract}`;
+    const apiKey = process.env.OPENSEA_COLLECTION_API_KEY
+      ? process.env.OPENSEA_COLLECTION_API_KEY.trim()
+      : process.env.OPENSEA_API_KEY.trim();
 
     try {
       const headers = ![4, 5].includes(chainId)
         ? {
             url,
-            "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
+            "X-API-KEY": apiKey,
             Accept: "application/json",
           }
         : {
@@ -64,7 +67,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         const headers = ![4, 5].includes(chainId)
           ? {
               url,
-              "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
+              "X-API-KEY": apiKey,
               Accept: "application/json",
             }
           : {
@@ -81,8 +84,9 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     } catch (error) {
       logger.info(
         "opensea-fetcher",
-        `Falling back to asset API for collection: 
-          url:${url} chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${error.message}, 
+        `Falling back to asset API for collection. chainId=${chainId}, url=${url}, apiKey=${apiKey}, contract:${contract}, tokenId:${tokenId}, message:${
+          error.message
+        }, 
           status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
       );
     }
@@ -94,7 +98,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         const headers = ![4, 5].includes(chainId)
           ? {
               url,
-              "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
+              "X-API-KEY": apiKey,
               Accept: "application/json",
             }
           : {
@@ -110,7 +114,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       } catch (error) {
         logger.error(
           "opensea-fetcher",
-          `fetchCollection retrieve asset error. url:${url} chainId:${chainId}, contract:${contract}, tokenId:${tokenId}, message:${
+          `fetchCollection retrieve asset error. chainId=${chainId}, url=${url}, apiKey=${apiKey}, contract:${contract}, tokenId:${tokenId}, message:${
             error.message
           },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
         );
@@ -130,7 +134,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
           const headers = ![4, 5].includes(chainId)
             ? {
                 url,
-                "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
+                "X-API-KEY": apiKey,
                 Accept: "application/json",
               }
             : {
