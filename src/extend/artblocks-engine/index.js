@@ -5,9 +5,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
   const endTokenId = startTokenId + 1000000 - 1;
 
   const baseUrl = `${
-    ![4, 5].includes(_chainId)
-      ? "https://token.artblocks.io"
-      : "https://token.staging.artblocks.io"
+    ![4, 5].includes(_chainId) ? "https://token.artblocks.io" : "https://token.staging.artblocks.io"
   }`;
 
   const url = `${baseUrl}/${metadata.contract}/${tokenId}`;
@@ -23,7 +21,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
     },
     name: data.collection_name,
     community: data.platform.toLowerCase(),
-    id: `${metadata.contract}:${startTokenId}:${endTokenId}`,
+    id: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${metadata.contract}:${startTokenId}:${endTokenId}`,
   };
@@ -34,9 +32,7 @@ export const extend = async (_chainId, metadata) => {
   const endTokenId = startTokenId + 1000000 - 1;
 
   const baseUrl = `${
-    ![4, 5].includes(_chainId)
-      ? "https://token.artblocks.io"
-      : "https://token.staging.artblocks.io"
+    ![4, 5].includes(_chainId) ? "https://token.artblocks.io" : "https://token.staging.artblocks.io"
   }`;
 
   const url = `${baseUrl}/${metadata.contract}/${metadata.tokenId}`;
@@ -61,6 +57,6 @@ export const extend = async (_chainId, metadata) => {
     attributes,
     imageUrl,
     mediaUrl,
-    collection: `${metadata.contract}:${startTokenId}:${endTokenId}`,
+    collection: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
   };
 };
