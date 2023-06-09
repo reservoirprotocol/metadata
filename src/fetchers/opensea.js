@@ -42,7 +42,7 @@ const getHeaders = (chainId, url) => {
       };
 };
 
-const getUrlForApi = (api, chainId, contract, tokenId) => {
+const getUrlForApi = (api, chainId, contract, tokenId, slug) => {
   const network = getOSNetworkName(chainId);
   const baseUrl = `${
     ![4, 5].includes(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
@@ -57,11 +57,13 @@ const getUrlForApi = (api, chainId, contract, tokenId) => {
       return `${baseUrl}/v2/orders/${network}/seaport/offers?asset_contract_address=${contract}&token_ids=${tokenId}`;
     case "asset_contract":
       return `${baseUrl}/api/v1/asset_contract/${contract}`;
+    case "collection":
+      return `${baseUrl}/api/v1/collection/${slug}`;
   }
 };
 
-const getOSData = async (api, chainId, contract, tokenId) => {
-  let url = getUrlForApi(api, chainId, contract, tokenId);
+const getOSData = async (api, chainId, contract, tokenId, slug) => {
+  let url = getUrlForApi(api, chainId, contract, tokenId, slug);
   let headers = getHeaders(chainId, url);
 
   try {
@@ -114,22 +116,33 @@ const getOSData = async (api, chainId, contract, tokenId) => {
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
   try {
     let data;
-
     const network = getOSNetworkName(chainId);
-    const eventResponse = await getOSData("events", chainId, contract, tokenId);
 
-    // Verify chain matches in case of multiple networks with same contract address
-    if (network == eventResponse.data.asset_events[0]?.asset.asset_contract.chain_identifier) {
-      data = eventResponse.data.asset_events[0]?.asset;
-    } else {
-      // Try offers API if we get a collection from the wrong chain
-      const offerResponse = await getOSData("offers", chainId, contract, tokenId);
-      data = offerResponse.data.orders[0]?.taker_asset_bundle.assets[0];
-    }
-
-    if (!data) {
+    if (chainId === 1) {
       const assetResponse = await getOSData("asset", chainId, contract, tokenId);
       data = assetResponse.data;
+    } else {
+      const eventResponse = await getOSData("events", chainId, contract, tokenId);
+
+      // Verify chain matches in case of multiple networks with same contract address
+      if (network == eventResponse.data.asset_events[0]?.asset.asset_contract.chain_identifier) {
+        data = eventResponse.data.asset_events[0]?.asset;
+      } else {
+        // Try offers API if we get a collection from the wrong chain
+        const offerResponse = await getOSData("offers", chainId, contract, tokenId);
+        data = offerResponse.data.orders[0]?.taker_asset_bundle.assets[0];
+      }
+
+      if (!data) {
+        const assetResponse = await getOSData("asset", chainId, contract, tokenId);
+        data = assetResponse.data;
+      }
+
+      // Get payment tokens if we have the collection slug
+      if (data?.collection?.slug && !data.collection.payment_tokens) {
+        const collectionResponse = await getOSData("collection", chainId, contract, tokenId, data.collection.slug);
+        data = collectionResponse.data;
+      }
     }
 
     if (!data?.collection) {
@@ -191,6 +204,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
+      paymentTokens: data.collection.payment_tokens,
     };
   } catch (error) {
     logger.error(
