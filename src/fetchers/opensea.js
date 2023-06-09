@@ -30,20 +30,7 @@ const getOSNetworkName = (chainId) => {
   }
 };
 
-const getHeaders = (chainId, url) => {
-  return ![4, 5].includes(chainId)
-    ? {
-        url,
-        "X-API-KEY": apiKey,
-        Accept: "application/json",
-      }
-    : {
-        Accept: "application/json",
-      };
-};
-
-const getUrlForApi = (api, chainId, contract, tokenId, slug) => {
-  const network = getOSNetworkName(chainId);
+const getUrlForApi = (api, chainId, contract, tokenId, network, slug) => {
   const baseUrl = `${
     ![4, 5].includes(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
   }`;
@@ -63,14 +50,39 @@ const getUrlForApi = (api, chainId, contract, tokenId, slug) => {
 };
 
 const getOSData = async (api, chainId, contract, tokenId, slug) => {
-  let url = getUrlForApi(api, chainId, contract, tokenId, slug);
-  let headers = getHeaders(chainId, url);
+  const network = getOSNetworkName(chainId);  
+  const url = getUrlForApi(api, chainId, contract, tokenId, network, slug);  
+  const headers = ![4, 5].includes(chainId)
+    ? {
+        url,
+        "X-API-KEY": apiKey,
+        Accept: "application/json",
+      }
+    : {
+        Accept: "application/json",
+      };  
 
   try {
-    return await axios.get(
+    const osResponse = await axios.get(
       ![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
       { headers }
     );
+
+    switch(api) {      
+      case "events":
+        // Fallback to offers API if we get a collection from the wrong chain
+        if (network == osResponse.data.asset_events[0]?.asset.asset_contract.chain_identifier) {
+          return osResponse.data.asset_events[0]?.asset;
+        } else {
+          return await getOSData("offers", chainId, contract, tokenId);
+        }
+      case "offers":
+        return osResponse.data.orders[0]?.taker_asset_bundle.assets[0];
+      case "asset":
+      case "asset_contract":
+      case "collection":
+        return osResponse.data;
+    }
   } catch (error) {
     if (api === "asset") {
       logger.error(
@@ -90,14 +102,7 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
 
           throw new Error(`Invalid tokenId.`);
         }
-
-        url = getUrlForApi("asset_contract", chainId, contract, tokenId);
-        headers = getHeaders(chainId, url, apiKey);
-
-        return await axios.get(
-          ![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
-          { headers }
-        );
+        return await getOSData("asset_contract", chainId, contract);
       } else {
         throw error;
       }
@@ -115,33 +120,16 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
   try {
-    let data;
-    const network = getOSNetworkName(chainId);
+    let data;    
 
     if (chainId === 1) {
-      const assetResponse = await getOSData("asset", chainId, contract, tokenId);
-      data = assetResponse.data;
+      data = await getOSData("asset", chainId, contract, tokenId);
     } else {
-      const eventResponse = await getOSData("events", chainId, contract, tokenId);
-
-      // Verify chain matches in case of multiple networks with same contract address
-      if (network == eventResponse.data.asset_events[0]?.asset.asset_contract.chain_identifier) {
-        data = eventResponse.data.asset_events[0]?.asset;
-      } else {
-        // Try offers API if we get a collection from the wrong chain
-        const offerResponse = await getOSData("offers", chainId, contract, tokenId);
-        data = offerResponse.data.orders[0]?.taker_asset_bundle.assets[0];
-      }
-
-      if (!data) {
-        const assetResponse = await getOSData("asset", chainId, contract, tokenId);
-        data = assetResponse.data;
-      }
+      data = await getOSData("events", chainId, contract, tokenId) ?? await getOSData("asset", chainId, contract, tokenId);
 
       // Get payment tokens if we have the collection slug
       if (data?.collection?.slug && !data.collection.payment_tokens) {
-        const collectionResponse = await getOSData("collection", chainId, contract, tokenId, data.collection.slug);
-        data = collectionResponse.data;
+        data = await getOSData("collection", chainId, contract, tokenId, data.collection.slug);
       }
     }
 
