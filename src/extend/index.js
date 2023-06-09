@@ -31,6 +31,8 @@ import * as loot from "./loot";
 import * as goldfinch from "./goldfinch";
 import * as cryptokicksIrl from "./cryptokicks-irl";
 
+export const hasExtendHandler = (chainId, contract) => Boolean(extend[`${chainId},${contract}`]);
+
 export const extendCollectionMetadata = async (chainId, metadata, tokenId = null) => {
   if (metadata) {
     if (Boolean(extendCollection[`${chainId},${metadata.id}`])) {
@@ -68,6 +70,9 @@ extendCollection["1,0x0faed6ddef3773f3ee5828383aaeeaca2a94564a"] = openseaShared
 extendCollection["1,0x13927739076014913a3a7c207ef84c5be4780014"] = openseaSharedContract;
 extendCollection["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
 extendCollection["1,0xb39b20ec770848288a847879f6bc48a4d5e95a0d"] = openseaSharedContract;
+extendCollection["1,0x68d0f6d1d99bb830e17ffaa8adb5bbed9d6eec2e"] = openseaSharedContract;
+extendCollection["1,0x33eecbf908478c10614626a9d304bfe18b78dd73"] = openseaSharedContract;
+extendCollection["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
 // extendCollection["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // CyberKongz
@@ -128,6 +133,7 @@ extendCollection["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngi
 extendCollection["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
 extendCollection["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 extendCollection["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
+extendCollection["5,0xe480a895de49b49e37a8f0a8bd7e07fc9844cdb9"] = artblocksEngine;
 
 // Async Blueprints
 extendCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
@@ -157,6 +163,9 @@ extend["1,0x0faed6ddef3773f3ee5828383aaeeaca2a94564a"] = openseaSharedContract;
 extend["1,0x13927739076014913a3a7c207ef84c5be4780014"] = openseaSharedContract;
 extend["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
 extend["1,0xb39b20ec770848288a847879f6bc48a4d5e95a0d"] = openseaSharedContract;
+extend["1,0x68d0f6d1d99bb830e17ffaa8adb5bbed9d6eec2e"] = openseaSharedContract;
+extend["1,0x33eecbf908478c10614626a9d304bfe18b78dd73"] = openseaSharedContract;
+extend["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
 // extend["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // CyberKongz
@@ -229,6 +238,7 @@ extend["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngine;
 extend["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
 extend["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 extend["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
+extend["5,0xe480a895de49b49e37a8f0a8bd7e07fc9844cdb9"] = artblocksEngine;
 
 // Mirage Gallery Curated
 extend["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;

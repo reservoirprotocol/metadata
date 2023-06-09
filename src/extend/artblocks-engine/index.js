@@ -4,7 +4,11 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
-  const url = `https://token.artblocks.io/${metadata.contract}/${tokenId}`;
+  const baseUrl = `${
+    ![4, 5].includes(_chainId) ? "https://token.artblocks.io" : "https://token.staging.artblocks.io"
+  }`;
+
+  const url = `${baseUrl}/${metadata.contract}/${tokenId}`;
   const { data } = await axios.get(url);
 
   return {
@@ -17,7 +21,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
     },
     name: data.collection_name,
     community: data.platform.toLowerCase(),
-    id: `${metadata.contract}:${startTokenId}:${endTokenId}`,
+    id: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${metadata.contract}:${startTokenId}:${endTokenId}`,
   };
@@ -27,7 +31,11 @@ export const extend = async (_chainId, metadata) => {
   const startTokenId = metadata.tokenId - (metadata.tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
-  const url = `https://token.artblocks.io/${metadata.contract}/${metadata.tokenId}`;
+  const baseUrl = `${
+    ![4, 5].includes(_chainId) ? "https://token.artblocks.io" : "https://token.staging.artblocks.io"
+  }`;
+
+  const url = `${baseUrl}/${metadata.contract}/${metadata.tokenId}`;
   const { data } = await axios.get(url);
 
   const imageUrl = metadata.imageUrl ?? data.image;
@@ -49,6 +57,6 @@ export const extend = async (_chainId, metadata) => {
     attributes,
     imageUrl,
     mediaUrl,
-    collection: `${metadata.contract}:${startTokenId}:${endTokenId}`,
+    collection: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
   };
 };

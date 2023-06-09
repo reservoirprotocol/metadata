@@ -26,6 +26,8 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
           twitterUsername: data.collection.twitter_username,
         };
         metadata.royalties = data.collection.royalties.filter(({ bps }) => bps !== 0);
+      } else {
+        metadata.isFallback = true;
       }
     })
     .catch((error) => {
@@ -48,6 +50,13 @@ export const extend = async (_chainId, metadata) => {
       },
     })
     .then((response) => {
+      logger.info(
+        "ordinals-fetcher-token",
+        `fetchTokens response. chainId:${_chainId}, data:${JSON.stringify(
+          response.data
+        )} contract:${metadata.collection} tokenId:${metadata.tokenId}`
+      );
+
       const data = response.data;
       if (data.collection && data.token) {
         metadata.collection = `${metadata.collection}:ordinals-${data.collection.id}`;
