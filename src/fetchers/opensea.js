@@ -50,8 +50,8 @@ const getUrlForApi = (api, chainId, contract, tokenId, network, slug) => {
 };
 
 const getOSData = async (api, chainId, contract, tokenId, slug) => {
-  const network = getOSNetworkName(chainId);  
-  const url = getUrlForApi(api, chainId, contract, tokenId, network, slug);  
+  const network = getOSNetworkName(chainId);
+  const url = getUrlForApi(api, chainId, contract, tokenId, network, slug);
   const headers = ![4, 5].includes(chainId)
     ? {
         url,
@@ -60,7 +60,7 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
       }
     : {
         Accept: "application/json",
-      };  
+      };
 
   try {
     const osResponse = await axios.get(
@@ -68,7 +68,7 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
       { headers }
     );
 
-    switch(api) {      
+    switch (api) {
       case "events":
         // Fallback to offers API if we get a collection from the wrong chain
         if (network == osResponse.data.asset_events[0]?.asset.asset_contract.chain_identifier) {
@@ -120,12 +120,14 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
   try {
-    let data;    
+    let data;
 
     if (chainId === 1) {
       data = await getOSData("asset", chainId, contract, tokenId);
     } else {
-      data = await getOSData("events", chainId, contract, tokenId) ?? await getOSData("asset", chainId, contract, tokenId);
+      data =
+        (await getOSData("events", chainId, contract, tokenId)) ??
+        (await getOSData("asset", chainId, contract, tokenId));
 
       // Get payment tokens if we have the collection slug
       if (data?.collection?.slug && !data.collection.payment_tokens) {
