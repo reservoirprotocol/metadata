@@ -1,28 +1,30 @@
 import _ from "lodash";
 import axios from "axios";
-import { logger } from "../../shared/logger";
+import slugify from "slugify";
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
-  if (isNaN(Number(tokenId))) {
-    logger.error(
-      "artblocks-extend-collection",
-      `Invalid tokenId. chainId:${_chainId}, metadata:${JSON.stringify(
-        metadata
-      )}, tokenId:${tokenId}`
-    );
-
-    throw new Error(`Unknown tokenId ${tokenId}`);
-  }
-
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
+  const { data } = await axios.get(`https://token.artblocks.io/${tokenId}`);
+
   return {
     ...metadata,
+    metadata: {
+      ...metadata.metadata,
+      imageUrl: metadata.isFallback
+        ? `https://media.artblocks.io/${startTokenId}.png`
+        : metadata?.metadata?.imageUrl,
+      description: data.description,
+      externalUrl: data.website,
+    },
+    name: data.collection_name,
+    slug: metadata.isFallback ? slugify(data.collection_name, { lower: true }) : metadata.slug,
     community: "artblocks",
     id: `${metadata.contract}:${startTokenId}:${endTokenId}`,
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${metadata.contract}:${startTokenId}:${endTokenId}`,
+    isFallback: undefined,
   };
 };
 
