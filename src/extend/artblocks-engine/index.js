@@ -1,4 +1,5 @@
 import axios from "axios";
+import slugify from "slugify";
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
   const startTokenId = tokenId - (tokenId % 1000000);
@@ -20,10 +21,12 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
       externalUrl: data.website,
     },
     name: data.collection_name,
+    slug: metadata.isFallback ? slugify(data.collection_name, { lower: true }) : metadata.slug,
     community: data.platform.toLowerCase(),
     id: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${metadata.contract}:${startTokenId}:${endTokenId}`,
+    isFallback: undefined,
   };
 };
 
