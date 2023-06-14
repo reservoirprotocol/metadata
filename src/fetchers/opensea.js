@@ -27,6 +27,8 @@ const getOSNetworkName = (chainId) => {
       return "matic";
     case 42161:
       return "arbitrum";
+    case 42170:
+      return "arbitrum_nova";
   }
 };
 
