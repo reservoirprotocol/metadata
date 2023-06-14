@@ -1,6 +1,5 @@
-import { defaultAbiCoder, solidityPack } from "ethers/lib/utils";
+import { defaultAbiCoder } from "ethers/lib/utils";
 import { ethers } from "ethers";
-import fetch from "node-fetch";
 import slugify from "slugify";
 import { parse } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
@@ -91,6 +90,10 @@ const encodeTokenERC1155 = (token) => {
   };
 };
 
+const getNetwork = (chainId) => {
+  return _.upperCase(supportedChains[chainId]).replace(" ", "_");
+};
+
 const getContractName = async (contractAddress, rpcURL) => {
   try {
     const provider = new ethers.providers.JsonRpcProvider(rpcURL);
@@ -164,9 +167,6 @@ const getTokenMetadataFromURI = async (uri) => {
     if (uri.includes("ipfs://")) {
       uri = uri.replace("ipfs://", "https://ipfs.io/ipfs/");
     }
-    if (!uri.includes("http")) {
-      return [null, "Invalid URL"];
-    }
 
     const response = await fetch(uri, {
       method: "GET",
@@ -191,7 +191,7 @@ const getTokenMetadataFromURI = async (uri) => {
 
 export const fetchTokens = async (chainId, tokens) => {
   // TODO: Add support for other chains via RPC_URL
-  const network = _.upperCase(supportedChains[chainId]).replace(" ", "_");
+  const network = getNetwork(chainId);
 
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
@@ -292,7 +292,8 @@ export const fetchTokens = async (chainId, tokens) => {
 export const fetchContractTokens = async (chainId, contract, from, to) => {};
 
 export const fetchCollection = async (chainId, { contract }) => {
-  let collectionName = await getContractName(contract, process.env[`RPC_URL_${chainId}`]);
+  const network = getNetwork(chainId);
+  let collectionName = await getContractName(contract, process.env[`RPC_URL_${network}`]);
   if (!collectionName) {
     collectionName = contract;
   }
