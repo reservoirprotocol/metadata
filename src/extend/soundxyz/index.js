@@ -8,10 +8,9 @@ export const SoundxyzArtistContracts = ArtistContracts.map((c) => c.toLowerCase(
 export const SoundxyzReleaseContracts = ReleaseContracts.map((c) => c.toLowerCase());
 
 export const getContractSlug = async (chainId, contract, tokenId) => {
-  const apiUrl =
-    ![4, 5].includes(chainId)
-      ? "https://api.sound.xyz/graphql?x-sound-client-name=firstmate"
-      : "https://staging.api.sound.xyz/graphql";
+  const apiUrl = ![4, 5].includes(chainId)
+    ? "https://api.sound.xyz/graphql?x-sound-client-name=firstmate"
+    : "https://staging.api.sound.xyz/graphql";
 
   const query = `
         query ContractSlug {
