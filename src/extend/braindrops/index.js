@@ -1,14 +1,15 @@
-import { logger } from "../../shared/logger";
-
 export const extendCollection = async (_chainId, metadata, tokenId = null) => {
+  if (isNaN(Number(tokenId))) {
+    throw new Error(`Invalid tokenId ${tokenId}`);
+  }
+
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
   metadata.id = `${metadata.contract}:${startTokenId}:${endTokenId}`;
   metadata.tokenIdRange = [startTokenId, endTokenId];
   metadata.tokenSetId = `range:${metadata.contract}:${startTokenId}:${endTokenId}`;
-
-  logger.info("braindrops", `tokenId = ${tokenId} metadata ${JSON.stringify(metadata)}`);
+  metadata.isFallback = undefined;
 
   return { ...metadata };
 };
