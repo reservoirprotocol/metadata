@@ -14,7 +14,7 @@ const ranks = {
 export const extend = async (_chainId, metadata) => {
   const response = await axios.get(`${metadataBaseURI}/${metadata.tokenId}`);
   const attributes = response.data.attributes.map((a) => ({
-    key: a.trait_type,
+    key: a.trait_type ?? "property",
     value: a.value,
     kind: "string",
     rank: ranks[a.trait_type] !== undefined ? ranks[a.trait_type] : 1,

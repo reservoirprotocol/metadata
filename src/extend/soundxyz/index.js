@@ -125,7 +125,7 @@ export const extend = async (_chainId, metadata) => {
         ? releaseFromToken.eggGame.nft.openSeaMetadataAttributes
         : releaseFromToken.baseMetadataAttributes) || []
     ).map((trait) => ({
-      key: trait.traitType || "property",
+      key: trait.traitType ?? "property",
       value: trait.value,
       kind: typeof trait.value == "number" ? "number" : "string",
       rank: 1,

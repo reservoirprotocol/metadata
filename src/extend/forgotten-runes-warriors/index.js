@@ -24,7 +24,7 @@ export const extend = async (_chainId, metadata) => {
   metadata.attributes.forEach((attribute) => {
     const attributeKey = attribute.key.charAt(0).toUpperCase() + attribute.key.slice(1);
     attributes.push({
-      key: attributeKey,
+      key: attributeKey ?? "property",
       rank: rank[attributeKey] ? rank[attributeKey] : null,
       value: attribute.value,
       kind: "string",
@@ -36,7 +36,7 @@ export const extend = async (_chainId, metadata) => {
   // Add Name attributes
   for (var attribute of ["Name", "Title", "Affiliation"]) {
     attributes.push({
-      key: attribute,
+      key: attribute ?? "property",
       rank: rankCopy[attribute] ? rankCopy[attribute] : null,
       value: warriors[metadata.tokenId][attribute],
       kind: "string",
@@ -48,7 +48,7 @@ export const extend = async (_chainId, metadata) => {
   // Add 'None' value for missing attributes
   for (var attribute of Object.keys(rankCopy)) {
     attributes.push({
-      key: attribute,
+      key: attribute ?? "property",
       rank: rankCopy[attribute] ? rankCopy[attribute] : null,
       value: "None",
       kind: "string",
