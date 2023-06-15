@@ -25,7 +25,7 @@ export const parse = (asset) => {
     imageProperties: asset.image_properties,
     mediaUrl: asset.video_url,
     attributes: (attributes || []).map((trait) => ({
-      key: trait.trait_type,
+      key: trait.trait_type ?? "property",
       value: trait.value,
       kind: typeof trait.value == "number" ? "number" : "string",
       rank: 1,
