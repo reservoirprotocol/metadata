@@ -164,5 +164,6 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
     community: "sound.xyz",
     royalties,
     tokenSetId: null,
+    isFallback: undefined,
   };
 };

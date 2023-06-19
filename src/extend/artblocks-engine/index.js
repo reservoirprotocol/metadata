@@ -1,6 +1,11 @@
 import axios from "axios";
+import slugify from "slugify";
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
+  if (isNaN(Number(tokenId))) {
+    throw new Error(`Invalid tokenId ${tokenId}`);
+  }
+
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
@@ -20,10 +25,12 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
       externalUrl: data.website,
     },
     name: data.collection_name,
+    slug: metadata.isFallback ? slugify(data.collection_name, { lower: true }) : metadata.slug,
     community: data.platform.toLowerCase(),
     id: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${metadata.contract}:${startTokenId}:${endTokenId}`,
+    isFallback: undefined,
   };
 };
 
