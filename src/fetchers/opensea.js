@@ -196,7 +196,16 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
-      paymentTokens: data.collection.payment_tokens,
+      paymentTokens: data.collection.payment_tokens
+        ? data.collection.payment_tokens.map((token) => {
+            return {
+              address: token.address,
+              decimals: token.decimals,
+              name: token.name,
+              symbol: token.symbol,
+            };
+          })
+        : undefined,
     };
   } catch (error) {
     logger.error(
