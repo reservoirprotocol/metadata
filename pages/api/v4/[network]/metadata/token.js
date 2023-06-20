@@ -94,6 +94,7 @@ const api = async (req, res) => {
         throw error;
       }
     }
+
     // Case 2: fetch all tokens within the given contract via pagination
     const contract = req.query.contract?.toLowerCase();
     if (contract && !method === "onchain") {

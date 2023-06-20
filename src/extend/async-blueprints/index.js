@@ -11,6 +11,10 @@ const getCollectionTokenIdRange = (tokenId) => {
 };
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
+  if (isNaN(Number(tokenId))) {
+    throw new Error(`Invalid tokenId ${tokenId}`);
+  }
+
   const collectionTokenIdRange = getCollectionTokenIdRange(tokenId);
 
   if (collectionTokenIdRange) {
@@ -19,6 +23,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
     metadata.id = `${contract.toLowerCase()}:${startTokenId}:${endTokenId}`;
     metadata.tokenIdRange = [startTokenId, endTokenId];
     metadata.tokenSetId = `range:${contract.toLowerCase()}:${startTokenId}:${endTokenId}`;
+    metadata.isFallback = undefined;
   }
 
   return metadata;

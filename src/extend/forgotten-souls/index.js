@@ -31,7 +31,7 @@ export const extend = async (_chainId, metadata) => {
   metadata.attributes.forEach((attribute) => {
     const attributeKey = attribute.key.charAt(0).toUpperCase() + attribute.key.slice(1);
     attributes.push({
-      key: attributeKey,
+      key: attributeKey ?? "property",
       rank: rank[attributeKey] ? rank[attributeKey] : null,
       value: attribute.value,
       kind: "string",
@@ -51,7 +51,7 @@ export const extend = async (_chainId, metadata) => {
     for (var attribute of ["Title", "Name", "Origin"]) {
       if (String(metadata.tokenId) in souls) {
         attributes.push({
-          key: attribute,
+          key: attribute ?? "property",
           rank: rank[attribute],
           value: souls[metadata.tokenId][attribute.toLowerCase()],
           kind: "string",
@@ -63,7 +63,7 @@ export const extend = async (_chainId, metadata) => {
     for (var trait of ["Head", "Body", "Familiar", "Prop", "Rune"]) {
       if (!coreTraits[trait]) {
         attributes.push({
-          key: trait,
+          key: trait ?? "property",
           rank: rank[trait],
           value: "None",
           kind: "string",

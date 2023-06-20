@@ -20,8 +20,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
   metadata.id = `${metadata.contract}:${startTokenId}:${endTokenId}`;
   metadata.tokenIdRange = [startTokenId, endTokenId];
   metadata.tokenSetId = `range:${metadata.contract}:${startTokenId}:${endTokenId}`;
-
-  logger.info("cyberkongz", `tokenId = ${tokenId} metadata ${JSON.stringify(metadata)}`);
+  metadata.isFallback = undefined;
 
   return { ...metadata };
 };

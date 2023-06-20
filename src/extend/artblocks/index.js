@@ -3,6 +3,10 @@ import axios from "axios";
 import slugify from "slugify";
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
+  if (isNaN(Number(tokenId))) {
+    throw new Error(`Invalid tokenId ${tokenId}`);
+  }
+
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 

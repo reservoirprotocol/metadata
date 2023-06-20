@@ -11,6 +11,10 @@ function getProjectID(tokenId) {
 }
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
+  if (isNaN(Number(tokenId))) {
+    throw new Error(`Invalid tokenId ${tokenId}`);
+  }
+
   const projectID = getProjectID(tokenId);
 
   const url = `https://account.miragegallery.ai/curated-details.json`;
@@ -57,6 +61,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
     royalties,
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${metadata.contract}:${startTokenId}:${endTokenId}`,
+    isFallback: undefined,
   };
 };
 

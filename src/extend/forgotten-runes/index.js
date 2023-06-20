@@ -20,7 +20,7 @@ export const extend = async (_chainId, metadata) => {
   let attributes = [];
   for (const trait of Object.keys(rank)) {
     attributes.push({
-      key: trait,
+      key: trait ?? "property",
       rank: rank[trait],
       value: wizards[metadata.tokenId][trait],
       kind: "string",
