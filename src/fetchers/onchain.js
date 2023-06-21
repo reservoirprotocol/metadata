@@ -1,7 +1,7 @@
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import slugify from "slugify";
-import { parse } from "../parsers/onchain";
+import { parse, normalizeLink } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
 import { supportedChains } from "../shared/utils";
 import _ from "lodash";
@@ -104,6 +104,34 @@ const getContractName = async (contractAddress, rpcURL) => {
     );
     const name = await contract.name();
     return name;
+  } catch (e) {
+    return null;
+  }
+};
+
+const getCollectionMetadata = async (contractAddress, rpcURL) => {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+    const contract = new ethers.Contract(
+      contractAddress,
+      ["function contractURI() view returns (string)"],
+      provider
+    );
+    let uri = await contract.contractURI();
+    uri = normalizeLink(uri);
+
+    const response = await fetch(uri, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      timeout: FETCH_TIMEOUT,
+      // TODO: add proxy support to avoid rate limiting
+      // agent:
+    });
+
+    const json = await response.json();
+    return json;
   } catch (e) {
     return null;
   }
@@ -293,17 +321,22 @@ export const fetchContractTokens = async (chainId, contract, from, to) => {};
 
 export const fetchCollection = async (chainId, { contract }) => {
   const network = getNetwork(chainId);
-  let collectionName = await getContractName(contract, process.env[`RPC_URL_${network}`]);
+  const collection = await getCollectionMetadata(contract, process.env[`RPC_URL_${network}`]);
+  let collectionName = collection?.name ?? null;
+
+  // Fallback for collection name if collection metadata not found
   if (!collectionName) {
-    collectionName = contract;
+    collectionName =
+      (await getContractName(contract, process.env[`RPC_URL_${network}`])) ?? contract;
   }
+
   return {
     id: contract,
     slug: slugify(collectionName, { lower: true }),
     name: collectionName,
     metadata: {
-      description: null,
-      imageUrl: null,
+      description: collection?.description ?? null,
+      imageUrl: normalizeLink(collection?.image) ?? null,
     },
     contract,
     tokenSetId: `contract:${contract}`,
