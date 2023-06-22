@@ -13,7 +13,7 @@ import { supportedNetworks } from "../../../../../src/shared/utils";
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
-    const network = req.query.network;
+    const network = req.query.network.replace("prod-goerli", "goerli");
     if (!(network in supportedNetworks)) {
       throw new Error("Unknown network");
     }
