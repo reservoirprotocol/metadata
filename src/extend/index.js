@@ -30,6 +30,7 @@ import * as forgottenRunesAthenaeum from "./forgotten-runes-athenaeum";
 import * as loot from "./loot";
 import * as goldfinch from "./goldfinch";
 import * as cryptokicksIrl from "./cryptokicks-irl";
+import * as boysOfSummer from "./boys-of-summer";
 
 export const hasExtendHandler = (chainId, contract) => Boolean(extend[`${chainId},${contract}`]);
 
@@ -206,6 +207,8 @@ extend["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
 // Feral File
 extend["1,0x2a86c5466f088caebf94e071a77669bae371cd87"] = feralFile;
 
+// Boys of Summer
+extend["5,0x7ba399e03ca7598b2e6d56ba97961282edc9ad65"] = boysOfSummer;
 // BrainDrops
 extend["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;
 
