@@ -11,7 +11,7 @@ export const extend = async (_chainId, metadata) => {
     provider
   );
 
-  const immutableAttributeURI = await nft.immutableAttributeURI(+metadata.tokenId);
+  const immutableAttributeURI = await nft.immutableAttributeURI(metadata.tokenId);
 
   const immutableAttributes = await axios
     .get(immutableAttributeURI)
