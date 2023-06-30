@@ -120,19 +120,25 @@ const getCollectionMetadata = async (contractAddress, rpcURL) => {
     let uri = await contract.contractURI();
     uri = normalizeLink(uri);
 
-    const response = await fetch(uri, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      timeout: FETCH_TIMEOUT,
-      // TODO: add proxy support to avoid rate limiting
-      // agent:
-    });
+    const isDataUri = uri.startsWith("data:application/json;base64,");
+    if (isDataUri) {
+      uri = uri.replace("data:application/json;base64,", "");
+    }
 
-    const json = await response.json();
+    const json = isDataUri
+      ? JSON.parse(Buffer.from(uri, "base64").toString("utf-8"))
+      : await fetch(uri, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          timeout: FETCH_TIMEOUT,
+          // TODO: add proxy support to avoid rate limiting
+          // agent:
+        }).then((response) => response.json());
+
     return json;
-  } catch (e) {
+  } catch {
     return null;
   }
 };
@@ -196,22 +202,31 @@ const getTokenMetadataFromURI = async (uri) => {
       uri = uri.replace("ipfs://", "https://ipfs.io/ipfs/");
     }
 
-    const response = await fetch(uri, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      timeout: FETCH_TIMEOUT,
-      // TODO: add proxy support to avoid rate limiting
-      // agent:
-    });
-
-    if (!response.ok) {
-      return [null, response.status];
+    const isDataUri = uri.startsWith("data:application/json;base64,");
+    if (isDataUri) {
+      uri = uri.replace("data:application/json;base64,", "");
     }
 
-    const json = await response.json();
-    return [json, null];
+    if (isDataUri) {
+      return [JSON.parse(Buffer.from(uri, "base64").toString("utf-8")), null];
+    } else {
+      const response = await fetch(uri, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: FETCH_TIMEOUT,
+        // TODO: add proxy support to avoid rate limiting
+        // agent:
+      });
+
+      if (!response.ok) {
+        return [null, response.status];
+      }
+
+      const json = await response.json();
+      return [json, null];
+    }
   } catch (e) {
     return [null, e.message];
   }
