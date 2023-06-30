@@ -8,6 +8,7 @@ import * as simplehash from "../../../../../src/fetchers/simplehash";
 import * as centerdev from "../../../../../src/fetchers/centerdev";
 import * as soundxyz from "../../../../../src/fetchers/soundxyz";
 import * as onchain from "../../../../../src/fetchers/onchain";
+import * as manifold from "../../../../../src/fetchers/manifold";
 import { supportedNetworks } from "../../../../../src/shared/utils";
 
 const api = async (req, res) => {
@@ -23,7 +24,15 @@ const api = async (req, res) => {
     // Validate indexing method and set up provider
     const method = req.query.method;
     if (
-      !["opensea", "rarible", "simplehash", "centerdev", "soundxyz", "onchain"].includes(method)
+      ![
+        "opensea",
+        "rarible",
+        "simplehash",
+        "centerdev",
+        "soundxyz",
+        "onchain",
+        "manifold",
+      ].includes(method)
     ) {
       throw new Error("Unknown method");
     }
@@ -39,6 +48,8 @@ const api = async (req, res) => {
       provider = soundxyz;
     } else if (method === "onchain") {
       provider = onchain;
+    } else if (method === "manifold") {
+      provider = manifold;
     }
 
     const token = req.query.token?.toLowerCase();
@@ -57,6 +68,8 @@ const api = async (req, res) => {
 
     let collection = null;
     collection = await provider.fetchCollection(chainId, {
+      // Pass on any custom fields
+      ...req.query,
       contract,
       tokenId,
     });
