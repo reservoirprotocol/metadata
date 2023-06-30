@@ -30,6 +30,7 @@ import * as forgottenRunesAthenaeum from "./forgotten-runes-athenaeum";
 import * as loot from "./loot";
 import * as goldfinch from "./goldfinch";
 import * as cryptokicksIrl from "./cryptokicks-irl";
+import * as boysOfSummer from "./boys-of-summer";
 
 export const hasExtendHandler = (chainId, contract) => Boolean(extend[`${chainId},${contract}`]);
 
@@ -131,6 +132,7 @@ extendCollection["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngi
 extendCollection["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
 extendCollection["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 extendCollection["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
+extendCollection["1,0xea698596b6009a622c3ed00dd5a8b5d1cae4fc36"] = artblocksEngine;
 extendCollection["5,0xe480a895de49b49e37a8f0a8bd7e07fc9844cdb9"] = artblocksEngine;
 
 // Async Blueprints
@@ -206,6 +208,8 @@ extend["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
 // Feral File
 extend["1,0x2a86c5466f088caebf94e071a77669bae371cd87"] = feralFile;
 
+// Boys of Summer
+extend["5,0x7ba399e03ca7598b2e6d56ba97961282edc9ad65"] = boysOfSummer;
 // BrainDrops
 extend["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;
 
@@ -234,6 +238,7 @@ extend["1,0x62e37f664b5945629b6549a87f8e10ed0b6d923b"] = artblocksEngine;
 extend["1,0x0a1bbd57033f57e7b6743621b79fcb9eb2ce3676"] = artblocksEngine;
 extend["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 extend["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
+extend["1,0xea698596b6009a622c3ed00dd5a8b5d1cae4fc36"] = artblocksEngine;
 extend["5,0xe480a895de49b49e37a8f0a8bd7e07fc9844cdb9"] = artblocksEngine;
 
 // Mirage Gallery Curated

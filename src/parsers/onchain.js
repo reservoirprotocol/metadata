@@ -22,7 +22,7 @@ export const parse = (asset) => {
   };
 };
 
-const normalizeLink = (link) => {
+export const normalizeLink = (link) => {
   if (!link) return null;
   if (link.startsWith("ipfs://")) {
     return `https://ipfs.io/ipfs/${link.slice(7)}`;

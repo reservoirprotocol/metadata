@@ -1,7 +1,7 @@
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import slugify from "slugify";
-import { parse } from "../parsers/onchain";
+import { parse, normalizeLink } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
 import { supportedChains } from "../shared/utils";
 import _ from "lodash";
@@ -109,6 +109,40 @@ const getContractName = async (contractAddress, rpcURL) => {
   }
 };
 
+const getCollectionMetadata = async (contractAddress, rpcURL) => {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+    const contract = new ethers.Contract(
+      contractAddress,
+      ["function contractURI() view returns (string)"],
+      provider
+    );
+    let uri = await contract.contractURI();
+    uri = normalizeLink(uri);
+
+    const isDataUri = uri.startsWith("data:application/json;base64,");
+    if (isDataUri) {
+      uri = uri.replace("data:application/json;base64,", "");
+    }
+
+    const json = isDataUri
+      ? JSON.parse(Buffer.from(uri, "base64").toString("utf-8"))
+      : await fetch(uri, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          timeout: FETCH_TIMEOUT,
+          // TODO: add proxy support to avoid rate limiting
+          // agent:
+        }).then((response) => response.json());
+
+    return json;
+  } catch {
+    return null;
+  }
+};
+
 const createBatch = (encodedTokens) => {
   return encodedTokens.map((token) => {
     return {
@@ -168,22 +202,31 @@ const getTokenMetadataFromURI = async (uri) => {
       uri = uri.replace("ipfs://", "https://ipfs.io/ipfs/");
     }
 
-    const response = await fetch(uri, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      timeout: FETCH_TIMEOUT,
-      // TODO: add proxy support to avoid rate limiting
-      // agent:
-    });
-
-    if (!response.ok) {
-      return [null, response.status];
+    const isDataUri = uri.startsWith("data:application/json;base64,");
+    if (isDataUri) {
+      uri = uri.replace("data:application/json;base64,", "");
     }
 
-    const json = await response.json();
-    return [json, null];
+    if (isDataUri) {
+      return [JSON.parse(Buffer.from(uri, "base64").toString("utf-8")), null];
+    } else {
+      const response = await fetch(uri, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: FETCH_TIMEOUT,
+        // TODO: add proxy support to avoid rate limiting
+        // agent:
+      });
+
+      if (!response.ok) {
+        return [null, response.status];
+      }
+
+      const json = await response.json();
+      return [json, null];
+    }
   } catch (e) {
     return [null, e.message];
   }
@@ -293,17 +336,22 @@ export const fetchContractTokens = async (chainId, contract, from, to) => {};
 
 export const fetchCollection = async (chainId, { contract }) => {
   const network = getNetwork(chainId);
-  let collectionName = await getContractName(contract, process.env[`RPC_URL_${network}`]);
+  const collection = await getCollectionMetadata(contract, process.env[`RPC_URL_${network}`]);
+  let collectionName = collection?.name ?? null;
+
+  // Fallback for collection name if collection metadata not found
   if (!collectionName) {
-    collectionName = contract;
+    collectionName =
+      (await getContractName(contract, process.env[`RPC_URL_${network}`])) ?? contract;
   }
+
   return {
     id: contract,
     slug: slugify(collectionName, { lower: true }),
     name: collectionName,
     metadata: {
-      description: null,
-      imageUrl: null,
+      description: collection?.description ?? null,
+      imageUrl: normalizeLink(collection?.image) ?? null,
     },
     contract,
     tokenSetId: `contract:${contract}`,
