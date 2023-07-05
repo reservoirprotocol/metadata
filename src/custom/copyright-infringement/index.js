@@ -27,5 +27,6 @@ export const fetchToken = async (_chainId, { contract, tokenId }) => {
     metadataOriginalUrl: null,
     mediaUrl: null,
     attributes: [],
+    isCopyrightInfringement: true,
   };
 };
