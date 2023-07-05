@@ -1,5 +1,5 @@
 export const extendCollection = async (chainId, metadata, tokenId) => {
-    metadata.id = `${metadata.contract}:${metadata.slug}`;
+    metadata.id = `${metadata.contract}:courtyard-${metadata.slug}`;
     metadata.tokenIdRange = null;
     metadata.tokenSetId = null;
   
@@ -7,7 +7,7 @@ export const extendCollection = async (chainId, metadata, tokenId) => {
   };
   
   export const extend = async (chainId, metadata) => {
-    metadata.collection = `${metadata.contract}:${metadata.slug}`;
+    metadata.collection = `${metadata.contract}:courtyard-${metadata.slug}`;
     return { ...metadata };
   };
   
