@@ -31,6 +31,7 @@ import * as loot from "./loot";
 import * as goldfinch from "./goldfinch";
 import * as cryptokicksIrl from "./cryptokicks-irl";
 import * as boysOfSummer from "./boys-of-summer";
+import * as courtyard from "./courtyard";
 
 export const hasExtendHandler = (chainId, contract) => Boolean(extend[`${chainId},${contract}`]);
 
@@ -73,6 +74,9 @@ extendCollection["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaShared
 extendCollection["1,0x68d0f6d1d99bb830e17ffaa8adb5bbed9d6eec2e"] = openseaSharedContract;
 extendCollection["1,0x33eecbf908478c10614626a9d304bfe18b78dd73"] = openseaSharedContract;
 extendCollection["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
+
+// Courtyard
+extendCollection["1,0xd4ac3ce8e1e14cd60666d49ac34ff2d2937cf6fa"] = courtyard;
 
 // CyberKongz
 extendCollection["1,0x57a204aa1042f6e66dd7730813f4024114d74f37"] = cyberkongz;
@@ -165,6 +169,9 @@ extend["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
 extend["1,0x68d0f6d1d99bb830e17ffaa8adb5bbed9d6eec2e"] = openseaSharedContract;
 extend["1,0x33eecbf908478c10614626a9d304bfe18b78dd73"] = openseaSharedContract;
 extend["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
+
+// Courtyard
+extend["1,0xd4ac3ce8e1e14cd60666d49ac34ff2d2937cf6fa"] = courtyard;
 
 // CyberKongz
 extend["1,0x57a204aa1042f6e66dd7730813f4024114d74f37"] = cyberkongz;
