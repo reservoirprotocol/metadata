@@ -10,4 +10,3 @@ export const extendCollection = async (chainId, metadata, tokenId) => {
     metadata.collection = `${metadata.contract}:courtyard-${metadata.slug}`;
     return { ...metadata };
   };
-  
