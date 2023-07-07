@@ -42,14 +42,15 @@ const api = async (req, res) => {
         throw new Error("Unknown method for this endpoint.");
       }
 
-      if (hasCustomHandler(chainId, metadata.contract)) {
-        return res
-          .status(400)
-          .json({ message: `The contract ${metadata.contract} has a custom handler.` });
-      }
-
       const body = JSON.parse(JSON.stringify(req.body));
       let metadata = parse(body);
+
+      if (hasCustomHandler(chainId, metadata.contract)) {
+        return res
+            .status(400)
+            .json({ message: `The contract ${metadata.contract} has a custom handler.` });
+      }
+
       metadata = await extendMetadata(chainId, metadata);
       return res.status(200).json(metadata);
     }
