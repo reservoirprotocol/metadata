@@ -31,6 +31,7 @@ import * as loot from "./loot";
 import * as goldfinch from "./goldfinch";
 import * as cryptokicksIrl from "./cryptokicks-irl";
 import * as boysOfSummer from "./boys-of-summer";
+import * as courtyard from "./courtyard";
 
 export const hasExtendHandler = (chainId, contract) => Boolean(extend[`${chainId},${contract}`]);
 
@@ -73,6 +74,9 @@ extendCollection["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaShared
 extendCollection["1,0x68d0f6d1d99bb830e17ffaa8adb5bbed9d6eec2e"] = openseaSharedContract;
 extendCollection["1,0x33eecbf908478c10614626a9d304bfe18b78dd73"] = openseaSharedContract;
 extendCollection["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
+
+// Courtyard
+extendCollection["1,0xd4ac3ce8e1e14cd60666d49ac34ff2d2937cf6fa"] = courtyard;
 
 // CyberKongz
 extendCollection["1,0x57a204aa1042f6e66dd7730813f4024114d74f37"] = cyberkongz;
@@ -134,6 +138,7 @@ extendCollection["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngi
 extendCollection["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
 extendCollection["1,0xea698596b6009a622c3ed00dd5a8b5d1cae4fc36"] = artblocksEngine;
 extendCollection["5,0xe480a895de49b49e37a8f0a8bd7e07fc9844cdb9"] = artblocksEngine;
+extendCollection["42161,0x47a91457a3a1f700097199fd63c039c4784384ab"] = artblocksEngine;
 
 // Async Blueprints
 extendCollection["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
@@ -165,6 +170,9 @@ extend["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
 extend["1,0x68d0f6d1d99bb830e17ffaa8adb5bbed9d6eec2e"] = openseaSharedContract;
 extend["1,0x33eecbf908478c10614626a9d304bfe18b78dd73"] = openseaSharedContract;
 extend["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
+
+// Courtyard
+extend["1,0xd4ac3ce8e1e14cd60666d49ac34ff2d2937cf6fa"] = courtyard;
 
 // CyberKongz
 extend["1,0x57a204aa1042f6e66dd7730813f4024114d74f37"] = cyberkongz;
@@ -240,6 +248,7 @@ extend["1,0x942bc2d3e7a589fe5bd4a5c6ef9727dfd82f5c8a"] = artblocksEngine;
 extend["1,0x32d4be5ee74376e08038d652d4dc26e62c67f436"] = artblocksEngine;
 extend["1,0xea698596b6009a622c3ed00dd5a8b5d1cae4fc36"] = artblocksEngine;
 extend["5,0xe480a895de49b49e37a8f0a8bd7e07fc9844cdb9"] = artblocksEngine;
+extend["42161,0x47a91457a3a1f700097199fd63c039c4784384ab"] = artblocksEngine;
 
 // Mirage Gallery Curated
 extend["1,0xb7ec7bbd2d2193b47027247fc666fb342d23c4b5"] = mirageGalleryCurated;
