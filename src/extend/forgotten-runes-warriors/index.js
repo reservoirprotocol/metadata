@@ -18,46 +18,45 @@ const rank = {
 };
 
 export const extend = async (_chainId, metadata) => {
-    var rankCopy = JSON.parse(JSON.stringify(rank));
-    let attributes = [];
+  var rankCopy = JSON.parse(JSON.stringify(rank));
+  let attributes = [];
 
-    metadata.attributes.forEach(attribute => {
+  metadata.attributes.forEach((attribute) => {
     const attributeKey = attribute.key.charAt(0).toUpperCase() + attribute.key.slice(1);
-        attributes.push({
-            key: attributeKey,
-            rank: rank[attributeKey] ? rank[attributeKey] : null,
-            value: attribute.value,
-            kind: "string",
-        });
-
-        delete rankCopy[attributeKey];
+    attributes.push({
+      key: attributeKey ?? "property",
+      rank: rank[attributeKey] ? rank[attributeKey] : null,
+      value: attribute.value,
+      kind: "string",
     });
 
-    // Add Name attributes
-    for (var attribute of ["Name", "Title", "Affiliation"]) {
-        attributes.push({
-          key: attribute,
-          rank: rankCopy[attribute] ? rankCopy[attribute] : null,
-          value: warriors[metadata.tokenId][attribute],
-          kind: "string",
-        });
+    delete rankCopy[attributeKey];
+  });
 
-        delete rankCopy[attribute];
-    }
+  // Add Name attributes
+  for (var attribute of ["Name", "Title", "Affiliation"]) {
+    attributes.push({
+      key: attribute ?? "property",
+      rank: rankCopy[attribute] ? rankCopy[attribute] : null,
+      value: warriors[metadata.tokenId][attribute],
+      kind: "string",
+    });
 
-    // Add 'None' value for missing attributes
-    for (var attribute of Object.keys(rankCopy)) {
-        attributes.push({
-          key: attribute,
-          rank: rankCopy[attribute] ? rankCopy[attribute] : null,
-          value: "None",
-          kind: "string",
-        });
-      }
+    delete rankCopy[attribute];
+  }
 
-    return {
-        ...metadata,
-        attributes,
-    };
+  // Add 'None' value for missing attributes
+  for (var attribute of Object.keys(rankCopy)) {
+    attributes.push({
+      key: attribute ?? "property",
+      rank: rankCopy[attribute] ? rankCopy[attribute] : null,
+      value: "None",
+      kind: "string",
+    });
+  }
+
+  return {
+    ...metadata,
+    attributes,
+  };
 };
-  

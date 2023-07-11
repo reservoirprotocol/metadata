@@ -25,7 +25,7 @@ export const extend = async (_chainId, metadata) => {
   const attributes = newMetadata.attributes.map((a) => {
     attributesMap[a.trait_type] = a.value;
     return {
-      key: a.trait_type,
+      key: a.trait_type ?? "property",
       value: a.value,
       kind: "string",
       rank: 1,
@@ -92,10 +92,10 @@ export const extend = async (_chainId, metadata) => {
     }
   }
 
-    return {
-        ...metadata,
-        attributes,
-        imageUrl,
-        mediaUrl,
-    };
+  return {
+    ...metadata,
+    attributes,
+    imageUrl,
+    mediaUrl,
+  };
 };

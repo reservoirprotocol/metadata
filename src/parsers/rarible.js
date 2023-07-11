@@ -24,7 +24,7 @@ export const parse = (asset) => {
     const attributes = asset.meta.attributes?.reduce((result, trait) => {
       if (trait.value) {
         result.push({
-          key: trait.key,
+          key: trait.key ?? "property",
           value: trait.value,
           kind: isNaN(trait.value) ? "string" : "number",
           rank: 1,

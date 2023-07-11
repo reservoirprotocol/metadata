@@ -18,62 +18,62 @@ const rank = {
 };
 
 export const extend = async (_chainId, metadata) => {
-    let attributes = [];
-    let isUndesirable = false;
-    let coreTraits = {
-        Head: "",
-        Body: "",
-        Familiar: "",
-        Prop: "",
-        Rune: "",
-    };
+  let attributes = [];
+  let isUndesirable = false;
+  let coreTraits = {
+    Head: "",
+    Body: "",
+    Familiar: "",
+    Prop: "",
+    Rune: "",
+  };
 
-    metadata.attributes.forEach(attribute => {
-        const attributeKey = attribute.key.charAt(0).toUpperCase() + attribute.key.slice(1);
-        attributes.push({
-            key: attributeKey,
-            rank: rank[attributeKey] ? rank[attributeKey] : null,
-            value: attribute.value,
-            kind: "string",
-        });
-
-        if (attributeKey === "Undesirable") {
-            isUndesirable = true;
-        }
-
-        if (attributeKey in coreTraits) {
-            coreTraits[attributeKey] = attribute.value;
-        }
+  metadata.attributes.forEach((attribute) => {
+    const attributeKey = attribute.key.charAt(0).toUpperCase() + attribute.key.slice(1);
+    attributes.push({
+      key: attributeKey ?? "property",
+      rank: rank[attributeKey] ? rank[attributeKey] : null,
+      value: attribute.value,
+      kind: "string",
     });
 
-    if (!isUndesirable) {
-        // Add name traits
-        for (var attribute of ["Title", "Name", "Origin"]) {
-          if (String(metadata.tokenId) in souls) {
-            attributes.push({
-              key: attribute,
-              rank: rank[attribute],
-              value: souls[metadata.tokenId][attribute.toLowerCase()],
-              kind: "string",
-            });
-          }
-        }
-
-        // Add None value for core traits
-        for (var trait of ["Head", "Body", "Familiar", "Prop", "Rune"]) {
-          if (!coreTraits[trait]) {
-            attributes.push({
-              key: trait,
-              rank: rank[trait],
-              value: "None",
-              kind: "string",
-            });
-          }
-        }
+    if (attributeKey === "Undesirable") {
+      isUndesirable = true;
     }
 
-    return {
-        ...metadata,
-        attributes,
-    };
+    if (attributeKey in coreTraits) {
+      coreTraits[attributeKey] = attribute.value;
+    }
+  });
+
+  if (!isUndesirable) {
+    // Add name traits
+    for (var attribute of ["Title", "Name", "Origin"]) {
+      if (String(metadata.tokenId) in souls) {
+        attributes.push({
+          key: attribute ?? "property",
+          rank: rank[attribute],
+          value: souls[metadata.tokenId][attribute.toLowerCase()],
+          kind: "string",
+        });
+      }
+    }
+
+    // Add None value for core traits
+    for (var trait of ["Head", "Body", "Familiar", "Prop", "Rune"]) {
+      if (!coreTraits[trait]) {
+        attributes.push({
+          key: trait ?? "property",
+          rank: rank[trait],
+          value: "None",
+          kind: "string",
+        });
+      }
+    }
+  }
+
+  return {
+    ...metadata,
+    attributes,
+  };
 };
