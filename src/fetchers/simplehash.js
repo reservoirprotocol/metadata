@@ -61,7 +61,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
-      creator: data.contract.deployed_by,
+      creator: _.toLower(data.contract.deployed_by),
     };
   } catch {
     try {

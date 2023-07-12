@@ -6,6 +6,7 @@ import { getProvider } from "../shared/utils";
 import { logger } from "../shared/logger";
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
+import _ from "lodash";
 
 const apiKey = process.env.OPENSEA_COLLECTION_API_KEY
   ? process.env.OPENSEA_COLLECTION_API_KEY.trim()
@@ -206,7 +207,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
             };
           })
         : undefined,
-      creator: data.creator.address,
+      creator: _.toLower(data.creator.address),
     };
   } catch (error) {
     logger.error(
