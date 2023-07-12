@@ -34,11 +34,11 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       .get(url, {
         headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
       })
-      .then((response) => response.data.collection);
+      .then((response) => response.data);
 
-    let slug = slugify(data.name, { lower: true });
-    if (_.isArray(data.marketplace_pages)) {
-      for (const market of data.marketplace_pages) {
+    let slug = slugify(data.collection.name, { lower: true });
+    if (_.isArray(data.collection.marketplace_pages)) {
+      for (const market of data.collection.marketplace_pages) {
         if (market.marketplace_id === "opensea") {
           slug = slugify(market.marketplace_collection_id, { lower: true });
         }
@@ -48,20 +48,20 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     return {
       id: contract,
       slug,
-      name: data.name,
+      name: data.collection.name,
       community: null,
       metadata: {
-        description: data.description,
-        imageUrl: data.image_url,
-        bannerImageUrl: data.banner_image_url,
-        discordUrl: data.discord_url,
-        externalUrl: data.external_url,
-        twitterUsername: data.twitter_username,
+        description: data.collection.description,
+        imageUrl: data.collection.image_url,
+        bannerImageUrl: data.collection.banner_image_url,
+        discordUrl: data.collection.discord_url,
+        externalUrl: data.collection.external_url,
+        twitterUsername: data.collection.twitter_username,
       },
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
-      // creator: data.contract.deployed_by,
+      creator: data.contract.deployed_by,
     };
   } catch {
     try {
