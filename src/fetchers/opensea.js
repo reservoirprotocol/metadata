@@ -206,6 +206,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
             };
           })
         : undefined,
+      creator: data.creator.address,
     };
   } catch (error) {
     logger.error(
