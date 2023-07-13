@@ -105,9 +105,6 @@ extendCollection["1,0x3b3ee1931dc30c1957379fac9aba94d1c48a5405"] = sharedContrac
 // Zora
 extendCollection["1,0xabefbc9fd2f806065b4f3c237d4b59d9a97bcac7"] = sharedContracts;
 
-// Emblem Vault
-extendCollection["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
-
 // Feral File
 extendCollection["1,0x2a86c5466f088caebf94e071a77669bae371cd87"] = feralFile;
 
@@ -209,9 +206,6 @@ extend["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
 
 // tfoust
 tfoust.CollectiblesCollections.forEach((c) => (extend[`137,${c}`] = tfoust));
-
-// Emblem Vault
-extend["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
 
 // Feral File
 extend["1,0x2a86c5466f088caebf94e071a77669bae371cd87"] = feralFile;
