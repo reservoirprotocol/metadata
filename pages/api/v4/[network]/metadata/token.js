@@ -47,8 +47,8 @@ const api = async (req, res) => {
 
       if (hasCustomHandler(chainId, metadata.contract)) {
         return res
-            .status(400)
-            .json({ message: `The contract ${metadata.contract} has a custom handler.` });
+          .status(400)
+          .json({ message: `The contract ${metadata.contract} has a custom handler.` });
       }
 
       metadata = await extendMetadata(chainId, metadata);
