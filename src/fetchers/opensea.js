@@ -225,7 +225,9 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       "opensea-fetcher",
       JSON.stringify({
         topic: "fetchCollectionError",
-        message: `Could not fetch collection. error=${JSON.stringify(error)}`,
+        message: `Could not fetch collection. error=${JSON.stringify(error)}, errorMessage=${
+          error.message
+        }`,
         chainId,
         contract,
         tokenId,
