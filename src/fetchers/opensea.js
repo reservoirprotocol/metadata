@@ -90,9 +90,15 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
     if (api === "asset") {
       logger.error(
         "opensea-fetcher",
-        `fetchCollection retrieve asset error. chainId=${chainId}, url=${url}, apiKey=${apiKey}, contract:${contract}, tokenId:${tokenId}, message:${
-          error.message
-        },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
+        JSON.stringify({
+          topic: "getOSData",
+          message: "Retrieve asset error.",
+          chainId,
+          url,
+          contract,
+          tokenId,
+          error,
+        })
       );
 
       // Try to get the collection only based on the contract.
@@ -110,12 +116,17 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
         throw error;
       }
     } else {
-      logger.info(
+      logger.error(
         "opensea-fetcher",
-        `Could not fetch from ${api} API. chainId=${chainId}, url=${url}, apiKey=${apiKey}, contract:${contract}, tokenId:${tokenId}, message:${
-          error.message
-        }, 
-          status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
+        JSON.stringify({
+          topic: "getOSData",
+          message: "Could not fetch from API",
+          chainId,
+          url,
+          contract,
+          tokenId,
+          error,
+        })
       );
     }
   }
@@ -214,6 +225,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       "opensea-fetcher",
       JSON.stringify({
         topic: "fetchCollectionError",
+        message: `Could not fetch collection. error=${JSON.stringify(error)}`,
         chainId,
         contract,
         tokenId,
