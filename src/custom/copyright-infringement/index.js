@@ -8,6 +8,8 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     contract,
     tokenIdRange: null,
     tokenSetId: `contract:${contract}`,
+    royalties: [],
+    openseaRoyalties: [],
     isCopyrightInfringement: true,
   };
 };
