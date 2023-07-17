@@ -9,11 +9,11 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
-  let baseUrl = 'https://token.artblocks.io';
+  let baseUrl = "https://token.artblocks.io";
   if (_chainId === 42161) {
-    baseUrl = 'https://token.arbitrum.artblocks.io';
+    baseUrl = "https://token.arbitrum.artblocks.io";
   } else if ([4, 5].includes(_chainId)) {
-    baseUrl = 'https://token.staging.artblocks.io';
+    baseUrl = "https://token.staging.artblocks.io";
   }
 
   const url = `${baseUrl}/${metadata.contract}/${tokenId}`;
@@ -41,11 +41,11 @@ export const extend = async (_chainId, metadata) => {
   const startTokenId = metadata.tokenId - (metadata.tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
-  let baseUrl = 'https://token.artblocks.io';
+  let baseUrl = "https://token.artblocks.io";
   if (_chainId === 42161) {
-    baseUrl = 'https://token.arbitrum.artblocks.io';
+    baseUrl = "https://token.arbitrum.artblocks.io";
   } else if ([4, 5].includes(_chainId)) {
-    baseUrl = 'https://token.staging.artblocks.io';
+    baseUrl = "https://token.staging.artblocks.io";
   }
 
   const url = `${baseUrl}/${metadata.contract}/${metadata.tokenId}`;
