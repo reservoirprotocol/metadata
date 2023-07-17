@@ -218,16 +218,14 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
             };
           })
         : undefined,
-      creator: _.toLower(data.creator.address),
+      creator: data.creator?.address ? _.toLower(data.creator.address) : null,
     };
   } catch (error) {
     logger.error(
       "opensea-fetcher",
       JSON.stringify({
         topic: "fetchCollectionError",
-        message: `Could not fetch collection. error=${JSON.stringify(error)}, errorMessage=${
-          error.message
-        }`,
+        message: `Could not fetch collection. error=${error.message}`,
         chainId,
         contract,
         tokenId,
