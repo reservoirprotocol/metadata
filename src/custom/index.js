@@ -62,6 +62,9 @@ customCollection["137,0xfd6b19ed681d621277d372fe9585dfe9b8a95510"] = copyrightIn
 
 customCollection["5,0x002cb3af46ad013a98b174a61711c0f725084bc0"] = copyrightInfringement;
 
+// Emblem Vault - temporary to prevent trading during migration
+customCollection["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = copyrightInfringement;
+
 ////////////////
 // Custom Tokens
 ////////////////
@@ -106,3 +109,6 @@ custom["137,0x5919fc8d26cf5869cd892a752b67e31c35357bfb"] = copyrightInfringement
 custom["137,0xfd6b19ed681d621277d372fe9585dfe9b8a95510"] = copyrightInfringement;
 
 custom["5,0x002cb3af46ad013a98b174a61711c0f725084bc0"] = copyrightInfringement;
+
+// Emblem Vault - temporary to prevent trading during migration
+custom["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = copyrightInfringement;
