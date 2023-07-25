@@ -1,14 +1,12 @@
-import { defaultAbiCoder, solidityPack } from "ethers/lib/utils";
+import { defaultAbiCoder } from "ethers/lib/utils";
 import { ethers } from "ethers";
-import fetch from "node-fetch";
 import slugify from "slugify";
-import { parse } from "../parsers/onchain";
+import { parse, normalizeLink } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
+import { supportedChains } from "../shared/utils";
+import _ from "lodash";
 
 const FETCH_TIMEOUT = 30000;
-const ALLOWED_CHAIN_IDS = [
-  1, 5, 10, 56, 137, 42161, 534353, 5001, 59140, 11155111, 80001, 84531, 42170, 999,
-];
 
 const erc721Interface = new ethers.utils.Interface([
   "function supportsInterface(bytes4 interfaceId) view returns (bool)",
@@ -92,6 +90,59 @@ const encodeTokenERC1155 = (token) => {
   };
 };
 
+const getNetwork = (chainId) => {
+  return _.upperCase(supportedChains[chainId]).replace(" ", "_");
+};
+
+const getContractName = async (contractAddress, rpcURL) => {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+    const contract = new ethers.Contract(
+      contractAddress,
+      ["function name() view returns (string)"],
+      provider
+    );
+    const name = await contract.name();
+    return name;
+  } catch (e) {
+    return null;
+  }
+};
+
+const getCollectionMetadata = async (contractAddress, rpcURL) => {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+    const contract = new ethers.Contract(
+      contractAddress,
+      ["function contractURI() view returns (string)"],
+      provider
+    );
+    let uri = await contract.contractURI();
+    uri = normalizeLink(uri);
+
+    const isDataUri = uri.startsWith("data:application/json;base64,");
+    if (isDataUri) {
+      uri = uri.replace("data:application/json;base64,", "");
+    }
+
+    const json = isDataUri
+      ? JSON.parse(Buffer.from(uri, "base64").toString("utf-8"))
+      : await fetch(uri, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          timeout: FETCH_TIMEOUT,
+          // TODO: add proxy support to avoid rate limiting
+          // agent:
+        }).then((response) => response.json());
+
+    return json;
+  } catch {
+    return null;
+  }
+};
+
 const createBatch = (encodedTokens) => {
   return encodedTokens.map((token) => {
     return {
@@ -150,26 +201,32 @@ const getTokenMetadataFromURI = async (uri) => {
     if (uri.includes("ipfs://")) {
       uri = uri.replace("ipfs://", "https://ipfs.io/ipfs/");
     }
-    if (!uri.includes("http")) {
-      return [null, "Invalid URL"];
+
+    const isDataUri = uri.startsWith("data:application/json;base64,");
+    if (isDataUri) {
+      uri = uri.replace("data:application/json;base64,", "");
     }
 
-    const response = await fetch(uri, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      timeout: FETCH_TIMEOUT,
-      // TODO: add proxy support to avoid rate limiting
-      // agent:
-    });
+    if (isDataUri) {
+      return [JSON.parse(Buffer.from(uri, "base64").toString("utf-8")), null];
+    } else {
+      const response = await fetch(uri, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: FETCH_TIMEOUT,
+        // TODO: add proxy support to avoid rate limiting
+        // agent:
+      });
 
-    if (!response.ok) {
-      return [null, response.status];
+      if (!response.ok) {
+        return [null, response.status];
+      }
+
+      const json = await response.json();
+      return [json, null];
     }
-
-    const json = await response.json();
-    return [json, null];
   } catch (e) {
     return [null, e.message];
   }
@@ -177,9 +234,11 @@ const getTokenMetadataFromURI = async (uri) => {
 
 export const fetchTokens = async (chainId, tokens) => {
   // TODO: Add support for other chains via RPC_URL
+  const network = getNetwork(chainId);
+
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
-  if (!ALLOWED_CHAIN_IDS.includes(chainId)) throw new Error("Invalid chainId");
+  if (!process.env[`RPC_URL_${network}`]) throw new Error(`Missing RPC_URL for chain ${network}`);
 
   // Detect token standard, batch contract addresses together to call once per contract
   const contracts = [];
@@ -191,7 +250,7 @@ export const fetchTokens = async (chainId, tokens) => {
 
   const standards = await Promise.all(
     contracts.map(async (contract) => {
-      const standard = await detectTokenStandard(contract, process.env[`RPC_URL_${chainId}`]);
+      const standard = await detectTokenStandard(contract, process.env[`RPC_URL_${network}`]);
       return {
         contract,
         standard,
@@ -213,7 +272,7 @@ export const fetchTokens = async (chainId, tokens) => {
     token.requestId = randomInt;
   });
 
-  const RPC_URL = process.env[`RPC_URL_${chainId}`];
+  const RPC_URL = process.env[`RPC_URL_${network}`];
   const encodedTokens = tokens.map((token) => {
     if (token.standard === "ERC721") {
       return encodeTokenERC721(token);
@@ -275,16 +334,24 @@ export const fetchTokens = async (chainId, tokens) => {
 
 export const fetchContractTokens = async (chainId, contract, from, to) => {};
 
-export const fetchCollection = async (chainId, { contract, tokenId }) => {
-  const [tokenMetadata] = await fetchTokens(chainId, { contract, tokenId });
-  const collectionName = tokenMetadata.name ? tokenMetadata.name.split(" ")[0].trim() : "";
+export const fetchCollection = async (chainId, { contract }) => {
+  const network = getNetwork(chainId);
+  const collection = await getCollectionMetadata(contract, process.env[`RPC_URL_${network}`]);
+  let collectionName = collection?.name ?? null;
+
+  // Fallback for collection name if collection metadata not found
+  if (!collectionName) {
+    collectionName =
+      (await getContractName(contract, process.env[`RPC_URL_${network}`])) ?? contract;
+  }
+
   return {
     id: contract,
     slug: slugify(collectionName, { lower: true }),
     name: collectionName,
     metadata: {
-      description: tokenMetadata.description,
-      imageUrl: tokenMetadata.imageUrl,
+      description: collection?.description ?? null,
+      imageUrl: normalizeLink(collection?.image) ?? null,
     },
     contract,
     tokenSetId: `contract:${contract}`,

@@ -4,45 +4,41 @@ import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
-import { getProvider } from "../shared/utils";
+import { supportedChains, getProvider } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
 
 const getNetworkName = (chainId) => {
-  let network;
-  if (chainId === 1) {
-    network = "ethereum";
-  } else if (chainId === 10) {
-    network = "optimism";
-  } else if (chainId === 56) {
-    network = "bsc";
-  } else if (chainId === 137) {
-    network = "polygon";
-  } else if (chainId === 42161) {
-    network = "arbitrum";
-  } else if (chainId === 5) {
-    network = "ethereum-goerli";
-  } else {
+  const network = supportedChains[chainId];
+  if (!network) {
     throw new Error("Unsupported chain id");
+  }
+
+  if (network == "mainnet") {
+    return "ethereum";
+  }
+
+  if (network == "goerli") {
+    return "ethereum-goerli";
   }
 
   return network;
 };
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
-  try {
-    const network = getNetworkName(chainId);
+  const network = getNetworkName(chainId);
+  const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}/${tokenId}`;
 
-    const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}/${tokenId}`;
+  try {
     const data = await axios
       .get(url, {
         headers: { "X-API-KEY": process.env.SIMPLEHASH_API_KEY.trim() },
       })
-      .then((response) => response.data.collection);
+      .then((response) => response.data);
 
-    let slug = slugify(data.name, { lower: true });
-    if (_.isArray(data.marketplace_pages)) {
-      for (const market of data.marketplace_pages) {
+    let slug = slugify(data.collection.name, { lower: true });
+    if (_.isArray(data.collection.marketplace_pages)) {
+      for (const market of data.collection.marketplace_pages) {
         if (market.marketplace_id === "opensea") {
           slug = slugify(market.marketplace_collection_id, { lower: true });
         }
@@ -52,25 +48,26 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     return {
       id: contract,
       slug,
-      name: data.name,
+      name: data.collection.name,
       community: null,
       metadata: {
-        description: data.description,
-        imageUrl: data.image_url,
-        bannerImageUrl: data.banner_image_url,
-        discordUrl: data.discord_url,
-        externalUrl: data.external_url,
-        twitterUsername: data.twitter_username,
+        description: data.collection.description,
+        imageUrl: data.collection.image_url,
+        bannerImageUrl: data.collection.banner_image_url,
+        discordUrl: data.collection.discord_url,
+        externalUrl: data.collection.external_url,
+        twitterUsername: data.collection.twitter_username,
       },
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
+      creator: _.toLower(data.contract.deployed_by),
     };
   } catch {
     try {
       logger.error(
         "simplehash-fetcher",
-        `fetchCollection error. chainId:${chainId}, contract:${contract}, message:${
+        `fetchCollection error. url:${url}  chainId:${chainId}, contract:${contract}, message:${
           error.message
         },  status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
       );
@@ -114,7 +111,7 @@ export const fetchTokens = async (chainId, tokens) => {
     .catch((error) => {
       logger.error(
         "simplehash-fetcher",
-        `fetchTokens error. chainId:${chainId}, message:${error.message},  status:${
+        `fetchTokens error. url:${url} chainId:${chainId}, message:${error.message},  status:${
           error.response?.status
         }, data:${JSON.stringify(error.response?.data)}`
       );

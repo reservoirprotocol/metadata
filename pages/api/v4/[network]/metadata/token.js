@@ -1,4 +1,10 @@
-import { extendMetadata } from "../../../../../src/extend";
+import {
+  customHandleContractTokens,
+  customHandleToken,
+  hasCustomHandler,
+} from "../../../../../src/custom";
+
+import { extendMetadata, hasExtendHandler } from "../../../../../src/extend";
 
 import * as opensea from "../../../../../src/fetchers/opensea";
 import * as rarible from "../../../../../src/fetchers/rarible";
@@ -10,79 +16,18 @@ import * as onchain from "../../../../../src/fetchers/onchain";
 import { RequestWasThrottledError } from "../../../../../src/fetchers/errors";
 import { ValidationError } from "../../../../../src/shared/errors";
 import { parse } from "../../../../../src/parsers/opensea";
+import { supportedNetworks } from "../../../../../src/shared/utils";
 import _ from "lodash";
 
 const api = async (req, res) => {
   try {
     // Validate network and detect chain id
     const network = req.query.network;
-    if (
-      ![
-        "mainnet",
-        "rinkeby",
-        "goerli",
-        "optimism",
-        "polygon",
-        "arbitrum",
-        "scroll-alpha",
-        "bsc",
-        "mantle-testnet",
-        "linea-testnet",
-        "sepolia",
-        "mumbai",
-        "base-goerli",
-        "arbitrum-nova",
-        "misc-testnet",
-      ].includes(network)
-    ) {
+    if (!(network in supportedNetworks)) {
       throw new Error("Unknown network");
     }
 
-    let chainId = 1;
-    switch (network) {
-      case "optimism":
-        chainId = 10;
-        break;
-      case "rinkeby":
-        chainId = 4;
-        break;
-      case "goerli":
-        chainId = 5;
-        break;
-      case "bsc":
-        chainId = 56;
-        break;
-      case "polygon":
-        chainId = 137;
-        break;
-      case "arbitrum":
-        chainId = 42161;
-        break;
-      case "scroll-alpha":
-        chainId = 534353;
-        break;
-      case "mantle-testnet":
-        chainId = 5001;
-        break;
-      case "linea-testnet":
-        chainId = 59140;
-        break;
-      case "sepolia":
-        chainId = 11155111;
-        break;
-      case "mumbai":
-        chainId = 80001;
-        break;
-      case "base-goerli":
-        chainId = 84531;
-        break;
-      case "arbitrum-nova":
-        chainId = 42170;
-        break;
-      case "misc-testnet":
-        chainId = 999;
-        break;
-    }
+    const chainId = supportedNetworks[network];
 
     // Validate indexing method and set up provider
     const method = req.query.method;
@@ -96,8 +41,16 @@ const api = async (req, res) => {
       if (method !== "opensea") {
         throw new Error("Unknown method for this endpoint.");
       }
+
       const body = JSON.parse(JSON.stringify(req.body));
       let metadata = parse(body);
+
+      if (hasCustomHandler(chainId, metadata.contract)) {
+        return res
+          .status(400)
+          .json({ message: `The contract ${metadata.contract} has a custom handler.` });
+      }
+
       metadata = await extendMetadata(chainId, metadata);
       return res.status(200).json(metadata);
     }
@@ -125,6 +78,10 @@ const api = async (req, res) => {
         }
         const [contract, slug] = collectionSlug.split(":");
 
+        if (hasCustomHandler(chainId, contract) || hasExtendHandler(chainId, contract)) {
+          throw new ValidationError("Custom handler is not supported with collection slug.");
+        }
+
         let newContinuation, previousContinuation;
         const newMetadata = await Promise.all(
           await provider
@@ -151,22 +108,28 @@ const api = async (req, res) => {
         throw error;
       }
     }
+
     // Case 2: fetch all tokens within the given contract via pagination
     const contract = req.query.contract?.toLowerCase();
     if (contract && !method === "onchain") {
-      try {
-        const result = await Promise.all(
-          await provider
-            .fetchContractTokens(chainId, contract, continuation)
-            .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
-        );
-
+      if (hasCustomHandler(chainId, contract)) {
+        const result = await customHandleContractTokens(chainId, contract, continuation);
         return res.status(200).json(result);
-      } catch (error) {
-        if (error instanceof RequestWasThrottledError) {
-          return res.status(429).json({ error: error.message, expires_in: error.delay });
+      } else {
+        try {
+          const result = await Promise.all(
+            await provider
+              .fetchContractTokens(chainId, contract, continuation)
+              .then((l) => l.map((metadata) => extendMetadata(chainId, metadata)))
+          );
+
+          return res.status(200).json(result);
+        } catch (error) {
+          if (error instanceof RequestWasThrottledError) {
+            return res.status(429).json({ error: error.message, expires_in: error.delay });
+          }
+          throw error;
         }
-        throw error;
       }
     }
 
@@ -201,7 +164,18 @@ const api = async (req, res) => {
       throw new Error("Too many tokens");
     }
 
+    // Filter out tokens that have custom handlers
+    const customTokens = [];
+    tokens = tokens.filter((token) => {
+      if (hasCustomHandler(chainId, token.contract)) {
+        customTokens.push(token);
+        return false;
+      }
+      return true;
+    });
+
     let metadata = [];
+
     if (tokens.length) {
       try {
         let newMetadata = await Promise.allSettled(
@@ -223,6 +197,13 @@ const api = async (req, res) => {
         }
         throw error;
       }
+    }
+
+    if (customTokens.length) {
+      metadata = [
+        ...metadata,
+        ...(await Promise.all(customTokens.map((token) => customHandleToken(chainId, token)))),
+      ];
     }
 
     return res.status(200).json({ metadata });

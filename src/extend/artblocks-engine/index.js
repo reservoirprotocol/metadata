@@ -1,10 +1,22 @@
 import axios from "axios";
+import slugify from "slugify";
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
+  if (isNaN(Number(tokenId))) {
+    throw new Error(`Invalid tokenId ${tokenId}`);
+  }
+
   const startTokenId = tokenId - (tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
-  const url = `https://token.artblocks.io/${metadata.contract}/${tokenId}`;
+  let baseUrl = "https://token.artblocks.io";
+  if (_chainId === 42161) {
+    baseUrl = "https://token.arbitrum.artblocks.io";
+  } else if ([4, 5].includes(_chainId)) {
+    baseUrl = "https://token.staging.artblocks.io";
+  }
+
+  const url = `${baseUrl}/${metadata.contract}/${tokenId}`;
   const { data } = await axios.get(url);
 
   return {
@@ -16,10 +28,12 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
       externalUrl: data.website,
     },
     name: data.collection_name,
+    slug: metadata.isFallback ? slugify(data.collection_name, { lower: true }) : metadata.slug,
     community: data.platform.toLowerCase(),
-    id: `${metadata.contract}:${startTokenId}:${endTokenId}`,
+    id: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
     tokenIdRange: [startTokenId, endTokenId],
     tokenSetId: `range:${metadata.contract}:${startTokenId}:${endTokenId}`,
+    isFallback: undefined,
   };
 };
 
@@ -27,7 +41,14 @@ export const extend = async (_chainId, metadata) => {
   const startTokenId = metadata.tokenId - (metadata.tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
-  const url = `https://token.artblocks.io/${metadata.contract}/${metadata.tokenId}`;
+  let baseUrl = "https://token.artblocks.io";
+  if (_chainId === 42161) {
+    baseUrl = "https://token.arbitrum.artblocks.io";
+  } else if ([4, 5].includes(_chainId)) {
+    baseUrl = "https://token.staging.artblocks.io";
+  }
+
+  const url = `${baseUrl}/${metadata.contract}/${metadata.tokenId}`;
   const { data } = await axios.get(url);
 
   const imageUrl = metadata.imageUrl ?? data.image;
@@ -49,6 +70,6 @@ export const extend = async (_chainId, metadata) => {
     attributes,
     imageUrl,
     mediaUrl,
-    collection: `${metadata.contract}:${startTokenId}:${endTokenId}`,
+    collection: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
   };
 };

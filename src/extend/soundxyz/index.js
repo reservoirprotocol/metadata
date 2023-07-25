@@ -8,10 +8,9 @@ export const SoundxyzArtistContracts = ArtistContracts.map((c) => c.toLowerCase(
 export const SoundxyzReleaseContracts = ReleaseContracts.map((c) => c.toLowerCase());
 
 export const getContractSlug = async (chainId, contract, tokenId) => {
-  const apiUrl =
-    chainId === 1
-      ? "https://api.sound.xyz/graphql?x-sound-client-name=firstmate"
-      : "https://staging.api.sound.xyz/graphql";
+  const apiUrl = ![4, 5].includes(chainId)
+    ? "https://api.sound.xyz/graphql?x-sound-client-name=firstmate"
+    : "https://staging.api.sound.xyz/graphql";
 
   const query = `
         query ContractSlug {
@@ -126,7 +125,7 @@ export const extend = async (_chainId, metadata) => {
         ? releaseFromToken.eggGame.nft.openSeaMetadataAttributes
         : releaseFromToken.baseMetadataAttributes) || []
     ).map((trait) => ({
-      key: trait.traitType || "property",
+      key: trait.traitType ?? "property",
       value: trait.value,
       kind: typeof trait.value == "number" ? "number" : "string",
       rank: 1,
@@ -165,5 +164,6 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
     community: "sound.xyz",
     royalties,
     tokenSetId: null,
+    isFallback: undefined,
   };
 };
