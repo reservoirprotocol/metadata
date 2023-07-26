@@ -263,7 +263,9 @@ export const fetchTokens = async (chainId, tokens) => {
   try {
     if (tokens.length === 1 && ![1, 4, 5].includes(chainId)) {
       const singleTokenData = await getOSData("events", chainId, tokens[0].contract, tokens[0].tokenId);
-      return [parse(singleTokenData)];
+      if (singleTokenData) {
+        return [parse(singleTokenData)];
+      }
     }
   } catch {
     logger.error(
