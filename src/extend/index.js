@@ -1,37 +1,37 @@
 import * as adidasOriginals from "./adidas-originals";
 import * as admitOne from "./admit-one";
 import * as artTennis from "./art-tennis";
-import * as mutantApeYachtClub from "./mutant-ape-yacht-club";
-import * as boredApeKennelClub from "./bored-ape-kennel-club";
-import * as nouns from "./nouns";
-import * as lilnouns from "./lilnouns";
-import * as chimpers from "./chimpers";
-import * as moonbirds from "./moonbirds";
-import * as soundxyz from "./soundxyz";
-import * as bayc from "./bayc";
-import * as asyncBlueprints from "./async-blueprints";
-import * as feralFile from "./feral-file";
-import * as tfoust from "./tfoust";
-import * as sharedContracts from "./shared-contracts";
-import * as cyberkongz from "./cyberkongz";
-import * as emblemVault from "./emblem-vault";
-import * as brainDrops from "./braindrops";
-import * as quantumArt from "./quantum-art";
-import * as shreddingSassy from "./shredding-sassy";
-import * as openseaSharedContract from "./opensea-shared-contract";
 import * as artblocks from "./artblocks";
 import * as artblocksEngine from "./artblocks-engine";
-import * as mirageGalleryCurated from "./mirage-gallery-curated";
+import * as asyncBlueprints from "./async-blueprints";
+import * as bayc from "./bayc";
+import * as boredApeKennelClub from "./bored-ape-kennel-club";
+import * as boysOfSummer from "./boys-of-summer";
+import * as brainDrops from "./braindrops";
+import * as chimpers from "./chimpers";
+import * as courtyard from "./courtyard";
+import * as cryptokicksIrl from "./cryptokicks-irl";
+import * as cyberkongz from "./cyberkongz";
+import * as feralFile from "./feral-file";
 import * as forgottenPonies from "./forgotten-ponies";
 import * as forgottenRunes from "./forgotten-runes";
-import * as forgottenSouls from "./forgotten-souls";
-import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 import * as forgottenRunesAthenaeum from "./forgotten-runes-athenaeum";
-import * as loot from "./loot";
+import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
+import * as forgottenSouls from "./forgotten-souls";
 import * as goldfinch from "./goldfinch";
-import * as cryptokicksIrl from "./cryptokicks-irl";
-import * as boysOfSummer from "./boys-of-summer";
-import * as courtyard from "./courtyard";
+import * as lilnouns from "./lilnouns";
+import * as loot from "./loot";
+import * as mirageGalleryCurated from "./mirage-gallery-curated";
+import * as moonbirds from "./moonbirds";
+import * as mutantApeYachtClub from "./mutant-ape-yacht-club";
+import * as nouns from "./nouns";
+import * as openseaSharedContract from "./opensea-shared-contract";
+import * as quantumArt from "./quantum-art";
+import * as sharedContracts from "./shared-contracts";
+import * as shreddingSassy from "./shredding-sassy";
+import * as soundxyz from "./soundxyz";
+import * as tfoust from "./tfoust";
+import * as utopiaAvatars from "./utopia-avatars";
 
 export const hasExtendHandler = (chainId, contract) => Boolean(extend[`${chainId},${contract}`]);
 
@@ -271,3 +271,6 @@ extend["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
 
 // Cryptokicks IRL
 extend["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
+
+// Utopia Avatars
+extend["1,0x5f076e995290f3f9aea85fdd06d8fae118f2b75c"] = utopiaAvatars;
