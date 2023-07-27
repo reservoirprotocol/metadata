@@ -259,21 +259,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 };
 
 export const fetchTokens = async (chainId, tokens) => {
-  // Handle single token fetch on non-mainnet chains
-  try {
-    if (tokens.length === 1 && ![1, 4, 5].includes(chainId)) {
-      const singleTokenData = await getOSData("events", chainId, tokens[0].contract, tokens[0].tokenId);
-      if (singleTokenData) {
-        return [parse(singleTokenData)];
-      }
-    }
-  } catch {
-    logger.error(
-      "opensea-fetcher",
-      `fetchTokens error for single token. chainId:${chainId}, contract:${tokens[0].contract}, tokenId:${tokens[0].tokenId}`
-    )
-  }
-
   const searchParams = new URLSearchParams();
   for (const { contract, tokenId } of tokens) {
     searchParams.append("asset_contract_addresses", contract);
