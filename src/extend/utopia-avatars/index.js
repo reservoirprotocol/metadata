@@ -6,13 +6,12 @@ export const extend = async (_chainId, metadata) => {
 
   let attributes = [];
 
-  const avatarKeys = Objects.keys(relevantAvatar);
-  const avatarValues = Objects.values(relevantAvatar);
+  const avatarKeys = Object.keys(relevantAvatar);
+  const avatarValues = Object.values(relevantAvatar);
 
   for (let i = 0; i < avatarKeys.length; i++) {
-    const attributeKey = avatarKeys[i].charAt(0).toUpperCase() + avatarKeys[i].slice(1);
     attributes.push({
-      key: attributeKey ?? "property",
+      key: avatarKeys[i],
       value: avatarValues[i],
       kind: "string",
     });
