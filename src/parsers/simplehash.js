@@ -16,7 +16,7 @@ export const parse = (asset) => {
     collection: _.toLower(asset.contract_address),
     slug: asset.collection.marketplace_pages.filter(
       (market) => market.marketplace_id === "opensea"
-    )[0].marketplace_collection_id ?? undefined,
+    )[0]?.marketplace_collection_id ?? undefined,
     // Token descriptions are a waste of space for most collections we deal with
     // so by default we ignore them (this behaviour can be overridden if needed).
     description: asset.description,
