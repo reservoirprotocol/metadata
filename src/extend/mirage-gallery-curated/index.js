@@ -1,5 +1,4 @@
 import axios from "axios";
-import { logger } from "../../shared/logger";
 
 function getProjectID(tokenId) {
   let tokenStr = tokenId.toString();
@@ -66,64 +65,11 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
 };
 
 export const extend = async (_chainId, metadata) => {
-  let data;
-  try {
-    const response = await axios.get(`https://account.miragegallery.ai/curated-details.json`);
-    data = response.data;
-  } catch (error) {
-    logger.error(
-      "mirage-gallery-curated-fetcher",
-      `fetchTokens get json error. chainId:${_chainId}, message:${error.message}, status:${
-        error.response?.status
-      }, data:${JSON.stringify(error.response?.data)}`
-    );
-
-    throw error;
-  }
-  const projectID = getProjectID(metadata.tokenId);
-  const projectDetails = data.data.find((item) => item.projectId === projectID);
-
-  let metadataURL = projectDetails.metadata;
-
-  if (metadataURL.startsWith("ipfs://")) {
-    metadataURL = metadataURL.replace("ipfs://", "https://ipfs.io/ipfs/") + "/" + metadata.tokenId;
-  } else {
-    metadataURL = metadataURL + "/" + metadata.tokenId;
-  }
-
-  try {
-    data = await axios.get(metadataURL);
-  } catch (error) {
-    logger.error(
-      "mirage-gallery-curated-fetcher",
-      `fetchTokens get metadataURL error. chainId:${_chainId}, metadataURL=${metadataURL}, message:${
-        error.message
-      }, status:${error.response?.status}, data:${JSON.stringify(error.response?.data)}`
-    );
-
-    throw error;
-  }
-
-  const attributes = [];
-
-  for (const item of data.data.attributes) {
-    const key = item.trait_type ? item.trait_type : "Property";
-    const value = item.value;
-
-    attributes.push({
-      key,
-      rank: 1,
-      value,
-      kind: "string",
-    });
-  }
-
   const startTokenId = metadata.tokenId - (metadata.tokenId % 10000);
   const endTokenId = startTokenId + 10000 - 1;
 
   return {
     ...metadata,
-    attributes,
     collection: `${metadata.contract}:${startTokenId}:${endTokenId}`,
   };
 };
