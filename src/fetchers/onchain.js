@@ -5,6 +5,7 @@ import { parse, normalizeLink } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
 import { supportedChains } from "../shared/utils";
 import _ from "lodash";
+import { logger } from "../shared/logger";
 
 const FETCH_TIMEOUT = 30000;
 
@@ -41,7 +42,11 @@ async function detectTokenStandard(contractAddress, rpcURL) {
       return "Unknown";
     }
   } catch (error) {
-    console.error("Error detecting token standard:", error);
+    logger.error(
+      "onchain-fetcher",
+      `detectTokenStandard error. contractAddress:${contractAddress}, rpcURL:${rpcURL}, error:${error}`
+    );
+
     return "Unknown";
   }
 }
@@ -284,6 +289,11 @@ export const fetchTokens = async (chainId, tokens) => {
   });
   const [batch, error] = await sendBatch(encodedTokens, RPC_URL);
   if (error) {
+    logger.error(
+      "onchain-fetcher",
+      `fetchTokens sendBatch error. chainId:${chainId}, error:${error}`
+    );
+
     if (error.status === 429) {
       throw new RequestWasThrottledError(error.message, 10);
     }
@@ -302,6 +312,11 @@ export const fetchTokens = async (chainId, tokens) => {
         const uri = defaultAbiCoder.decode(["string"], token.result)[0];
         const [metadata, error] = await getTokenMetadataFromURI(uri);
         if (error) {
+          logger.error(
+            "onchain-fetcher",
+            `fetchTokens getTokenMetadataFromURI error. chainId:${chainId}, error:${error}`
+          );
+
           if (error === 429) {
             throw new RequestWasThrottledError(error.message, 10);
           }
