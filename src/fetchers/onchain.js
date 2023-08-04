@@ -354,10 +354,28 @@ export const fetchCollection = async (chainId, { contract }) => {
   const collection = await getCollectionMetadata(contract, process.env[`RPC_URL_${network}`]);
   let collectionName = collection?.name ?? null;
 
+  if (chainId === 43114) {
+    logger.info(
+      "onchain-fetcher",
+      `fetchCollection. _chainId=${_chainId}, contract=${contract}, collectionName=${collectionName}, collection=${JSON.stringify(
+        collection
+      )}`
+    );
+  }
+
   // Fallback for collection name if collection metadata not found
   if (!collectionName) {
     collectionName =
       (await getContractName(contract, process.env[`RPC_URL_${network}`])) ?? contract;
+
+    if (chainId === 43114) {
+      logger.info(
+        "onchain-fetcher",
+        `fetchCollection - fallback. _chainId=${_chainId}, contract=${contract}, collectionName=${collectionName}, collection=${JSON.stringify(
+          collection
+        )}`
+      );
+    }
   }
 
   return {
