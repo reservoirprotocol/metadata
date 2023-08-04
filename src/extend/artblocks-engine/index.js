@@ -49,47 +49,69 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
 };
 
 export const extend = async (_chainId, metadata) => {
-  if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
-    logger.info(
+  try {
+    if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
+      logger.info(
+        "artblocks-engine-extend",
+        `extend. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
+          metadata.tokenId
+        }, metadata=${JSON.stringify(metadata)}`
+      );
+    }
+
+    const startTokenId = metadata.tokenId - (metadata.tokenId % 1000000);
+    const endTokenId = startTokenId + 1000000 - 1;
+
+    let baseUrl = "https://token.artblocks.io";
+    if (_chainId === 42161) {
+      baseUrl = "https://token.arbitrum.artblocks.io";
+    } else if ([4, 5].includes(_chainId)) {
+      baseUrl = "https://token.staging.artblocks.io";
+    }
+
+    const url = `${baseUrl}/${metadata.contract}/${metadata.tokenId}`;
+    const { data } = await axios.get(url);
+
+    const imageUrl = metadata.imageUrl ?? data.image;
+    const mediaUrl = metadata.mediaUrl ?? data.animation_url ?? data.generator_url;
+
+    const attributes = [];
+    // Add None value for core traits
+    for (const [key, value] of Object.entries(data.features)) {
+      attributes.push({
+        key,
+        rank: 1,
+        value,
+        kind: "string",
+      });
+    }
+
+    if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
+      logger.info(
+        "artblocks-engine-extend",
+        `extend. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
+          metadata.tokenId
+        }, metadata=${JSON.stringify(metadata)}, data=${JSON.stringify(
+          data
+        )}, attributes=${JSON.stringify(attributes)}`
+      );
+    }
+
+    return {
+      ...metadata,
+      attributes,
+      imageUrl,
+      mediaUrl,
+      collection: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
+    };
+  } catch (error) {
+    logger.error(
       "artblocks-engine-extend",
       `extend. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
         metadata.tokenId
-      }, metadata=${JSON.stringify(metadata)}`
+      }, metadata=${JSON.stringify(metadata)}, error=${error}`
     );
+
+    throw error;
   }
-
-  const startTokenId = metadata.tokenId - (metadata.tokenId % 1000000);
-  const endTokenId = startTokenId + 1000000 - 1;
-
-  let baseUrl = "https://token.artblocks.io";
-  if (_chainId === 42161) {
-    baseUrl = "https://token.arbitrum.artblocks.io";
-  } else if ([4, 5].includes(_chainId)) {
-    baseUrl = "https://token.staging.artblocks.io";
-  }
-
-  const url = `${baseUrl}/${metadata.contract}/${metadata.tokenId}`;
-  const { data } = await axios.get(url);
-
-  const imageUrl = metadata.imageUrl ?? data.image;
-  const mediaUrl = metadata.mediaUrl ?? data.animation_url ?? data.generator_url;
-
-  const attributes = [];
-  // Add None value for core traits
-  for (const [key, value] of Object.entries(data.features)) {
-    attributes.push({
-      key,
-      rank: 1,
-      value,
-      kind: "string",
-    });
-  }
-
-  return {
-    ...metadata,
-    attributes,
-    imageUrl,
-    mediaUrl,
-    collection: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
-  };
 };
