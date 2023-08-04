@@ -357,7 +357,7 @@ export const fetchCollection = async (chainId, { contract }) => {
   if (chainId === 43114) {
     logger.info(
       "onchain-fetcher",
-      `fetchCollection. _chainId=${_chainId}, contract=${contract}, collectionName=${collectionName}, collection=${JSON.stringify(
+      `fetchCollection. chainId=${chainId}, contract=${contract}, collectionName=${collectionName}, collection=${JSON.stringify(
         collection
       )}`
     );
@@ -371,7 +371,7 @@ export const fetchCollection = async (chainId, { contract }) => {
     if (chainId === 43114) {
       logger.info(
         "onchain-fetcher",
-        `fetchCollection - fallback. _chainId=${_chainId}, contract=${contract}, collectionName=${collectionName}, collection=${JSON.stringify(
+        `fetchCollection - fallback. chainId=${chainId}, contract=${contract}, collectionName=${collectionName}, collection=${JSON.stringify(
           collection
         )}`
       );
