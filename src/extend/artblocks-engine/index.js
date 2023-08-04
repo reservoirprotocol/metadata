@@ -87,14 +87,17 @@ export const extend = async (_chainId, metadata) => {
     const mediaUrl = metadata.mediaUrl ?? data.animation_url ?? data.generator_url;
 
     const attributes = [];
-    // Add None value for core traits
-    for (const [key, value] of Object.entries(data.features)) {
-      attributes.push({
-        key,
-        rank: 1,
-        value,
-        kind: "string",
-      });
+
+    if (data.features) {
+      // Add None value for core traits
+      for (const [key, value] of Object.entries(data.features)) {
+        attributes.push({
+          key,
+          rank: 1,
+          value,
+          kind: "string",
+        });
+      }
     }
 
     return {
