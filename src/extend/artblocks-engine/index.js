@@ -89,11 +89,11 @@ export const extend = async (_chainId, metadata) => {
     if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
       logger.info(
         "artblocks-engine-extend",
-        `extend. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
-          metadata.tokenId
-        }, metadata=${JSON.stringify(metadata)}, data=${JSON.stringify(
-          data
-        )}, attributes=${JSON.stringify(attributes)}`
+        `extend - artblocks response. _chainId=${_chainId}, contract=${
+          metadata.contract
+        }, tokenId=${metadata.tokenId}, metadata=${JSON.stringify(
+          metadata
+        )}, url=${url}, data=${JSON.stringify(data)}, attributes=${JSON.stringify(attributes)}`
       );
     }
 
