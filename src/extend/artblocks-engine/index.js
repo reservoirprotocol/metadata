@@ -1,7 +1,18 @@
 import axios from "axios";
 import slugify from "slugify";
 
+import { logger } from "../../shared/logger";
+
 export const extendCollection = async (_chainId, metadata, tokenId) => {
+  if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
+    logger.info(
+      "artblocks-engine-extend-collection",
+      `extendCollection. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
+        metadata.tokenId
+      }, metadata=${JSON.stringify(metadata)}`
+    );
+  }
+
   if (isNaN(Number(tokenId))) {
     throw new Error(`Invalid tokenId ${tokenId}`);
   }
@@ -38,6 +49,15 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
 };
 
 export const extend = async (_chainId, metadata) => {
+  if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
+    logger.info(
+      "artblocks-engine-extend",
+      `extend. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
+        metadata.tokenId
+      }, metadata=${JSON.stringify(metadata)}`
+    );
+  }
+
   const startTokenId = metadata.tokenId - (metadata.tokenId % 1000000);
   const endTokenId = startTokenId + 1000000 - 1;
 
