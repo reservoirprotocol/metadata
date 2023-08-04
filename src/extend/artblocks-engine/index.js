@@ -72,6 +72,17 @@ export const extend = async (_chainId, metadata) => {
     const url = `${baseUrl}/${metadata.contract}/${metadata.tokenId}`;
     const { data } = await axios.get(url);
 
+    if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
+      logger.info(
+        "artblocks-engine-extend",
+        `extend - artblocks response. _chainId=${_chainId}, contract=${
+          metadata.contract
+        }, tokenId=${metadata.tokenId}, metadata=${JSON.stringify(
+          metadata
+        )}, url=${url}, data=${JSON.stringify(data)}`
+      );
+    }
+
     const imageUrl = metadata.imageUrl ?? data.image;
     const mediaUrl = metadata.mediaUrl ?? data.animation_url ?? data.generator_url;
 
@@ -84,17 +95,6 @@ export const extend = async (_chainId, metadata) => {
         value,
         kind: "string",
       });
-    }
-
-    if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
-      logger.info(
-        "artblocks-engine-extend",
-        `extend - artblocks response. _chainId=${_chainId}, contract=${
-          metadata.contract
-        }, tokenId=${metadata.tokenId}, metadata=${JSON.stringify(
-          metadata
-        )}, url=${url}, data=${JSON.stringify(data)}, attributes=${JSON.stringify(attributes)}`
-      );
     }
 
     return {
