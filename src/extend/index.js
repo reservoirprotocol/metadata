@@ -1,37 +1,37 @@
 import * as adidasOriginals from "./adidas-originals";
 import * as admitOne from "./admit-one";
 import * as artTennis from "./art-tennis";
-import * as mutantApeYachtClub from "./mutant-ape-yacht-club";
-import * as boredApeKennelClub from "./bored-ape-kennel-club";
-import * as nouns from "./nouns";
-import * as lilnouns from "./lilnouns";
-import * as chimpers from "./chimpers";
-import * as moonbirds from "./moonbirds";
-import * as soundxyz from "./soundxyz";
-import * as bayc from "./bayc";
-import * as asyncBlueprints from "./async-blueprints";
-import * as feralFile from "./feral-file";
-import * as tfoust from "./tfoust";
-import * as sharedContracts from "./shared-contracts";
-import * as cyberkongz from "./cyberkongz";
-import * as emblemVault from "./emblem-vault";
-import * as brainDrops from "./braindrops";
-import * as quantumArt from "./quantum-art";
-import * as shreddingSassy from "./shredding-sassy";
-import * as openseaSharedContract from "./opensea-shared-contract";
 import * as artblocks from "./artblocks";
 import * as artblocksEngine from "./artblocks-engine";
-import * as mirageGalleryCurated from "./mirage-gallery-curated";
+import * as asyncBlueprints from "./async-blueprints";
+import * as bayc from "./bayc";
+import * as boredApeKennelClub from "./bored-ape-kennel-club";
+import * as boysOfSummer from "./boys-of-summer";
+import * as brainDrops from "./braindrops";
+import * as chimpers from "./chimpers";
+import * as courtyard from "./courtyard";
+import * as cryptokicksIrl from "./cryptokicks-irl";
+import * as cyberkongz from "./cyberkongz";
+import * as feralFile from "./feral-file";
 import * as forgottenPonies from "./forgotten-ponies";
 import * as forgottenRunes from "./forgotten-runes";
-import * as forgottenSouls from "./forgotten-souls";
-import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
 import * as forgottenRunesAthenaeum from "./forgotten-runes-athenaeum";
-import * as loot from "./loot";
+import * as forgottenRunesWarriors from "./forgotten-runes-warriors";
+import * as forgottenSouls from "./forgotten-souls";
 import * as goldfinch from "./goldfinch";
-import * as cryptokicksIrl from "./cryptokicks-irl";
-import * as boysOfSummer from "./boys-of-summer";
-import * as courtyard from "./courtyard";
+import * as lilnouns from "./lilnouns";
+import * as loot from "./loot";
+import * as mirageGalleryCurated from "./mirage-gallery-curated";
+import * as moonbirds from "./moonbirds";
+import * as mutantApeYachtClub from "./mutant-ape-yacht-club";
+import * as nouns from "./nouns";
+import * as openseaSharedContract from "./opensea-shared-contract";
+import * as quantumArt from "./quantum-art";
+import * as sharedContracts from "./shared-contracts";
+import * as shreddingSassy from "./shredding-sassy";
+import * as soundxyz from "./soundxyz";
+import * as tfoust from "./tfoust";
+import * as utopiaAvatars from "./utopia-avatars";
 
 export const hasExtendHandler = (chainId, contract) => Boolean(extend[`${chainId},${contract}`]);
 
@@ -74,6 +74,7 @@ extendCollection["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaShared
 extendCollection["1,0x68d0f6d1d99bb830e17ffaa8adb5bbed9d6eec2e"] = openseaSharedContract;
 extendCollection["1,0x33eecbf908478c10614626a9d304bfe18b78dd73"] = openseaSharedContract;
 extendCollection["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
+extendCollection["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // Courtyard
 extendCollection["1,0xd4ac3ce8e1e14cd60666d49ac34ff2d2937cf6fa"] = courtyard;
@@ -104,9 +105,6 @@ extendCollection["1,0x3b3ee1931dc30c1957379fac9aba94d1c48a5405"] = sharedContrac
 
 // Zora
 extendCollection["1,0xabefbc9fd2f806065b4f3c237d4b59d9a97bcac7"] = sharedContracts;
-
-// Emblem Vault
-extendCollection["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
 
 // Feral File
 extendCollection["1,0x2a86c5466f088caebf94e071a77669bae371cd87"] = feralFile;
@@ -170,6 +168,7 @@ extend["1,0x7a15b36cb834aea88553de69077d3777460d73ac"] = openseaSharedContract;
 extend["1,0x68d0f6d1d99bb830e17ffaa8adb5bbed9d6eec2e"] = openseaSharedContract;
 extend["1,0x33eecbf908478c10614626a9d304bfe18b78dd73"] = openseaSharedContract;
 extend["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
+extend["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
 
 // Courtyard
 extend["1,0xd4ac3ce8e1e14cd60666d49ac34ff2d2937cf6fa"] = courtyard;
@@ -209,9 +208,6 @@ extend["1,0xc143bbfcdbdbed6d454803804752a064a622c1f3"] = asyncBlueprints;
 
 // tfoust
 tfoust.CollectiblesCollections.forEach((c) => (extend[`137,${c}`] = tfoust));
-
-// Emblem Vault
-extend["1,0x82c7a8f707110f5fbb16184a5933e9f78a34c6ab"] = emblemVault;
 
 // Feral File
 extend["1,0x2a86c5466f088caebf94e071a77669bae371cd87"] = feralFile;
@@ -277,3 +273,6 @@ extend["1,0x57686612c601cb5213b01aa8e80afeb24bbd01df"] = goldfinch;
 
 // Cryptokicks IRL
 extend["1,0x11708dc8a3ea69020f520c81250abb191b190110"] = cryptokicksIrl;
+
+// Utopia Avatars
+extend["1,0x5f076e995290f3f9aea85fdd06d8fae118f2b75c"] = utopiaAvatars;
