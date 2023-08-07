@@ -3,16 +3,9 @@ import slugify from "slugify";
 
 import { logger } from "../../shared/logger";
 
-export const extendCollection = async (_chainId, metadata, tokenId) => {
-  if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
-    logger.info(
-      "artblocks-engine-extend-collection",
-      `extendCollection. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
-        metadata.tokenId
-      }, metadata=${JSON.stringify(metadata)}`
-    );
-  }
+import { fetchTokens as fetchTokensOnChain } from "../../fetchers/onchain";
 
+export const extendCollection = async (_chainId, metadata, tokenId) => {
   if (isNaN(Number(tokenId))) {
     throw new Error(`Invalid tokenId ${tokenId}`);
   }
@@ -50,15 +43,6 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
 
 export const extend = async (_chainId, metadata) => {
   try {
-    if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
-      logger.info(
-        "artblocks-engine-extend",
-        `extend. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
-          metadata.tokenId
-        }, metadata=${JSON.stringify(metadata)}`
-      );
-    }
-
     const startTokenId = metadata.tokenId - (metadata.tokenId % 1000000);
     const endTokenId = startTokenId + 1000000 - 1;
 
@@ -71,17 +55,6 @@ export const extend = async (_chainId, metadata) => {
 
     const url = `${baseUrl}/${metadata.contract}/${metadata.tokenId}`;
     const { data } = await axios.get(url);
-
-    if (metadata.contract === "0x47a91457a3a1f700097199fd63c039c4784384ab") {
-      logger.info(
-        "artblocks-engine-extend",
-        `extend - artblocks response. _chainId=${_chainId}, contract=${
-          metadata.contract
-        }, tokenId=${metadata.tokenId}, metadata=${JSON.stringify(
-          metadata
-        )}, url=${url}, data=${JSON.stringify(data)}`
-      );
-    }
 
     const imageUrl = metadata.imageUrl ?? data.image;
     const mediaUrl = metadata.mediaUrl ?? data.animation_url ?? data.generator_url;
@@ -97,6 +70,35 @@ export const extend = async (_chainId, metadata) => {
           value,
           kind: "string",
         });
+      }
+    } else {
+      logger.info(
+        "artblocks-engine-extend",
+        `extend - features fallback. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
+          metadata.tokenId
+        }, metadata=${JSON.stringify(metadata)}, url=${url}, data=${JSON.stringify(data)}`
+      );
+
+      try {
+        const tokens = await fetchTokensOnChain(_chainId, [
+          { contract: metadata.contract, tokenId: metadata.tokenId },
+        ]);
+
+        logger.info(
+          "artblocks-engine-extend",
+          `extend - fetchTokensOnChain. _chainId=${_chainId}, contract=${
+            metadata.contract
+          }, tokenId=${metadata.tokenId}, metadata=${JSON.stringify(
+            metadata
+          )}, url=${url}, data=${JSON.stringify(data)}, tokens=${JSON.stringify(tokens)}`
+        );
+      } catch (error) {
+        logger.error(
+          "artblocks-engine-extend",
+          `fetchTokensOnChain error. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
+            metadata.tokenId
+          }, metadata=${JSON.stringify(metadata)}, data=${JSON.stringify(data)}, error=${error}`
+        );
       }
     }
 

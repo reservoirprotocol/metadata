@@ -30,6 +30,12 @@ const getOSNetworkName = (chainId) => {
       return "arbitrum";
     case 42170:
       return "arbitrum_nova";
+    case 43114:
+      return "avalanche";
+    case 8453:
+      return "base";
+    case 7777777:
+      return "zora";
   }
 };
 
@@ -49,6 +55,8 @@ const getUrlForApi = (api, chainId, contract, tokenId, network, slug) => {
       return `${baseUrl}/api/v1/asset_contract/${contract}`;
     case "collection":
       return `${baseUrl}/api/v1/collection/${slug}`;
+    case "nft":
+      return `${baseUrl}/v2/chain/${network}/contract/${contract}/nfts/${tokenId}`;
   }
 };
 
@@ -85,6 +93,8 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
       case "asset_contract":
       case "collection":
         return osResponse.data;
+      case "nft":
+        return osResponse.data.nft;
     }
   } catch (error) {
     if (api === "asset") {
@@ -139,13 +149,19 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     if (chainId === 1) {
       data = await getOSData("asset", chainId, contract, tokenId);
     } else {
-      data =
-        (await getOSData("events", chainId, contract, tokenId)) ??
-        (await getOSData("asset", chainId, contract, tokenId));
+      data = await getOSData("nft", chainId, contract, tokenId);
 
-      // Get payment tokens if we have the collection slug
-      if (data?.collection?.slug && !data.collection.payment_tokens) {
-        data = await getOSData("collection", chainId, contract, tokenId, data.collection.slug);
+      if (data?.collection) {
+        data = await getOSData("collection", chainId, contract, tokenId, data.collection);
+      } else {
+        data =
+          (await getOSData("events", chainId, contract, tokenId)) ??
+          (await getOSData("asset", chainId, contract, tokenId));
+
+        // Get payment tokens if we have the collection slug
+        if (data?.collection?.slug && !data?.collection?.payment_tokens) {
+          data = await getOSData("collection", chainId, contract, tokenId, data.collection.slug);
+        }
       }
     }
 
