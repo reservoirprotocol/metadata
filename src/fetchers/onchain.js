@@ -312,10 +312,16 @@ export const fetchTokens = async (chainId, tokens) => {
         const uri = defaultAbiCoder.decode(["string"], token.result)[0];
         const [metadata, error] = await getTokenMetadataFromURI(uri);
         if (error) {
-          // logger.error(
-          //   "onchain-fetcher",
-          //   `fetchTokens getTokenMetadataFromURI error. chainId:${chainId}, error:${error}`
-          // );
+          logger.error(
+            "onchain-fetcher",
+            JSON.stringify({
+              message: "fetchTokens getTokenMetadataFromURI error",
+              chainId,
+              token,
+              error,
+              uri,
+            })
+          );
 
           if (error === 429) {
             throw new RequestWasThrottledError(error.message, 10);
