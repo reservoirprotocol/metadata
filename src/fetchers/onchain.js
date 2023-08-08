@@ -233,7 +233,7 @@ const getTokenMetadataFromURI = async (uri) => {
       return [json, null];
     }
   } catch (e) {
-    return [null, e.message];
+    return [null, e];
   }
 };
 
@@ -310,6 +310,14 @@ export const fetchTokens = async (chainId, tokens) => {
     batch.map(async (token) => {
       try {
         const uri = defaultAbiCoder.decode(["string"], token.result)[0];
+        if (!uri) {
+          return {
+            contract: idToToken[token.id].contract,
+            token_id: idToToken[token.id].tokenId,
+            error: "Unable to decode tokenURI from contract",
+          };
+        }
+
         const [metadata, error] = await getTokenMetadataFromURI(uri);
         if (error) {
           logger.error(
