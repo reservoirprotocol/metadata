@@ -145,14 +145,18 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
   try {
     let data;
+    let creatorAddress;
 
     if (chainId === 1) {
       data = await getOSData("asset", chainId, contract, tokenId);
+      creatorAddress = data?.creator?.address;
     } else {
       data = await getOSData("nft", chainId, contract, tokenId);
+      creatorAddress = data?.creator;
 
       if (data?.collection) {
         data = await getOSData("collection", chainId, contract, tokenId, data.collection);
+        creatorAddress = creatorAddress ?? data?.creator?.address;
       } else {
         data =
           (await getOSData("events", chainId, contract, tokenId)) ??
@@ -162,6 +166,8 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         if (data?.collection?.slug && !data?.collection?.payment_tokens) {
           data = await getOSData("collection", chainId, contract, tokenId, data.collection.slug);
         }
+
+        creatorAddress = data?.creator?.address;
       }
     }
 
@@ -234,7 +240,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
             };
           })
         : undefined,
-      creator: data.creator?.address ? _.toLower(data.creator.address) : null,
+      creator: creatorAddress ? _.toLower(creatorAddress) : null,
     };
   } catch (error) {
     logger.error(
