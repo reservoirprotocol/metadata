@@ -214,26 +214,31 @@ const getTokenMetadataFromURI = async (uri) => {
 
     if (isDataUri) {
       return [JSON.parse(Buffer.from(uri, "base64").toString("utf-8")), null];
-    } else {
-      const response = await fetch(uri, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        timeout: FETCH_TIMEOUT,
-        // TODO: add proxy support to avoid rate limiting
-        // agent:
-      });
-
-      if (!response.ok) {
-        return [null, response.status];
-      }
-
-      const json = await response.json();
-      return [json, null];
     }
+
+    // if the uri is not a valid url, return null
+    if (!uri.startsWith("http")) {
+      return [null, `Invalid URI: ${uri}`];
+    }
+
+    const response = await fetch(uri, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      timeout: FETCH_TIMEOUT,
+      // TODO: add proxy support to avoid rate limiting
+      // agent:
+    });
+
+    if (!response.ok) {
+      return [null, response.status];
+    }
+
+    const json = await response.json();
+    return [json, null];
   } catch (e) {
-    return [null, e.message];
+    return [null, e];
   }
 };
 
@@ -310,18 +315,26 @@ export const fetchTokens = async (chainId, tokens) => {
     batch.map(async (token) => {
       try {
         const uri = defaultAbiCoder.decode(["string"], token.result)[0];
+        if (!uri || uri === "") {
+          return {
+            contract: idToToken[token.id].contract,
+            token_id: idToToken[token.id].tokenId,
+            error: "Unable to decode tokenURI from contract",
+          };
+        }
+
         const [metadata, error] = await getTokenMetadataFromURI(uri);
         if (error) {
-          logger.error(
-            "onchain-fetcher",
-            JSON.stringify({
-              message: "fetchTokens getTokenMetadataFromURI error",
-              chainId,
-              token,
-              error,
-              uri,
-            })
-          );
+          // logger.error(
+          //   "onchain-fetcher",
+          //   JSON.stringify({
+          //     message: "fetchTokens getTokenMetadataFromURI error",
+          //     chainId,
+          //     token,
+          //     error,
+          //     uri,
+          //   })
+          // );
 
           if (error === 429) {
             throw new RequestWasThrottledError(error.message, 10);
