@@ -248,7 +248,7 @@ export const fetchTokens = async (chainId, tokens) => {
 
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
-  if (!process.env[`RPC_URL_${network}`]) throw new Error(`Missing RPC_URL for chain ${network}`);
+  if (!process.env[`RPC_URL_${network}`]) throw new Error(`Missing RPC_URL for chain ${network} id ${chainId}`);
 
   // Detect token standard, batch contract addresses together to call once per contract
   const contracts = [];
