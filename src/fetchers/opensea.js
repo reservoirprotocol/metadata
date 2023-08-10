@@ -171,6 +171,19 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       }
     }
 
+    if (chainId === 43114) {
+      logger.info(
+        "opensea-fetcher",
+        JSON.stringify({
+          topic: "fetchCollectionDebug",
+          message: `Collection metadata debug. contract=${contract}, tokenId=${tokenId}`,
+          contract,
+          tokenId,
+          data,
+        })
+      );
+    }
+
     if (!data?.collection) {
       throw new Error("Missing collection");
     }
@@ -247,7 +260,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       "opensea-fetcher",
       JSON.stringify({
         topic: "fetchCollectionError",
-        message: `Could not fetch collection. error=${error.message}`,
+        message: `Could not fetch collection. chainId=${chainId}, contract=${contract}, tokenId=${tokenId}, error=${error.message}`,
         chainId,
         contract,
         tokenId,
@@ -262,8 +275,18 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         new Interface(["function name() view returns (string)"]),
         getProvider(chainId)
       ).name();
-    } catch {
-      // Skip errors
+    } catch (error) {
+      logger.error(
+        "opensea-fetcher",
+        JSON.stringify({
+          topic: "fetchContractNameError",
+          message: `Could not fetch collection. chainId=${chainId}, contract=${contract}, tokenId=${tokenId}, error=${error.message}`,
+          chainId,
+          contract,
+          tokenId,
+          error,
+        })
+      );
     }
 
     return {
