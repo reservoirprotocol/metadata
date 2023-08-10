@@ -7,6 +7,7 @@ import { logger } from "../shared/logger";
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
 import _ from "lodash";
+import { fetchTokens as fetchTokensOnChain } from "./onchain";
 
 const apiKey = process.env.OPENSEA_COLLECTION_API_KEY
   ? process.env.OPENSEA_COLLECTION_API_KEY.trim()
@@ -267,6 +268,36 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         error,
       })
     );
+
+    if (chainId === 43114) {
+      try {
+        const tokens = await fetchTokensOnChain(chainId, [{ contract, tokenId }]);
+
+        logger.info(
+          "opensea-fetcher",
+          JSON.stringify({
+            topic: "fetchTokensOnChainDebug",
+            message: `fetchTokensOnChain debug. chainId=${chainId}, contract=${contract}, tokenId=${tokenId}`,
+            chainId,
+            contract,
+            tokenId,
+            tokens,
+          })
+        );
+      } catch (error) {
+        logger.error(
+          "opensea-fetcher",
+          JSON.stringify({
+            topic: "fetchTokensOnChainError",
+            message: `fetchTokensOnChain error. chainId=${chainId}, contract=${contract}, tokenId=${tokenId}, error=${error.message}`,
+            chainId,
+            contract,
+            tokenId,
+            error,
+          })
+        );
+      }
+    }
 
     let name = contract;
     try {
