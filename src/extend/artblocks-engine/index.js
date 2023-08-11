@@ -3,8 +3,6 @@ import slugify from "slugify";
 
 import { logger } from "../../shared/logger";
 
-import { fetchTokens as fetchTokensOnChain } from "../../fetchers/onchain";
-
 export const extendCollection = async (_chainId, metadata, tokenId) => {
   if (isNaN(Number(tokenId))) {
     throw new Error(`Invalid tokenId ${tokenId}`);
@@ -70,35 +68,6 @@ export const extend = async (_chainId, metadata) => {
           value,
           kind: "string",
         });
-      }
-    } else {
-      logger.info(
-        "artblocks-engine-extend",
-        `extend - features fallback. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
-          metadata.tokenId
-        }, metadata=${JSON.stringify(metadata)}, url=${url}, data=${JSON.stringify(data)}`
-      );
-
-      try {
-        const tokens = await fetchTokensOnChain(_chainId, [
-          { contract: metadata.contract, tokenId: metadata.tokenId },
-        ]);
-
-        logger.info(
-          "artblocks-engine-extend",
-          `extend - fetchTokensOnChain. _chainId=${_chainId}, contract=${
-            metadata.contract
-          }, tokenId=${metadata.tokenId}, metadata=${JSON.stringify(
-            metadata
-          )}, url=${url}, data=${JSON.stringify(data)}, tokens=${JSON.stringify(tokens)}`
-        );
-      } catch (error) {
-        logger.error(
-          "artblocks-engine-extend",
-          `fetchTokensOnChain error. _chainId=${_chainId}, contract=${metadata.contract}, tokenId=${
-            metadata.tokenId
-          }, metadata=${JSON.stringify(metadata)}, data=${JSON.stringify(data)}, error=${error}`
-        );
       }
     }
 
