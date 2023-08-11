@@ -18,6 +18,10 @@ const getNetworkName = (chainId) => {
     return "ethereum";
   }
 
+  if (network == "zksync") {
+    return "zksync-era";
+  }
+
   if (network == "goerli") {
     return "ethereum-goerli";
   }
