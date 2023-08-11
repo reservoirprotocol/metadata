@@ -148,6 +148,19 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     let data;
     let creatorAddress;
 
+    if (chainId === 43114) {
+      logger.info(
+        "opensea-fetcher",
+        JSON.stringify({
+          topic: "fetchCollectionDebug",
+          message: `Collection metadata start. contract=${contract}, tokenId=${tokenId}`,
+          contract,
+          tokenId,
+          data,
+        })
+      );
+    }
+
     if (chainId === 1) {
       data = await getOSData("asset", chainId, contract, tokenId);
       creatorAddress = data?.creator?.address;
@@ -268,36 +281,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         error,
       })
     );
-
-    if (chainId === 43114) {
-      try {
-        const tokens = await fetchTokensOnChain(chainId, [{ contract, tokenId }]);
-
-        logger.info(
-          "opensea-fetcher",
-          JSON.stringify({
-            topic: "fetchTokensOnChainDebug",
-            message: `fetchTokensOnChain debug. chainId=${chainId}, contract=${contract}, tokenId=${tokenId}`,
-            chainId,
-            contract,
-            tokenId,
-            tokens,
-          })
-        );
-      } catch (error) {
-        logger.error(
-          "opensea-fetcher",
-          JSON.stringify({
-            topic: "fetchTokensOnChainError",
-            message: `fetchTokensOnChain error. chainId=${chainId}, contract=${contract}, tokenId=${tokenId}, error=${error.message}`,
-            chainId,
-            contract,
-            tokenId,
-            error,
-          })
-        );
-      }
-    }
 
     let name = contract;
     try {
