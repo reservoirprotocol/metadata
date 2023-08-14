@@ -13,7 +13,7 @@ const getArtBlocksCollection = async (contract, tokenId) => {
 
   return {
     id: `${contract}:${startTokenId}:${endTokenId}`,
-    slug: slugify(data.collection_name, { lower: true }),
+    slug: null,
     name: data.collection_name,
     community: "artblocks",
     metadata: {

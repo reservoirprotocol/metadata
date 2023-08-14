@@ -1,5 +1,4 @@
 import axios from "axios";
-import slugify from "slugify";
 
 import { logger } from "../../shared/logger";
 
@@ -30,7 +29,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
       externalUrl: data.website,
     },
     name: data.collection_name,
-    slug: metadata.isFallback ? slugify(data.collection_name, { lower: true }) : metadata.slug,
+    slug: metadata.isFallback ? null : metadata.slug,
     community: data.platform.toLowerCase(),
     id: `${metadata.contract}:${startTokenId}:${endTokenId}`.toLowerCase(),
     tokenIdRange: [startTokenId, endTokenId],

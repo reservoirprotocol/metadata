@@ -1,6 +1,5 @@
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { ethers } from "ethers";
-import slugify from "slugify";
 import { parse, normalizeLink } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
 import { supportedChains } from "../shared/utils";
@@ -400,7 +399,7 @@ export const fetchCollection = async (chainId, { contract }) => {
 
   return {
     id: contract,
-    slug: slugify(collectionName, { lower: true }),
+    slug: null,
     name: collectionName,
     metadata: {
       description: collection?.description ?? null,

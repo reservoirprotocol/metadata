@@ -1,12 +1,12 @@
 import axios from "axios";
 import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
-import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
 import { supportedChains, getProvider } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
+import slugify from "slugify";
 
 const getNetworkName = (chainId) => {
   const network = supportedChains[chainId];
@@ -40,7 +40,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       })
       .then((response) => response.data);
 
-    let slug = slugify(data.collection.name, { lower: true });
+    let slug = null;
     if (_.isArray(data.collection.marketplace_pages)) {
       for (const market of data.collection.marketplace_pages) {
         if (market.marketplace_id === "opensea") {
@@ -84,7 +84,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
       return {
         id: contract,
-        slug: slugify(name, { lower: true }),
+        slug: null,
         name: name,
         community: null,
         metadata: null,
