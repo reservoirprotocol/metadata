@@ -214,7 +214,7 @@ extend["1,0x2a86c5466f088caebf94e071a77669bae371cd87"] = feralFile;
 
 // Boys of Summer
 extend["5,0x7ba399e03ca7598b2e6d56ba97961282edc9ad65"] = boysOfSummer;
-extend["1,0xc92AB2DfF994dd77c0D2fe09F21d5CF9ea2BcC0a"] = boysOfSummer;
+extend["1,0xc92ab2dff994dd77c0d2fe09f21d5cf9ea2bcc0a"] = boysOfSummer;
 
 // BrainDrops
 extend["1,0xdfde78d2baec499fe18f2be74b6c287eed9511d7"] = brainDrops;
