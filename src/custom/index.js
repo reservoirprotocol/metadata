@@ -49,6 +49,13 @@ customCollection["1,0x6c4a0c95d02366a8be460108e222ddf58451d1c0"] = copyrightInfr
 customCollection["1,0x32d753b840b475832950f6ad140b403f4a467f2c"] = copyrightInfringement;
 customCollection["1,0xa6edad01bf197b0ff7c1a8a456731bd2081d6940"] = copyrightInfringement;
 customCollection["1,0x254f0ed9a40b81402c86dcb5bc064dc036a5b7cc"] = copyrightInfringement;
+customCollection["1,0x6ca95b029e1bca507c87d42b46157a76dab54ec2"] = copyrightInfringement;
+customCollection["1,0xd6cc89ef815cfd8f30e3fe8319b3983351c93d31"] = copyrightInfringement;
+customCollection["1,0xba60a90d76d44819acb8452a9f89632d57f5692f"] = copyrightInfringement;
+customCollection["1,0x6fd6679c599afc1b78985a614adc8a3f8c02eb6b"] = copyrightInfringement;
+customCollection["1,0x552ea1b419d4ac9f5ec2048979b1eb29406ee6eb"] = copyrightInfringement;
+customCollection["1,0x6dbc1f3961fd606feaf5fb73245aa4b2674d1e66"] = copyrightInfringement;
+customCollection["1,0x6c2b0a6269d09d0d22999e68c7be174e5a026c7e"] = copyrightInfringement;
 
 customCollection["137,0xcf77e25cf1bfc57634bb7b95887b7120935a0d7f"] = copyrightInfringement;
 customCollection["137,0x27bde07c5d651856c483583899ed6823da3648b7"] = copyrightInfringement;
@@ -64,6 +71,7 @@ customCollection["137,0xe193c12252c12de24566ed7013004419c162cc81"] = copyrightIn
 customCollection["137,0x6d4cf64abac53c8a447e93e662b2e806ba9bb708"] = copyrightInfringement;
 customCollection["137,0x18aea30b288d8df78eb0eb6e04b984238abde97e"] = copyrightInfringement;
 customCollection["137,0x85efb3603ec84a0fa18f512a3a017422e893c5da"] = copyrightInfringement;
+customCollection["137,0xc21acefb1fc169c3904b56eab6f7b4872c585419"] = copyrightInfringement;
 
 customCollection["5,0x002cb3af46ad013a98b174a61711c0f725084bc0"] = copyrightInfringement;
 
@@ -102,6 +110,13 @@ custom["1,0x6c4a0c95d02366a8be460108e222ddf58451d1c0"] = copyrightInfringement;
 custom["1,0x32d753b840b475832950f6ad140b403f4a467f2c"] = copyrightInfringement;
 custom["1,0xa6edad01bf197b0ff7c1a8a456731bd2081d6940"] = copyrightInfringement;
 custom["1,0x254f0ed9a40b81402c86dcb5bc064dc036a5b7cc"] = copyrightInfringement;
+custom["1,0x6ca95b029e1bca507c87d42b46157a76dab54ec2"] = copyrightInfringement;
+custom["1,0xd6cc89ef815cfd8f30e3fe8319b3983351c93d31"] = copyrightInfringement;
+custom["1,0xba60a90d76d44819acb8452a9f89632d57f5692f"] = copyrightInfringement;
+custom["1,0x6fd6679c599afc1b78985a614adc8a3f8c02eb6b"] = copyrightInfringement;
+custom["1,0x552ea1b419d4ac9f5ec2048979b1eb29406ee6eb"] = copyrightInfringement;
+custom["1,0x6dbc1f3961fd606feaf5fb73245aa4b2674d1e66"] = copyrightInfringement;
+custom["1,0x6c2b0a6269d09d0d22999e68c7be174e5a026c7e"] = copyrightInfringement;
 
 custom["137,0xcf77e25cf1bfc57634bb7b95887b7120935a0d7f"] = copyrightInfringement;
 custom["137,0x27bde07c5d651856c483583899ed6823da3648b7"] = copyrightInfringement;
@@ -117,6 +132,7 @@ custom["137,0xe193c12252c12de24566ed7013004419c162cc81"] = copyrightInfringement
 custom["137,0x6d4cf64abac53c8a447e93e662b2e806ba9bb708"] = copyrightInfringement;
 custom["137,0x18aea30b288d8df78eb0eb6e04b984238abde97e"] = copyrightInfringement;
 custom["137,0x85efb3603ec84a0fa18f512a3a017422e893c5da"] = copyrightInfringement;
+custom["137,0xc21acefb1fc169c3904b56eab6f7b4872c585419"] = copyrightInfringement;
 
 custom["5,0x002cb3af46ad013a98b174a61711c0f725084bc0"] = copyrightInfringement;
 
