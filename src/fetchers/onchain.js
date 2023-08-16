@@ -402,10 +402,7 @@ export const fetchCollection = async (chainId, { contract }) => {
     id: contract,
     slug: slugify(collectionName, { lower: true }),
     name: collectionName,
-    metadata: {
-      description: collection?.description ?? null,
-      imageUrl: normalizeLink(collection?.image) ?? null,
-    },
+    metadata: normalizeMetadata(collection),
     contract,
     tokenSetId: `contract:${contract}`,
   };
