@@ -26,6 +26,10 @@ const getNetworkName = (chainId) => {
     return "ethereum-goerli";
   }
 
+  if (network == "mumbai") {
+    return "polygon-mumbai";
+  }
+
   return network;
 };
 
