@@ -35,6 +35,15 @@ const getNetworkName = (chainId) => {
 
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
   const network = getNetworkName(chainId);
+
+  logger.info(
+    "simplehash-fetcher",
+    JSON.stringify({
+      message: `fetchCollection start. chainId:${chainId}, network=${network}, contract:${contract}, tokenId:${tokenId}`,
+      chainId,
+    })
+  );
+
   const url = `https://api.simplehash.com/api/v0/nfts/${network}/${contract}/${tokenId}`;
 
   try {
@@ -105,9 +114,18 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
 export const fetchTokens = async (chainId, tokens) => {
   const network = getNetworkName(chainId);
-
   const searchParams = new URLSearchParams();
+
   const nftIds = tokens.map(({ contract, tokenId }) => `${network}.${contract}.${tokenId}`);
+
+  logger.info(
+    "simplehash-fetcher",
+    JSON.stringify({
+      message: `fetchTokens start. chainId:${chainId}, network=${network}, nftIds:${nftIds}`,
+      chainId,
+    })
+  );
+
   searchParams.append("nft_ids", nftIds.join(","));
 
   const url = `https://api.simplehash.com/api/v0/nfts/assets?${searchParams.toString()}`;
@@ -132,6 +150,14 @@ export const fetchTokens = async (chainId, tokens) => {
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
   const network = getNetworkName(chainId);
+
+  logger.info(
+    "simplehash-fetcher",
+    JSON.stringify({
+      message: `fetchContractTokens start. chainId:${chainId}, network=${network}, contract:${contract}`,
+      chainId,
+    })
+  );
 
   const searchParams = new URLSearchParams();
   if (continuation) {
