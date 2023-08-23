@@ -40,6 +40,8 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     "simplehash-fetcher",
     JSON.stringify({
       message: `fetchCollection start. chainId:${chainId}, network=${network}, contract:${contract}, tokenId:${tokenId}`,
+      topic: "simplehash-usage",
+      function: "fetchCollection",
       chainId,
     })
   );
@@ -116,15 +118,17 @@ export const fetchTokens = async (chainId, tokens) => {
   const network = getNetworkName(chainId);
   const searchParams = new URLSearchParams();
 
-  const nftIds = tokens.map(({ contract, tokenId }) => `${network}.${contract}.${tokenId}`);
-
   logger.info(
     "simplehash-fetcher",
     JSON.stringify({
-      message: `fetchTokens start. chainId:${chainId}, network=${network}, nftIds:${nftIds}`,
+      message: `fetchTokens start. chainId:${chainId}, network=${network}`,
+      topic: "simplehash-usage",
+      function: "fetchTokens",
       chainId,
     })
   );
+
+  const nftIds = tokens.map(({ contract, tokenId }) => `${network}.${contract}.${tokenId}`);
 
   searchParams.append("nft_ids", nftIds.join(","));
 
@@ -155,6 +159,8 @@ export const fetchContractTokens = async (chainId, contract, continuation) => {
     "simplehash-fetcher",
     JSON.stringify({
       message: `fetchContractTokens start. chainId:${chainId}, network=${network}, contract:${contract}`,
+      topic: "simplehash-usage",
+      function: "fetchContractTokens",
       chainId,
     })
   );
