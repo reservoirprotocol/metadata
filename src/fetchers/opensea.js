@@ -1,7 +1,8 @@
 import axios from "axios";
 import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
-import { getProvider } from "../shared/utils";
+import slugify from "slugify";
+import { getProvider, normalizeMetadata } from "../shared/utils";
 import { logger } from "../shared/logger";
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
@@ -240,17 +241,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       slug: data.collection.slug,
       name: data.collection ? data.collection.name : data.name,
       community: communities[contract] || null,
-      metadata: data.collection
-        ? {
-            description: data.collection.description,
-            imageUrl: data.collection.image_url,
-            bannerImageUrl: data.collection.banner_image_url,
-            discordUrl: data.collection.discord_url,
-            externalUrl: data.collection.external_url,
-            twitterUsername: data.collection.twitter_username,
-            safelistRequestStatus: data.collection.safelist_request_status,
-          }
-        : null,
+      metadata: data.collection ? normalizeMetadata(data.collection) : null,
       openseaRoyalties: royalties,
       openseaFees: fees,
       contract,
