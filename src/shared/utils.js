@@ -1,6 +1,12 @@
 import { providers } from "ethers";
+import _ from "lodash";
 
 export const getProvider = (chainId) => {
+  if (chainId === 43114) {
+    const network = _.upperCase(supportedChains[chainId]).replace(" ", "_");
+    return new providers.JsonRpcProvider(process.env[`RPC_URL_${network}`]);
+  }
+
   return new providers.AlchemyProvider(chainId, process.env.ALCHEMY_API_KEY);
 };
 

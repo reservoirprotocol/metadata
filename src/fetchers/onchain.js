@@ -1,6 +1,5 @@
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { ethers } from "ethers";
-import slugify from "slugify";
 import { parse, normalizeLink } from "../parsers/onchain";
 import { RequestWasThrottledError } from "./errors";
 import { supportedChains } from "../shared/utils";
@@ -214,26 +213,31 @@ const getTokenMetadataFromURI = async (uri) => {
 
     if (isDataUri) {
       return [JSON.parse(Buffer.from(uri, "base64").toString("utf-8")), null];
-    } else {
-      const response = await fetch(uri, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        timeout: FETCH_TIMEOUT,
-        // TODO: add proxy support to avoid rate limiting
-        // agent:
-      });
-
-      if (!response.ok) {
-        return [null, response.status];
-      }
-
-      const json = await response.json();
-      return [json, null];
     }
+
+    // if the uri is not a valid url, return null
+    if (!uri.startsWith("http")) {
+      return [null, `Invalid URI: ${uri}`];
+    }
+
+    const response = await fetch(uri, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      timeout: FETCH_TIMEOUT,
+      // TODO: add proxy support to avoid rate limiting
+      // agent:
+    });
+
+    if (!response.ok) {
+      return [null, response.status];
+    }
+
+    const json = await response.json();
+    return [json, null];
   } catch (e) {
-    return [null, e.message];
+    return [null, e];
   }
 };
 
@@ -243,7 +247,8 @@ export const fetchTokens = async (chainId, tokens) => {
 
   if (tokens.length === 0) return [];
   if (!Array.isArray(tokens)) tokens = [tokens];
-  if (!process.env[`RPC_URL_${network}`]) throw new Error(`Missing RPC_URL for chain ${network}`);
+  if (!process.env[`RPC_URL_${network}`])
+    throw new Error(`Missing RPC_URL for chain ${network} id ${chainId}`);
 
   // Detect token standard, batch contract addresses together to call once per contract
   const contracts = [];
@@ -310,12 +315,26 @@ export const fetchTokens = async (chainId, tokens) => {
     batch.map(async (token) => {
       try {
         const uri = defaultAbiCoder.decode(["string"], token.result)[0];
+        if (!uri || uri === "") {
+          return {
+            contract: idToToken[token.id].contract,
+            token_id: idToToken[token.id].tokenId,
+            error: "Unable to decode tokenURI from contract",
+          };
+        }
+
         const [metadata, error] = await getTokenMetadataFromURI(uri);
         if (error) {
-          logger.error(
-            "onchain-fetcher",
-            `fetchTokens getTokenMetadataFromURI error. chainId:${chainId}, error:${error}`
-          );
+          // logger.error(
+          //   "onchain-fetcher",
+          //   JSON.stringify({
+          //     message: "fetchTokens getTokenMetadataFromURI error",
+          //     chainId,
+          //     token,
+          //     error,
+          //     uri,
+          //   })
+          // );
 
           if (error === 429) {
             throw new RequestWasThrottledError(error.message, 10);
@@ -380,7 +399,7 @@ export const fetchCollection = async (chainId, { contract }) => {
 
   return {
     id: contract,
-    slug: slugify(collectionName, { lower: true }),
+    slug: null,
     name: collectionName,
     metadata: {
       description: collection?.description ?? null,

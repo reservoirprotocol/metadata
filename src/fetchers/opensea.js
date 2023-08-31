@@ -1,12 +1,12 @@
 import axios from "axios";
 import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
-import slugify from "slugify";
 import { getProvider } from "../shared/utils";
 import { logger } from "../shared/logger";
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
 import _ from "lodash";
+import { fetchTokens as fetchTokensOnChain } from "./onchain";
 
 const apiKey = process.env.OPENSEA_COLLECTION_API_KEY
   ? process.env.OPENSEA_COLLECTION_API_KEY.trim()
@@ -145,14 +145,31 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
 export const fetchCollection = async (chainId, { contract, tokenId }) => {
   try {
     let data;
+    let creatorAddress;
+
+    if (chainId === 43114) {
+      logger.info(
+        "opensea-fetcher",
+        JSON.stringify({
+          topic: "fetchCollectionDebug",
+          message: `Collection metadata start. contract=${contract}, tokenId=${tokenId}`,
+          contract,
+          tokenId,
+          data,
+        })
+      );
+    }
 
     if (chainId === 1) {
       data = await getOSData("asset", chainId, contract, tokenId);
+      creatorAddress = data?.creator?.address;
     } else {
       data = await getOSData("nft", chainId, contract, tokenId);
+      creatorAddress = data?.creator;
 
       if (data?.collection) {
         data = await getOSData("collection", chainId, contract, tokenId, data.collection);
+        creatorAddress = creatorAddress ?? data?.creator?.address;
       } else {
         data =
           (await getOSData("events", chainId, contract, tokenId)) ??
@@ -162,7 +179,22 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         if (data?.collection?.slug && !data?.collection?.payment_tokens) {
           data = await getOSData("collection", chainId, contract, tokenId, data.collection.slug);
         }
+
+        creatorAddress = data?.creator?.address;
       }
+    }
+
+    if (chainId === 43114) {
+      logger.info(
+        "opensea-fetcher",
+        JSON.stringify({
+          topic: "fetchCollectionDebug",
+          message: `Collection metadata debug. contract=${contract}, tokenId=${tokenId}`,
+          contract,
+          tokenId,
+          data,
+        })
+      );
     }
 
     if (!data?.collection) {
@@ -234,14 +266,14 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
             };
           })
         : undefined,
-      creator: data.creator?.address ? _.toLower(data.creator.address) : null,
+      creator: creatorAddress ? _.toLower(creatorAddress) : null,
     };
   } catch (error) {
     logger.error(
       "opensea-fetcher",
       JSON.stringify({
         topic: "fetchCollectionError",
-        message: `Could not fetch collection. error=${error.message}`,
+        message: `Could not fetch collection. chainId=${chainId}, contract=${contract}, tokenId=${tokenId}, error=${error.message}`,
         chainId,
         contract,
         tokenId,
@@ -256,13 +288,23 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
         new Interface(["function name() view returns (string)"]),
         getProvider(chainId)
       ).name();
-    } catch {
-      // Skip errors
+    } catch (error) {
+      logger.error(
+        "opensea-fetcher",
+        JSON.stringify({
+          topic: "fetchContractNameError",
+          message: `Could not fetch collection. chainId=${chainId}, contract=${contract}, tokenId=${tokenId}, error=${error.message}`,
+          chainId,
+          contract,
+          tokenId,
+          error,
+        })
+      );
     }
 
     return {
       id: contract,
-      slug: slugify(name, { lower: true }),
+      slug: null,
       name,
       community: null,
       metadata: null,
