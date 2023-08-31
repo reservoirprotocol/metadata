@@ -1,6 +1,5 @@
 import _ from "lodash";
 import axios from "axios";
-import slugify from "slugify";
 
 export const extendCollection = async (_chainId, metadata, tokenId) => {
   if (isNaN(Number(tokenId))) {
@@ -23,7 +22,7 @@ export const extendCollection = async (_chainId, metadata, tokenId) => {
       externalUrl: data.website,
     },
     name: data.collection_name,
-    slug: metadata.isFallback ? slugify(data.collection_name, { lower: true }) : metadata.slug,
+    slug: metadata.isFallback ? null : metadata.slug,
     community: "artblocks",
     id: `${metadata.contract}:${startTokenId}:${endTokenId}`,
     tokenIdRange: [startTokenId, endTokenId],

@@ -295,7 +295,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
     return {
       id: contract,
-      slug: slugify(name, { lower: true }),
+      slug: null,
       name,
       community: null,
       metadata: null,

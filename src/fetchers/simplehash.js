@@ -1,12 +1,12 @@
 import axios from "axios";
 import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
-import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
 import { supportedChains, getProvider, normalizeMetadata } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
+import slugify from "slugify";
 
 const getNetworkName = (chainId) => {
   const network = supportedChains[chainId];
@@ -26,6 +26,10 @@ const getNetworkName = (chainId) => {
     return "ethereum-goerli";
   }
 
+  if (network == "mumbai") {
+    return "polygon-mumbai";
+  }
+
   return network;
 };
 
@@ -40,7 +44,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       })
       .then((response) => response.data);
 
-    let slug = slugify(data.collection.name, { lower: true });
+    let slug = null;
     if (_.isArray(data.collection.marketplace_pages)) {
       for (const market of data.collection.marketplace_pages) {
         if (market.marketplace_id === "opensea") {
@@ -77,7 +81,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
       return {
         id: contract,
-        slug: slugify(name, { lower: true }),
+        slug: null,
         name: name,
         community: null,
         metadata: null,
@@ -94,9 +98,10 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
 export const fetchTokens = async (chainId, tokens) => {
   const network = getNetworkName(chainId);
-
   const searchParams = new URLSearchParams();
+
   const nftIds = tokens.map(({ contract, tokenId }) => `${network}.${contract}.${tokenId}`);
+
   searchParams.append("nft_ids", nftIds.join(","));
 
   const url = `https://api.simplehash.com/api/v0/nfts/assets?${searchParams.toString()}`;
@@ -121,7 +126,6 @@ export const fetchTokens = async (chainId, tokens) => {
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
   const network = getNetworkName(chainId);
-
   const searchParams = new URLSearchParams();
   if (continuation) {
     searchParams.append("cursor", continuation);
