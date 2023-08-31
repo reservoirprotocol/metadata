@@ -4,7 +4,7 @@ import { Interface } from "ethers/lib/utils";
 import slugify from "slugify";
 
 import { parse } from "../parsers/simplehash";
-import { supportedChains, getProvider } from "../shared/utils";
+import { supportedChains, getProvider, normalizeMetadata } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
 
@@ -58,14 +58,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       slug,
       name: data.collection.name,
       community: null,
-      metadata: {
-        description: data.collection.description,
-        imageUrl: data.collection.image_url,
-        bannerImageUrl: data.collection.banner_image_url,
-        discordUrl: data.collection.discord_url,
-        externalUrl: data.collection.external_url,
-        twitterUsername: data.collection.twitter_username,
-      },
+      metadata: normalizeMetadata(data.collection),
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
