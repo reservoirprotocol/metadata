@@ -37,12 +37,28 @@ const getOSNetworkName = (chainId) => {
       return "base";
     case 7777777:
       return "zora";
+    case 11155111:
+      return "sepolia";
+    case 80001:
+      return "mumbai";
+    case 84531:
+      return "base_goerli";
+    case 999:
+      return "zora_testnet";
+    case 324:
+      return "zksync";
   }
+};
+
+const getOSTestNetsChainIds = () => {
+  return [4, 5, 11155111, 80001, 84531, 999];
 };
 
 const getUrlForApi = (api, chainId, contract, tokenId, network, slug) => {
   const baseUrl = `${
-    ![4, 5].includes(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
+    !getOSTestNetsChainIds().includes(chainId)
+      ? "https://api.opensea.io"
+      : "https://testnets-api.opensea.io"
   }`;
 
   switch (api) {
@@ -64,7 +80,7 @@ const getUrlForApi = (api, chainId, contract, tokenId, network, slug) => {
 const getOSData = async (api, chainId, contract, tokenId, slug) => {
   const network = getOSNetworkName(chainId);
   const url = getUrlForApi(api, chainId, contract, tokenId, network, slug);
-  const headers = ![4, 5].includes(chainId)
+  const headers = !getOSTestNetsChainIds().includes(chainId)
     ? {
         url,
         "X-API-KEY": apiKey,
@@ -76,7 +92,7 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
 
   try {
     const osResponse = await axios.get(
-      ![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
+      !getOSTestNetsChainIds().includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
       { headers }
     );
 
@@ -148,19 +164,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     let data;
     let creatorAddress;
 
-    if (chainId === 43114) {
-      logger.info(
-        "opensea-fetcher",
-        JSON.stringify({
-          topic: "fetchCollectionDebug",
-          message: `Collection metadata start. contract=${contract}, tokenId=${tokenId}`,
-          contract,
-          tokenId,
-          data,
-        })
-      );
-    }
-
     if (chainId === 1) {
       data = await getOSData("asset", chainId, contract, tokenId);
       creatorAddress = data?.creator?.address;
@@ -183,19 +186,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
         creatorAddress = data?.creator?.address;
       }
-    }
-
-    if (chainId === 43114) {
-      logger.info(
-        "opensea-fetcher",
-        JSON.stringify({
-          topic: "fetchCollectionDebug",
-          message: `Collection metadata debug. contract=${contract}, tokenId=${tokenId}`,
-          contract,
-          tokenId,
-          data,
-        })
-      );
     }
 
     if (!data?.collection) {
