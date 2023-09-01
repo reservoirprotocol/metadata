@@ -121,7 +121,6 @@ export const normalizeMetadata = (collection) => {
   let metadata = {};
   if (collection?.social_urls) {
     Object.keys(collection.social_urls).forEach((key) => {
-      console.log(key, map);
       if (key in map) {
         if (map[key].normalize) {
           metadata[map[key].key] = map[key].normalize(collection.social_urls[key]);
@@ -134,7 +133,6 @@ export const normalizeMetadata = (collection) => {
 
   // do the above via the map
   Object.keys(map).forEach((key) => {
-    console.log(key, map, collection);
     if (key in collection) {
       if (map[key].normalize) {
         metadata[map[key].key] = map[key].normalize(collection[key]);
