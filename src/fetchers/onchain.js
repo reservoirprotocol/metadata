@@ -5,6 +5,7 @@ import { RequestWasThrottledError } from "./errors";
 import { supportedChains } from "../shared/utils";
 import _ from "lodash";
 import { logger } from "../shared/logger";
+import { normalizeMetadata } from "../shared/utils";
 
 const FETCH_TIMEOUT = 30000;
 
@@ -142,7 +143,7 @@ const getCollectionMetadata = async (contractAddress, rpcURL) => {
         }).then((response) => response.json());
 
     return json;
-  } catch {
+  } catch (e) {
     return null;
   }
 };
@@ -401,10 +402,7 @@ export const fetchCollection = async (chainId, { contract }) => {
     id: contract,
     slug: null,
     name: collectionName,
-    metadata: {
-      description: collection?.description ?? null,
-      imageUrl: normalizeLink(collection?.image) ?? null,
-    },
+    metadata: normalizeMetadata(collection),
     contract,
     tokenSetId: `contract:${contract}`,
   };

@@ -3,7 +3,7 @@ import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
 
 import { parse } from "../parsers/simplehash";
-import { supportedChains, getProvider } from "../shared/utils";
+import { supportedChains, getProvider, normalizeMetadata } from "../shared/utils";
 import { logger } from "../shared/logger";
 import _ from "lodash";
 import slugify from "slugify";
@@ -24,6 +24,10 @@ const getNetworkName = (chainId) => {
 
   if (network == "goerli") {
     return "ethereum-goerli";
+  }
+
+  if (network == "mumbai") {
+    return "polygon-mumbai";
   }
 
   return network;
@@ -54,14 +58,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       slug,
       name: data.collection.name,
       community: null,
-      metadata: {
-        description: data.collection.description,
-        imageUrl: data.collection.image_url,
-        bannerImageUrl: data.collection.banner_image_url,
-        discordUrl: data.collection.discord_url,
-        externalUrl: data.collection.external_url,
-        twitterUsername: data.collection.twitter_username,
-      },
+      metadata: normalizeMetadata(data.collection),
       contract,
       tokenIdRange: null,
       tokenSetId: `contract:${contract}`,
@@ -101,9 +98,10 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
 export const fetchTokens = async (chainId, tokens) => {
   const network = getNetworkName(chainId);
-
   const searchParams = new URLSearchParams();
+
   const nftIds = tokens.map(({ contract, tokenId }) => `${network}.${contract}.${tokenId}`);
+
   searchParams.append("nft_ids", nftIds.join(","));
 
   const url = `https://api.simplehash.com/api/v0/nfts/assets?${searchParams.toString()}`;
@@ -128,7 +126,6 @@ export const fetchTokens = async (chainId, tokens) => {
 
 export const fetchContractTokens = async (chainId, contract, continuation) => {
   const network = getNetworkName(chainId);
-
   const searchParams = new URLSearchParams();
   if (continuation) {
     searchParams.append("cursor", continuation);

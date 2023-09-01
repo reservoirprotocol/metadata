@@ -1,7 +1,10 @@
 import axios from "axios";
 import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
-import { getProvider } from "../shared/utils";
+
+import slugify from "slugify";
+import { getProvider, normalizeMetadata } from "../shared/utils";
+
 import { logger } from "../shared/logger";
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
@@ -36,12 +39,36 @@ const getOSNetworkName = (chainId) => {
       return "base";
     case 7777777:
       return "zora";
+    case 11155111:
+      return "sepolia";
+    case 80001:
+      return "mumbai";
+    case 84531:
+      return "base_goerli";
+    case 999:
+      return "zora_testnet";
   }
+};
+
+const isOSTestnet = (chainId) => {
+  switch (chainId) {
+    case 4:
+    case 5:
+    case 11155111:
+    case 80001:
+    case 84531:
+    case 999:
+      return true;
+  }
+
+  return false;
 };
 
 const getUrlForApi = (api, chainId, contract, tokenId, network, slug) => {
   const baseUrl = `${
-    ![4, 5].includes(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
+    !isOSTestnet(chainId)
+      ? "https://api.opensea.io"
+      : "https://testnets-api.opensea.io"
   }`;
 
   switch (api) {
@@ -63,7 +90,8 @@ const getUrlForApi = (api, chainId, contract, tokenId, network, slug) => {
 const getOSData = async (api, chainId, contract, tokenId, slug) => {
   const network = getOSNetworkName(chainId);
   const url = getUrlForApi(api, chainId, contract, tokenId, network, slug);
-  const headers = ![4, 5].includes(chainId)
+
+  const headers = !isOSTestnet(chainId)
     ? {
         url,
         "X-API-KEY": apiKey,
@@ -75,7 +103,7 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
 
   try {
     const osResponse = await axios.get(
-      ![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
+      !isOSTestnet(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
       { headers }
     );
 
@@ -147,19 +175,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
     let data;
     let creatorAddress;
 
-    if (chainId === 43114) {
-      logger.info(
-        "opensea-fetcher",
-        JSON.stringify({
-          topic: "fetchCollectionDebug",
-          message: `Collection metadata start. contract=${contract}, tokenId=${tokenId}`,
-          contract,
-          tokenId,
-          data,
-        })
-      );
-    }
-
     if (chainId === 1) {
       data = await getOSData("asset", chainId, contract, tokenId);
       creatorAddress = data?.creator?.address;
@@ -182,19 +197,6 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
         creatorAddress = data?.creator?.address;
       }
-    }
-
-    if (chainId === 43114) {
-      logger.info(
-        "opensea-fetcher",
-        JSON.stringify({
-          topic: "fetchCollectionDebug",
-          message: `Collection metadata debug. contract=${contract}, tokenId=${tokenId}`,
-          contract,
-          tokenId,
-          data,
-        })
-      );
     }
 
     if (!data?.collection) {
@@ -240,17 +242,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
       slug: data.collection.slug,
       name: data.collection ? data.collection.name : data.name,
       community: communities[contract] || null,
-      metadata: data.collection
-        ? {
-            description: data.collection.description,
-            imageUrl: data.collection.image_url,
-            bannerImageUrl: data.collection.banner_image_url,
-            discordUrl: data.collection.discord_url,
-            externalUrl: data.collection.external_url,
-            twitterUsername: data.collection.twitter_username,
-            safelistRequestStatus: data.collection.safelist_request_status,
-          }
-        : null,
+      metadata: data.collection ? normalizeMetadata(data.collection) : null,
       openseaRoyalties: royalties,
       openseaFees: fees,
       contract,
@@ -324,12 +316,12 @@ export const fetchTokens = async (chainId, tokens) => {
   }
 
   const url = `${
-    ![4, 5].includes(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
+    !isOSTestnet(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
   }/api/v1/assets?${searchParams.toString()}`;
 
   const data = await axios
-    .get(![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url, {
-      headers: ![4, 5].includes(chainId)
+    .get(!isOSTestnet(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url, {
+      headers: !isOSTestnet(chainId)
         ? {
             url,
             "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
