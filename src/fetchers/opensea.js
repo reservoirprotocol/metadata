@@ -13,6 +13,8 @@ const apiKey = process.env.OPENSEA_COLLECTION_API_KEY
   ? process.env.OPENSEA_COLLECTION_API_KEY.trim()
   : process.env.OPENSEA_API_KEY.trim();
 
+const osTestnetsChainIds = [4, 5, 11155111, 80001, 84531, 999];
+
 const getOSNetworkName = (chainId) => {
   switch (chainId) {
     case 1:
@@ -50,13 +52,9 @@ const getOSNetworkName = (chainId) => {
   }
 };
 
-const getOSTestNetsChainIds = () => {
-  return [4, 5, 11155111, 80001, 84531, 999];
-};
-
 const getUrlForApi = (api, chainId, contract, tokenId, network, slug) => {
   const baseUrl = `${
-    !getOSTestNetsChainIds().includes(chainId)
+    !osTestnetsChainIds.includes(chainId)
       ? "https://api.opensea.io"
       : "https://testnets-api.opensea.io"
   }`;
@@ -80,7 +78,8 @@ const getUrlForApi = (api, chainId, contract, tokenId, network, slug) => {
 const getOSData = async (api, chainId, contract, tokenId, slug) => {
   const network = getOSNetworkName(chainId);
   const url = getUrlForApi(api, chainId, contract, tokenId, network, slug);
-  const headers = !getOSTestNetsChainIds().includes(chainId)
+
+  const headers = !osTestnetsChainIds.includes(chainId)
     ? {
         url,
         "X-API-KEY": apiKey,
@@ -92,7 +91,7 @@ const getOSData = async (api, chainId, contract, tokenId, slug) => {
 
   try {
     const osResponse = await axios.get(
-      !getOSTestNetsChainIds().includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
+      !osTestnetsChainIds.includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url,
       { headers }
     );
 
@@ -305,12 +304,12 @@ export const fetchTokens = async (chainId, tokens) => {
   }
 
   const url = `${
-    ![4, 5].includes(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
+    !osTestnetsChainIds.includes(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
   }/api/v1/assets?${searchParams.toString()}`;
 
   const data = await axios
-    .get(![4, 5].includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url, {
-      headers: ![4, 5].includes(chainId)
+    .get(!osTestnetsChainIds.includes(chainId) ? process.env.OPENSEA_BASE_URL_ALT || url : url, {
+      headers: !osTestnetsChainIds.includes(chainId)
         ? {
             url,
             "X-API-KEY": process.env.OPENSEA_API_KEY.trim(),
