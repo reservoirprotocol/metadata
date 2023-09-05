@@ -1,8 +1,10 @@
 import axios from "axios";
 import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
+
 import slugify from "slugify";
 import { getProvider, normalizeMetadata } from "../shared/utils";
+
 import { logger } from "../shared/logger";
 import { RequestWasThrottledError } from "./errors";
 import { parse } from "../parsers/opensea";
@@ -294,7 +296,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
     return {
       id: contract,
-      slug: slugify(name, { lower: true }),
+      slug: null,
       name,
       community: null,
       metadata: null,

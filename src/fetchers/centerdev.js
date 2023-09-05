@@ -1,7 +1,6 @@
 import axios from "axios";
 import { Contract } from "ethers";
 import { Interface } from "ethers/lib/utils";
-import slugify from "slugify";
 
 import { parse } from "../parsers/centerdev";
 import { getProvider } from "../shared/utils";
@@ -39,7 +38,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
     return {
       id: contract,
-      slug: slugify(data.name, { lower: true }),
+      slug: null,
       name: data.name,
       community: null,
       metadata: null,
@@ -57,7 +56,7 @@ export const fetchCollection = async (chainId, { contract, tokenId }) => {
 
       return {
         id: contract,
-        slug: slugify(name, { lower: true }),
+        slug: null,
         name: name,
         community: null,
         metadata: null,
