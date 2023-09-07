@@ -3,12 +3,8 @@ import _ from "lodash";
 import { normalizeLink } from "../parsers/onchain";
 
 export const getProvider = (chainId) => {
-  if (chainId === 43114) {
-    const network = _.upperCase(supportedChains[chainId]).replace(" ", "_");
-    return new providers.JsonRpcProvider(process.env[`RPC_URL_${network}`]);
-  }
-
-  return new providers.AlchemyProvider(chainId, process.env.ALCHEMY_API_KEY);
+  const network = _.upperCase(supportedChains[chainId]).replace(" ", "_");
+  return new providers.JsonRpcProvider(process.env[`RPC_URL_${network}`]);
 };
 
 // Supported chains with key=network, value=chainId
@@ -38,7 +34,7 @@ export const normalizeMetadata = (collection) => {
       key: "twitterUsername",
       normalize: (value) => {
         // if the value is a url, return the username
-        if (value.includes("twitter.com")) {
+        if (value?.includes("twitter.com")) {
           return value.split("/")[3];
         }
 
@@ -48,7 +44,7 @@ export const normalizeMetadata = (collection) => {
     twitter: {
       key: "twitterUrl",
       normalize: (value) => {
-        if (value.includes("twitter.com")) {
+        if (value?.includes("twitter.com")) {
           return value;
         }
         // if the value is a username, return the url
@@ -58,7 +54,7 @@ export const normalizeMetadata = (collection) => {
     telegram: {
       key: "telegramUrl",
       normalize: (value) => {
-        if (value.includes("t.me")) {
+        if (value?.includes("t.me")) {
           return value;
         }
 
@@ -68,7 +64,7 @@ export const normalizeMetadata = (collection) => {
     instagram: {
       key: "instagramUrl",
       normalize: (value) => {
-        if (value.includes("instagram.com")) {
+        if (value?.includes("instagram.com")) {
           return value;
         }
       },
