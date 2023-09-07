@@ -66,9 +66,7 @@ const isOSTestnet = (chainId) => {
 
 const getUrlForApi = (api, chainId, contract, tokenId, network, slug) => {
   const baseUrl = `${
-    !isOSTestnet(chainId)
-      ? "https://api.opensea.io"
-      : "https://testnets-api.opensea.io"
+    !isOSTestnet(chainId) ? "https://api.opensea.io" : "https://testnets-api.opensea.io"
   }`;
 
   switch (api) {
