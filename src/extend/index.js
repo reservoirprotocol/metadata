@@ -75,6 +75,7 @@ extendCollection["1,0x68d0f6d1d99bb830e17ffaa8adb5bbed9d6eec2e"] = openseaShared
 extendCollection["1,0x33eecbf908478c10614626a9d304bfe18b78dd73"] = openseaSharedContract;
 extendCollection["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
 extendCollection["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
+extendCollection["1,0x48b17a2c46007471b3eb72d16268eaecdd1502b7"] = openseaSharedContract;
 
 // Courtyard
 extendCollection["1,0xd4ac3ce8e1e14cd60666d49ac34ff2d2937cf6fa"] = courtyard;
@@ -170,6 +171,7 @@ extend["1,0x68d0f6d1d99bb830e17ffaa8adb5bbed9d6eec2e"] = openseaSharedContract;
 extend["1,0x33eecbf908478c10614626a9d304bfe18b78dd73"] = openseaSharedContract;
 extend["1,0x495f947276749ce646f68ac8c248420045cb7b5e"] = openseaSharedContract;
 extend["137,0x2953399124f0cbb46d2cbacd8a89cf0599974963"] = openseaSharedContract;
+extend["1,0x48b17a2c46007471b3eb72d16268eaecdd1502b7"] = openseaSharedContract;
 
 // Courtyard
 extend["1,0xd4ac3ce8e1e14cd60666d49ac34ff2d2937cf6fa"] = courtyard;
