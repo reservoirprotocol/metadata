@@ -30,6 +30,10 @@ const getNetworkName = (chainId) => {
     return "polygon-mumbai";
   }
 
+  if (network == "sepolia") {
+    return "ethereum-sepolia";
+  }
+
   return network;
 };
 
